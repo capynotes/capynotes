@@ -1,4 +1,4 @@
-import 'package:capynotes/view/screens/flashcard_screen.dart';
+import 'package:capynotes/view/screens/flashcard_display_screen.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
