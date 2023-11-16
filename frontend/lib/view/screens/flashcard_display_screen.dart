@@ -1,8 +1,10 @@
+import 'package:auto_route/annotations.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class FlashcardScreen extends StatelessWidget {
   const FlashcardScreen({super.key});
 
