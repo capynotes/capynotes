@@ -1,6 +1,7 @@
 package com.capynotes.authservice.controllers;
 
 import com.capynotes.authservice.config.JwtUtils;
+import com.capynotes.authservice.dtos.AuthRequest;
 import com.capynotes.authservice.dtos.ChangePasswordDto;
 import com.capynotes.authservice.dtos.PersonDto;
 import com.capynotes.authservice.models.Person;
@@ -28,8 +29,24 @@ public class PersonController {
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping
-    public ResponseEntity<?> addPerson(@RequestBody Person person) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+        try {
+            Person person = personService.findPersonByEmail(authRequest.getEmail());
+            if(!personService.pwMatches(authRequest.getPassword(), person.getPassword())) {
+                return new ResponseEntity<>("Incorrect email or password.", HttpStatus.NOT_ACCEPTABLE);
+            }
+            String token = jwtUtils.generateToken(person.getId(), person.getEmail());
+            PersonDto personDto = new PersonDto(person, token);
+            return new ResponseEntity<>(personDto, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @CrossOrigin(origins = "*")
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody Person person) {
         try {
             if(!personService.isValid(person.getPassword())) {
                 return new ResponseEntity<>("Password must have at least 6 alphanumeric characters.", HttpStatus.NOT_ACCEPTABLE);
@@ -39,9 +56,6 @@ public class PersonController {
             }
 
             Person createdPerson = personService.addPerson(person);
-
-            //final String url = "http://localhost:8080/api/mail/verify/" + createdPerson.getId();
-            //sendMail(url);
 
             return new ResponseEntity<>(createdPerson, HttpStatus.OK);
         } catch (Exception e) {
@@ -66,7 +80,7 @@ public class PersonController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPersonById(@PathVariable("id") long id) {
         try {
-            PersonDto personDto = new PersonDto(personService.findPersonById(id));
+            PersonDto personDto = new PersonDto(personService.findPersonById(id), null);
             return new ResponseEntity<>(personDto, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +92,7 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<?> getPersonByEmail(@RequestParam("email") String email) {
         try {
-            PersonDto personDto = new PersonDto(personService.findPersonByEmail(email));
+            PersonDto personDto = new PersonDto(personService.findPersonByEmail(email), null);
             return new ResponseEntity<>(personDto, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,17 +120,17 @@ public class PersonController {
 
     @CrossOrigin(origins = "*")
     @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+    public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordDto changePasswordDto) {
         try {
-            Person person = personService.findPersonById(changePasswordDto.getId());
+            Long id = authService.extractId(token);
+            Person person = personService.findPersonById(id);
             if(!personService.pwMatches(changePasswordDto.getOldPassword(), person.getPassword())) {
                 return new ResponseEntity<>("Old password is wrong.", HttpStatus.NOT_ACCEPTABLE);
             }
             if(!personService.isValid(changePasswordDto.getNewPassword())) {
                 return new ResponseEntity<>("Password must have at least 6 alphanumeric characters.", HttpStatus.NOT_ACCEPTABLE);
             }
-            //Long id = authService.extractId(token);
-            personService.changePassword(changePasswordDto.getId(), changePasswordDto.getNewPassword());
+            personService.changePassword(id, changePasswordDto.getNewPassword());
             return new ResponseEntity<>("Password changed.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,6 +156,7 @@ public class PersonController {
     }
 
     private boolean isValidEmail(String email) {
+        // TODO
         return email.contains("@");
     }
 }
