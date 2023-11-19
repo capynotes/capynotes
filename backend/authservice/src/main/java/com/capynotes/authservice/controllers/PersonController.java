@@ -3,6 +3,7 @@ package com.capynotes.authservice.controllers;
 import com.capynotes.authservice.config.JwtUtils;
 import com.capynotes.authservice.dtos.AuthRequest;
 import com.capynotes.authservice.dtos.ChangePasswordDto;
+import com.capynotes.authservice.dtos.ForgotPasswordRequest;
 import com.capynotes.authservice.dtos.PersonDto;
 import com.capynotes.authservice.models.Person;
 import com.capynotes.authservice.services.AuthService;
@@ -140,19 +141,35 @@ public class PersonController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
         String randomPw = personService.createRandomPassword();
-        //mail atılacak
+
+        Person person = personService.findPersonByEmail(email);
+        if (person != null) {
+            String url = "http://localhost:8081/api/mail/send-forgot-password";
+            ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest(email, randomPw);
+
+            HttpEntity<?> requestEntity = new HttpEntity<>(forgotPasswordRequest);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
+            if(response.getStatusCode() == HttpStatus.OK) {
+                personService.changePassword(person.getId(), randomPw);
+            } else {
+                return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+            }
+        } else {
+            return new ResponseEntity<>("User with given email is not found.", HttpStatus.OK);
+        }
         return new ResponseEntity<>(randomPw, HttpStatus.OK);
     }
-    private void sendMail(String url) {
+    private void sendRequest(String url) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.exchange(url, HttpMethod.POST, null, String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private boolean isValidEmail(String email) {
