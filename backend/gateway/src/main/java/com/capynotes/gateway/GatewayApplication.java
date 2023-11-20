@@ -16,7 +16,12 @@ public class GatewayApplication {
 	@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 		return builder.routes()
-				.route(r -> r.path("/register/**")
+				.route(r -> r.path("/person/**")
+						.filters(f -> f
+							.prefixPath("/api")
+						)
+						.uri("http://localhost:8082")
+				).route(r -> r.path("/mail/**")
 						.filters(f -> f
 							.prefixPath("/api")
 						)
