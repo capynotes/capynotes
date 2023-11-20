@@ -20,9 +20,9 @@ class Api {
     return response;
   }
 
-  Future<http.Response> patchRequest(String adress, String path,
+  Future<http.Response> putRequest(String adress, String path,
       [Object? requestBody]) async {
-    final response = await http.patch(Uri.parse(adress + path),
+    final response = await http.put(Uri.parse(adress + path),
         headers: tokenHeader, body: requestBody);
     return response;
   }
