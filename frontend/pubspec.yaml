@@ -42,6 +42,7 @@ dependencies:
   auto_route: ^7.8.4
   easy_localization: ^3.0.3
   http: ^1.1.0
+  shared_preferences: ^2.2.2
   
 
   

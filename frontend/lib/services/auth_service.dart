@@ -12,7 +12,7 @@ import 'api.dart';
 
 class AuthService {
   AuthService();
-  Future<RegisterModel?> register(RegisterModel bodyModel) async {
+  Future<UserModel?> register(RegisterModel bodyModel) async {
     try {
       Response? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
@@ -20,7 +20,7 @@ class AuthService {
       if (response.statusCode == 200) {
         dynamic body = json.decode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(body);
-        return RegisterModel.fromJson(responseModel.data);
+        return UserModel.fromJson(responseModel.data);
       } else {
         return null;
       }
