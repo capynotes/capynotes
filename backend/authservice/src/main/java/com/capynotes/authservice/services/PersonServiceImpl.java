@@ -45,7 +45,7 @@ public class PersonServiceImpl implements PersonService {
         if(person.isPresent()) {
             return person.get();
         } else {
-            throw new RuntimeException("User with id " + id + " does not exist.");
+            return null;
         }
     }
 
@@ -55,7 +55,7 @@ public class PersonServiceImpl implements PersonService {
         if(person.isPresent()) {
             return person.get();
         } else {
-            throw new RuntimeException("User with email " + email + " does not exist.");
+            return null;
         }
     }
 

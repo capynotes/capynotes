@@ -7,12 +7,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PersonDto {
-    public PersonDto(Person person) {
+    public PersonDto(Person person, String token) {
         this.id = person.getId();
         this.name = person.getName();
         this.surname = person.getSurname();
         this.email = person.getEmail();
         this.role = person.getRole();
+        this.token = token;
     }
 
     private Long id;
@@ -20,4 +21,5 @@ public class PersonDto {
     private String surname;
     private String email;
     private String role;
+    private String token;
 }
