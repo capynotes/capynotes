@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
         locale: context.locale,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          primarySwatch: Colors.deepPurple,
         ),
       ),
     );
