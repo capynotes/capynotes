@@ -43,6 +43,7 @@ dependencies:
   motion_toast: ^2.7.9
   material_dialogs: ^1.1.4
   lottie: ^2.7.0
+  flutter_onboarding_slider: ^1.0.11
 
 dev_dependencies:
   flutter_test:

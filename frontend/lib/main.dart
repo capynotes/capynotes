@@ -8,33 +8,50 @@ import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('tr')],
         path: 'assets/translations',
         fallbackLocale: const Locale('en'),
-        child: const MyApp()),
+        child: MyApp(prefs: prefs)),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  static final _appRouter = AppRouter();
+class MyApp extends StatefulWidget {
+  const MyApp({required this.prefs, super.key});
+  final SharedPreferences prefs;
   static final AuthService authService = AuthService();
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _appRouter = AppRouter(widget.prefs.getBool("isFirstTime") ?? true);
+    widget.prefs.setBool("isFirstTime", false);
+  }
+
+  late AppRouter _appRouter;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => LoginCubit(authService),
+          create: (context) => LoginCubit(MyApp.authService),
         ),
-        BlocProvider(create: (context) => RegisterCubit(authService)),
-        BlocProvider(create: (context) => ChangePasswordCubit(authService)),
-        BlocProvider(create: (context) => ForgotPasswordCubit(authService)),
+        BlocProvider(create: (context) => RegisterCubit(MyApp.authService)),
+        BlocProvider(
+            create: (context) => ChangePasswordCubit(MyApp.authService)),
+        BlocProvider(
+            create: (context) => ForgotPasswordCubit(MyApp.authService)),
         BlocProvider(
           create: (context) => FlashcardCubit(),
         )
