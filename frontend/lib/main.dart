@@ -1,3 +1,4 @@
+import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/navigation/app_router.dart';
 import 'package:capynotes/services/auth_service.dart';
 import 'package:capynotes/viewmodel/auth/login/login_cubit.dart';
@@ -5,6 +6,7 @@ import 'package:capynotes/viewmodel/auth/password/change_password/change_passwor
 import 'package:capynotes/viewmodel/auth/password/forgot_password/forgot_password_cubit.dart';
 import 'package:capynotes/viewmodel/auth/register/register_cubit.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
+import 'package:capynotes/viewmodel/note_generation_cubit/note_generation_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -54,7 +56,10 @@ class _MyAppState extends State<MyApp> {
             create: (context) => ForgotPasswordCubit(MyApp.authService)),
         BlocProvider(
           create: (context) => FlashcardCubit(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => NoteGenerationCubit(),
+        ),
       ],
       child: MaterialApp.router(
         routerConfig: _appRouter.config(),
