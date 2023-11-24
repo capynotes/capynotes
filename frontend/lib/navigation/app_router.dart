@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/view/screens/note_generation_screen.dart';
 import '../view/screens/auth/change_password_screen.dart';
 import '../view/screens/auth/forgot_password_screen.dart';
 import '../view/screens/auth/login_screen.dart';
@@ -33,11 +34,12 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
               if (isFirstTime) {
                 resolver.next();
               } else {
-                pushNamed("/login");
+                pushNamed("/note-generation");
               }
             })
           ],
-        )
+        ),
+        AutoRoute(page: NoteGenerationRoute.page, path: "/note-generation"),
       ];
 
   @override
