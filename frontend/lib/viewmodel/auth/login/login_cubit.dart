@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/auth/login_model.dart';
 import '../../../model/user/user_model.dart';
 import '../../../services/auth_service.dart';
+import '../../../translations/locale_keys.g.dart';
 
 part 'login_state.dart';
 
@@ -31,12 +33,12 @@ class LoginCubit extends Cubit<LoginState> {
         clearSavedPrefs();
       }
       setRememberMe();
-      //TODO: locale keys
-      emit(LoginSuccess("Login Successful", "Succesfully Logged In"));
+      emit(LoginSuccess(
+          LocaleKeys.dialogs_success_dialogs_login_success_title.tr(),
+          LocaleKeys.dialogs_success_dialogs_login_success_description.tr()));
     } else {
-      //TODO: locale keys
-      emit(
-          LoginError("Login Failed", "Your username or password is incorrect"));
+      emit(LoginError(LocaleKeys.dialogs_error_dialogs_login_error_title.tr(),
+          LocaleKeys.dialogs_error_dialogs_login_error_description.tr()));
     }
   }
 
