@@ -12,10 +12,17 @@ abstract class  LocaleKeys {
   static const buttons_generate_note = 'buttons.generate_note';
   static const buttons_yes = 'buttons.yes';
   static const buttons_no = 'buttons.no';
+  static const buttons_my_profile = 'buttons.my_profile';
+  static const buttons_about_us = 'buttons.about_us';
+  static const buttons_contact_us = 'buttons.contact_us';
+  static const buttons_logout = 'buttons.logout';
+  static const buttons_terms_of_service = 'buttons.terms_of_service';
+  static const buttons_privacy_policy = 'buttons.privacy_policy';
   static const buttons = 'buttons';
   static const labels_selected_file_name = 'labels.selected_file_name';
   static const labels_no_file_selected = 'labels.no_file_selected';
   static const labels_or = 'labels.or';
+  static const labels_version = 'labels.version';
   static const labels = 'labels';
   static const dialogs_info_dialogs = 'dialogs.info_dialogs';
   static const dialogs_success_dialogs_file_pick_success_title = 'dialogs.success_dialogs.file_pick_success.title';

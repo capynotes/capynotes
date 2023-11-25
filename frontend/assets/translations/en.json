@@ -12,12 +12,19 @@
         "generate_flashcards": "Generate Flashcards",
         "generate_note": "Generate Note!",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "my_profile": "My Profile",
+        "about_us": "About Us",
+        "contact_us": "Contact Us",
+        "logout": "Logout",
+        "terms_of_service": "Terms of Service",
+        "privacy_policy": "Privacy Policy"
     },
     "labels": {
         "selected_file_name": "Selected File Name: ",
         "no_file_selected": "No file selected",
-        "or": "-OR-"
+        "or": "-OR-",
+        "version": "Version: "
     },
     "dialogs": {
         "info_dialogs": {},

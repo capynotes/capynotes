@@ -15,6 +15,12 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    AboutUsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const AboutUsScreen(),
+      );
+    },
     AddFlashcardRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -25,6 +31,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const ChangePasswordScreen(),
+      );
+    },
+    ContactUsRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ContactUsScreen(),
       );
     },
     FlashcardRoute.name: (routeData) {
@@ -73,6 +85,20 @@ abstract class _$AppRouter extends RootStackRouter {
 }
 
 /// generated route for
+/// [AboutUsScreen]
+class AboutUsRoute extends PageRouteInfo<void> {
+  const AboutUsRoute({List<PageRouteInfo>? children})
+      : super(
+          AboutUsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'AboutUsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [AddFlashcardScreen]
 class AddFlashcardRoute extends PageRouteInfo<void> {
   const AddFlashcardRoute({List<PageRouteInfo>? children})
@@ -96,6 +122,20 @@ class ChangePasswordRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ChangePasswordRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [ContactUsScreen]
+class ContactUsRoute extends PageRouteInfo<void> {
+  const ContactUsRoute({List<PageRouteInfo>? children})
+      : super(
+          ContactUsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ContactUsRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

@@ -28,12 +28,19 @@ class CodegenLoader extends AssetLoader{
     "generate_flashcards": "Generate Flashcards",
     "generate_note": "Generate Note!",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "my_profile": "My Profile",
+    "about_us": "About Us",
+    "contact_us": "Contact Us",
+    "logout": "Logout",
+    "terms_of_service": "Terms of Service",
+    "privacy_policy": "Privacy Policy"
   },
   "labels": {
     "selected_file_name": "Selected File Name: ",
     "no_file_selected": "No file selected",
-    "or": "-OR-"
+    "or": "-OR-",
+    "version": "Version: "
   },
   "dialogs": {
     "info_dialogs": {},
@@ -118,12 +125,19 @@ static const Map<String,dynamic> tr = {
     "generate_flashcards": "Flashcard Oluştur",
     "generate_note": "Not Oluştur!",
     "yes": "Evet",
-    "no": "Hayır"
+    "no": "Hayır",
+    "my_profile": "Profilim",
+    "about_us": "Hakkımızda",
+    "contact_us": "Bize Ulaşın",
+    "logout": "Çıkış Yap",
+    "terms_of_service": "Kullanım Koşulları",
+    "privacy_policy": "Gizlilik Politikası"
   },
   "labels": {
     "selected_file_name": "Seçilen Dosya: ",
     "no_file_selected": "Dosya seçilmedi",
-    "or": "-VEYA-"
+    "or": "-VEYA-",
+    "version": "Versiyon: "
   },
   "dialogs": {
     "info_dialogs": {},
