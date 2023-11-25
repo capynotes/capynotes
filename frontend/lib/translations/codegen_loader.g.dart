@@ -40,7 +40,7 @@ class CodegenLoader extends AssetLoader{
     "success_dialogs": {
       "file_pick_success": {
         "title": "File Picked Successfully",
-        "description": "File {selectedFileName} picked successfully."
+        "description": "File {} picked successfully."
       },
       "note_generation_success": {
         "title": "Note Generation Successful!",

@@ -13,7 +13,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   NoteGenerationCubit() : super(NoteGenerationInitial());
   bool isGenerateFlashcards = true;
   TextEditingController noteNameController = TextEditingController();
-  String selectedFileName = LocaleKeys.labels_selected_file_name.tr();
+  String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   File? audioFile;
 
   Future<void> pickAudio() async {
