@@ -1,8 +1,10 @@
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:capynotes/services/auth_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../model/auth/change_password_model.dart';
+import '../../../../translations/locale_keys.g.dart';
 
 part 'change_password_state.dart';
 
@@ -18,13 +20,15 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     String? changePasswordResponse =
         await service.changePassword(changePasswordModel);
     if (changePasswordResponse == null) {
-      // TODO: locale keys
-      emit(ChangePasswordError("Could not change password",
-          "We could not change your password. Please try again later."));
+      emit(ChangePasswordError(
+          LocaleKeys.dialogs_error_dialogs_change_password_error_title.tr(),
+          LocaleKeys.dialogs_error_dialogs_change_password_error_description
+              .tr()));
     } else {
-      // TODO: locale keys
       emit(ChangePasswordSuccess(
-          "Password Changed!", "Your password is successfully changed."));
+          LocaleKeys.dialogs_success_dialogs_change_password_success_title.tr(),
+          LocaleKeys.dialogs_success_dialogs_change_password_success_description
+              .tr()));
     }
   }
 }

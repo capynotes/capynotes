@@ -1,5 +1,7 @@
-import 'package:capynotes/constants/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+
+import '../../../translations/locale_keys.g.dart';
 
 // ignore: must_be_immutable
 class CustomTextFormField extends StatelessWidget {
@@ -50,7 +52,7 @@ class CustomTextFormField extends StatelessWidget {
           validator: customValidator ??
               (value) {
                 if (value == null || value.isEmpty) {
-                  return "$label cannot be blank";
+                  return LocaleKeys.validators_required.tr(args: [label]);
                 }
                 return null;
               },

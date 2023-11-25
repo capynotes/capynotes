@@ -4,8 +4,12 @@ import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dar
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:capynotes/viewmodel/note_generation_cubit/note_generation_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../constants/asset_paths.dart';
+import '../../translations/locale_keys.g.dart';
 
 @RoutePage()
 class NoteGenerationScreen extends StatefulWidget {
@@ -23,7 +27,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorConstants.primaryColor,
-        title: const Text("Note Generation"),
+        title: Text(LocaleKeys.appbars_titles_note_generation.tr()),
         centerTitle: true,
       ),
       body: BlocConsumer<NoteGenerationCubit, NoteGenerationState>(
@@ -55,13 +59,13 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                             child: Column(
                               children: [
                                 Image.asset(
-                                  "assets/images/mic_image.png",
+                                  AssetPaths.micImage,
                                   color: ColorConstants.primaryColor,
                                 ),
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                const Text("Record Audio"),
+                                Text(LocaleKeys.buttons_record_audio.tr()),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -72,7 +76,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Text("-OR-",
+                      Text(LocaleKeys.labels_or.tr(),
                           style: TextStyle(
                               fontSize: 24,
                               color: ColorConstants.primaryColor,
@@ -81,7 +85,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                         height: 20,
                       ),
                       CustomElevatedButton(
-                        child: const Text("Browse Files to Import Audio"),
+                        child: Text(LocaleKeys.buttons_browse_files_audio.tr()),
                         onPressed: () {
                           context.read<NoteGenerationCubit>().pickAudio();
                         },
@@ -92,7 +96,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Selected File: "),
+                          Text(LocaleKeys.labels_selected_file_name.tr()),
                           Text(context
                               .read<NoteGenerationCubit>()
                               .selectedFileName)
@@ -121,17 +125,17 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                                 .changeGenerateFlashcards(value ?? true);
                           },
                           contentPadding: EdgeInsets.zero,
-                          title: const Text(
-                            "Generate Flashcards",
-                            style: TextStyle(
+                          title: Text(
+                            LocaleKeys.buttons_generate_flashcards.tr(),
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
                       CustomTextFormField(
-                        label: "Note Name",
-                        hint: "Note Name",
+                        label: LocaleKeys.text_fields_labels_note_name.tr(),
+                        hint: LocaleKeys.text_fields_hints_note_name.tr(),
                         controller: context
                             .read<NoteGenerationCubit>()
                             .noteNameController,
@@ -140,7 +144,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                         height: 20,
                       ),
                       CustomElevatedButton(
-                          child: const Text("Generate Note!"),
+                          child: Text(LocaleKeys.buttons_generate_note.tr()),
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               //TODO: send note generation request to backend

@@ -1,9 +1,11 @@
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:file_picker/file_picker.dart';
+
+import '../../translations/locale_keys.g.dart';
 
 part 'note_generation_state.dart';
 
@@ -11,7 +13,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   NoteGenerationCubit() : super(NoteGenerationInitial());
   bool isGenerateFlashcards = true;
   TextEditingController noteNameController = TextEditingController();
-  String selectedFileName = "No file selected";
+  String selectedFileName = LocaleKeys.labels_selected_file_name.tr();
   File? audioFile;
 
   Future<void> pickAudio() async {
@@ -21,11 +23,14 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
       emit(NoteGenerationCheck());
       audioFile = File(result.files.single.path!);
       selectedFileName = result.files.single.name;
-      emit(NoteGenerationSuccess("File Picked Successfully!",
-          "File $selectedFileName picked successfully."));
+      emit(NoteGenerationSuccess(
+          LocaleKeys.dialogs_success_dialogs_file_pick_success_title.tr(),
+          LocaleKeys.dialogs_success_dialogs_file_pick_success_description
+              .tr(args: [selectedFileName])));
     } else {
-      emit(NoteGenerationError("File Picking Failed!",
-          "You did not select a file. Please try again."));
+      emit(NoteGenerationError(
+          LocaleKeys.dialogs_error_dialogs_file_pick_error_title.tr(),
+          LocaleKeys.dialogs_error_dialogs_file_pick_error_description.tr()));
     }
   }
 
@@ -36,10 +41,14 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
     // send generation request
     if (true) {
       emit(NoteGenerationSuccess(
-          "Note Generated Successfully!", "Note generated successfully."));
+          LocaleKeys.dialogs_success_dialogs_note_generation_success_title.tr(),
+          LocaleKeys.dialogs_success_dialogs_note_generation_success_description
+              .tr()));
     } else {
-      emit(NoteGenerationError("Note Generation Failed!",
-          "Could not generate note. Please try again."));
+      emit(NoteGenerationError(
+          LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),
+          LocaleKeys.dialogs_error_dialogs_note_generation_error_description
+              .tr()));
     }
   }
 

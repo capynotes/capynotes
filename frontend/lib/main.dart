@@ -12,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'constants/asset_paths.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
@@ -19,7 +21,7 @@ void main() async {
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('tr')],
-        path: 'assets/translations',
+        path: AssetPaths.translations,
         fallbackLocale: const Locale('en'),
         child: MyApp(prefs: prefs)),
   );
