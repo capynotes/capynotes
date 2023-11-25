@@ -12,12 +12,19 @@
         "generate_flashcards": "Flashcard Oluştur",
         "generate_note": "Not Oluştur!",
         "yes": "Evet",
-        "no": "Hayır"
+        "no": "Hayır",
+        "my_profile": "Profilim",
+        "about_us": "Hakkımızda",
+        "contact_us": "Bize Ulaşın",
+        "logout": "Çıkış Yap",
+        "terms_of_service": "Kullanım Koşulları",
+        "privacy_policy": "Gizlilik Politikası"
     },
     "labels": {
         "selected_file_name": "Seçilen Dosya: ",
         "no_file_selected": "Dosya seçilmedi",
-        "or": "-VEYA-"
+        "or": "-VEYA-",
+        "version": "Versiyon: "
     },
     "dialogs": {
         "info_dialogs": {},

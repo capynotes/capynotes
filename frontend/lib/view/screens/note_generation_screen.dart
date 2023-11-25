@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/asset_paths.dart';
 import '../../translations/locale_keys.g.dart';
+import '../widgets/custom_widgets/custom_drawer.dart';
 
 @RoutePage()
 class NoteGenerationScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
         title: Text(LocaleKeys.appbars_titles_note_generation.tr()),
         centerTitle: true,
       ),
+      endDrawer: CustomDrawer(),
       body: BlocConsumer<NoteGenerationCubit, NoteGenerationState>(
         listener: (context, state) {
           if (state is NoteGenerationSuccess) {

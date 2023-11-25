@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/screens/note_generation_screen.dart';
+import '../view/screens/about_us_screen.dart';
 import '../view/screens/auth/change_password_screen.dart';
 import '../view/screens/auth/forgot_password_screen.dart';
 import '../view/screens/auth/login_screen.dart';
 import '../view/screens/auth/register_screen.dart';
+import '../view/screens/contact_us_screen.dart';
 import '../view/screens/flashcard/add_flashcard_screen.dart';
 import '../view/screens/flashcard/flashcard_display_screen.dart';
 import '../view/screens/onboarding_screen.dart';
@@ -40,6 +42,8 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
           ],
         ),
         AutoRoute(page: NoteGenerationRoute.page, path: "/note-generation"),
+        AutoRoute(page: AboutUsRoute.page, path: "/about-us"),
+        AutoRoute(page: ContactUsRoute.page, path: "/contact-us"),
       ];
 
   @override
