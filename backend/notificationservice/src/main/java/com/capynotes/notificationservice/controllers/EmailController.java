@@ -1,6 +1,7 @@
 package com.capynotes.notificationservice.controllers;
 
 import com.capynotes.notificationservice.dtos.ForgotPasswordRequest;
+import com.capynotes.notificationservice.dtos.Response;
 import com.capynotes.notificationservice.models.EmailDetails;
 import com.capynotes.notificationservice.services.EmailService;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class EmailController {
     @CrossOrigin(origins = "*")
     @PostMapping("/send-forgot-password")
     public ResponseEntity<?> sendForgotPasswordMail(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        Response response;
         try {
             String subject = "[CapyNotes] Forgot Password";
             String body = "We heard that you lost your CapyNotes password. Sorry about that!\n" +
@@ -29,10 +31,12 @@ public class EmailController {
                     "Thanks,\nThe CapyNotes Team";
             EmailDetails emailDetails = new EmailDetails(null, forgotPasswordRequest.getEmail(), subject, body, null);
             emailService.sendMail(emailDetails);
-            return new ResponseEntity<>("Email sent.", HttpStatus.OK);
+            response = new Response("Email sent.", 200, emailDetails);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Error while sending mail.", HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("An error occurred while sending mail.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
