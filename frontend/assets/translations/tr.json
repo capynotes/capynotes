@@ -1,9 +1,97 @@
 {
-    "buttons": {},
-    "labels": {},
-    "dialogs": {},
+    "appbars": {
+        "titles": {
+            "login": "Giriş Yap",
+            "register": "Kayıt Ol",
+            "note_generation": "Not Oluşturma"
+        }
+    },
+    "buttons": {
+        "browse_files_audio": "Ses Dosyası Seç",
+        "record_audio": "Ses Kaydet",
+        "generate_flashcards": "Flashcard Oluştur",
+        "generate_note": "Not Oluştur!",
+        "yes": "Evet",
+        "no": "Hayır",
+        "my_profile": "Profilim",
+        "about_us": "Hakkımızda",
+        "contact_us": "Bize Ulaşın",
+        "logout": "Çıkış Yap",
+        "terms_of_service": "Kullanım Koşulları",
+        "privacy_policy": "Gizlilik Politikası"
+    },
+    "labels": {
+        "selected_file_name": "Seçilen Dosya: ",
+        "no_file_selected": "Dosya seçilmedi",
+        "or": "-VEYA-",
+        "version": "Versiyon: "
+    },
+    "dialogs": {
+        "info_dialogs": {},
+        "success_dialogs": {
+            "file_pick_success": {
+                "title": "Dosya Seçme Başarılı!",
+                "description": "{} adlı dosya başarıyla seçildi."
+            },
+            "note_generation_success": {
+                "title": "Not Oluşturma Başarılı!",
+                "description": "Not başarıyla oluşturuldu."
+            },
+            "login_success": {
+                "title": "Giriş Başarılı!",
+                "description": "Giriş başarıyla gerçekleşti."
+            },
+            "change_password_success": {
+                "title": "Şifre Değiştirme Başarılı!",
+                "description": "Şifreniz başarıyla değiştirildi."
+            },
+            "register_success": {
+                "title": "Kayıt Başarılı!",
+                "description": "Kayıt başarıyla gerçekleşti. Haydi not oluşturmaya başlayalım!"
+            },
+            "forgot_password_success": {
+                "title": "Şifre Sıfırlama Başarılı!",
+                "description": "Şifreniz başarıyla sıfırlandı. Yeni şifreniz e-posta adresinize gönderildi."
+            }
+        },
+        "confirm_dialogs": {},
+        "error_dialogs": {
+            "file_pick_error": {
+                "title": "Dosya Seçme Başarısız!",
+                "description": "Uygun bir dosya seçilmedi. Lütfen tekrar deneyin."
+            },
+            "note_generation_error": {
+                "title": "Not Oluşturma Başarısız!",
+                "description": "Not oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."
+            },
+            "login_error": {
+                "title": "Giriş Başarısız!",
+                "description": "Kullanıcı adı veya şifre hatalı. Lütfen tekrar deneyin."
+            },
+            "change_password_error": {
+                "title": "Şifre Değiştirme Başarısız!",
+                "description": "Şifre değiştirilirken bir hata oluştu. Lütfen tekrar deneyin."
+            },
+            "register_error": {
+                "title": "Kayıt Başarısız!",
+                "description": "Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin."
+            },
+            "forgot_password_error": {
+                "title": "Şifre Sıfırlama Başarısız!",
+                "description": "Şifre sıfırlanırken bir hata oluştu. Lütfen tekrar deneyin."
+            }
+        }
+    },
     "text_fields": {
-        "labels": {},
-        "placeholders": {}
+        "labels": {
+            "note_name": "Not Adı"
+        },
+        "hints": {
+            "note_name": "Not Adı Giriniz"
+        }
+    },
+    "onboarding": {},
+    "validators": {
+        "required": "{} boş bırakılamaz"
     }
 }

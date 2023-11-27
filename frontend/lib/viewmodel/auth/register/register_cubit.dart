@@ -1,8 +1,10 @@
 import 'package:capynotes/model/auth/register_model.dart';
 import 'package:capynotes/model/user/user_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../services/auth_service.dart';
+import '../../../translations/locale_keys.g.dart';
 
 part 'register_state.dart';
 
@@ -28,11 +30,14 @@ class RegisterCubit extends Cubit<RegisterState> {
         role: role);
     UserModel? registerResponse = await service.register(registerModel);
     if (registerResponse == null) {
-      // TODO: locale keys
-      emit(RegisterError("Registration Failed", ""));
+      emit(RegisterError(
+          LocaleKeys.dialogs_error_dialogs_register_error_title.tr(),
+          LocaleKeys.dialogs_error_dialogs_register_error_description.tr()));
     } else {
-      // TODO: locale keys
-      emit(RegisterSuccess("Registered Successfully", ""));
+      emit(RegisterSuccess(
+          LocaleKeys.dialogs_success_dialogs_register_success_title.tr(),
+          LocaleKeys.dialogs_success_dialogs_register_success_description
+              .tr()));
     }
   }
 
