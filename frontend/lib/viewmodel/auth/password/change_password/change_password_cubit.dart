@@ -14,7 +14,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
   ChangePasswordModel changePasswordModel =
       ChangePasswordModel(id: UserInfo.loggedUser!.id);
 
-  Future<void> changePassword(String email) async {
+  Future<void> changePassword() async {
     emit(ChangePasswordLoading());
 
     String? changePasswordResponse =
