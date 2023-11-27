@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../navigation/app_router.dart';
 import '../../../translations/locale_keys.g.dart';
+import '../../widgets/custom_widgets/custom_text_form_field.dart';
 
 @RoutePage()
 class LoginScreen extends StatefulWidget {
@@ -17,9 +18,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // final TextEditingController _emailController = TextEditingController();
-  // final TextEditingController _passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,8 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            CustomSnackbars.displaySuccessMotionToast(
-                context, state.title, state.description, () {});
+            context.router.push(const NoteGenerationRoute());
           } else if (state is LoginError) {
             CustomSnackbars.displayErrorMotionToast(
                 context, state.title, state.description, () {});
@@ -40,20 +37,30 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
+                CustomTextFormField(
                   controller: context.read<LoginCubit>().emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                  ),
+                  label: "Email",
+                  enabled: !(state is LoginLoading),
                 ),
                 const SizedBox(height: 16.0),
-                TextField(
-                  controller: context.read<LoginCubit>().passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
-                  obscureText: true,
-                ),
+                CustomTextFormField(
+                    controller: context.read<LoginCubit>().passwordController,
+                    label: "Password",
+                    isObscure: context.read<LoginCubit>().isObscure,
+                    enabled: !(state is LoginLoading),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: IconButton(
+                        onPressed: () {
+                          context.read<LoginCubit>().changeVisible();
+                        },
+                        icon: Icon(
+                          context.read<LoginCubit>().isObscure
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
+                    )),
                 const SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -67,11 +74,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<LoginCubit>().login();
-                  },
-                  child: const Text('Login'),
+                (state is LoginLoading)
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () {
+                          context.read<LoginCubit>().login();
+                        },
+                        child: const Text('Login'),
+                      ),
+                const SizedBox(height: 16.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Don't have an account?"),
+                    TextButton(
+                      onPressed: () {
+                        context.router.push(const RegisterRoute());
+                      },
+                      child: const Text('Register'),
+                    ),
+                  ],
                 ),
               ],
             ),
