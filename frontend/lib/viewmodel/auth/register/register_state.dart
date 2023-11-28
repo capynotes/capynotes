@@ -17,7 +17,7 @@ class RegisterError extends RegisterState {
   RegisterError(this.title, this.description);
 }
 
-class RegisterConfirm extends RegisterState {}
+class RegisterNoTerms extends RegisterState {}
 
 class RegisterSuccess extends RegisterState {
   final String title;

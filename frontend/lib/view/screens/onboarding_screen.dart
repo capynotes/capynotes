@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:capynotes/navigation/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 
@@ -14,7 +13,7 @@ class OnBoardingScreen extends StatelessWidget {
       controllerColor: Color.fromARGB(255, 53, 193, 212),
       finishButtonText: "Let's Start!",
       onFinish: () {
-        context.router.popAndPush(const RegisterRoute());
+        context.router.replaceNamed("/register");
       },
       finishButtonStyle: const FinishButtonStyle(
         shape: RoundedRectangleBorder(
