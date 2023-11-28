@@ -1,10 +1,7 @@
 package com.capynotes.authservice.controllers;
 
 import com.capynotes.authservice.config.JwtUtils;
-import com.capynotes.authservice.dtos.AuthRequest;
-import com.capynotes.authservice.dtos.ChangePasswordDto;
-import com.capynotes.authservice.dtos.ForgotPasswordRequest;
-import com.capynotes.authservice.dtos.PersonDto;
+import com.capynotes.authservice.dtos.*;
 import com.capynotes.authservice.models.Person;
 import com.capynotes.authservice.services.AuthService;
 import com.capynotes.authservice.services.PersonService;
@@ -32,84 +29,107 @@ public class PersonController {
     @CrossOrigin(origins = "*")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+        Response response;
         try {
             Person person = personService.findPersonByEmail(authRequest.getEmail());
             if(!personService.pwMatches(authRequest.getPassword(), person.getPassword())) {
-                return new ResponseEntity<>("Incorrect email or password.", HttpStatus.NOT_ACCEPTABLE);
+                response = new Response("Incorrect email or password.", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             }
             String token = jwtUtils.generateToken(person.getId(), person.getEmail());
             PersonDto personDto = new PersonDto(person, token);
-            return new ResponseEntity<>(personDto, HttpStatus.OK);
+            response = new Response("Login successful.", 200, personDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("An error occurred.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Person person) {
+        Response response;
         try {
             if(!personService.isValid(person.getPassword())) {
-                return new ResponseEntity<>("Password must have at least 6 alphanumeric characters.", HttpStatus.NOT_ACCEPTABLE);
+                response = new Response("Password must have at least 6 alphanumeric characters.", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             }
             if(!isValidEmail(person.getEmail())) {
-                return new ResponseEntity<>("Please enter a valid email address.", HttpStatus.NOT_ACCEPTABLE);
+                response = new Response("Please enter a valid email address.", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             }
-
+            if(personService.findPersonByEmail(person.getEmail()) != null) {
+                response = new Response("This email is already in use!", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+            }
             Person createdPerson = personService.addPerson(person);
-
-            return new ResponseEntity<>(createdPerson, HttpStatus.OK);
+            response = new Response("Register successful.", 200, createdPerson);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("An error occurred.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/all")
-    public ResponseEntity<List<Person>> getAllPersons() {
+    public ResponseEntity<?> getAllPersons() {
+        Response response;
         try {
             List<Person> persons = personService.findAllPersons();
-            return new ResponseEntity<>(persons, HttpStatus.OK);
+            response = new Response("Success.", 200, persons);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("An error occurred.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/{id}")
     public ResponseEntity<?> getPersonById(@PathVariable("id") long id) {
+        Response response;
         try {
             PersonDto personDto = new PersonDto(personService.findPersonById(id), null);
-            return new ResponseEntity<>(personDto, HttpStatus.OK);
+            response = new Response("Person found.", 200, personDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Person could not be found.", HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("Person could not be found.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping
     public ResponseEntity<?> getPersonByEmail(@RequestParam("email") String email) {
+        Response response;
         try {
             PersonDto personDto = new PersonDto(personService.findPersonByEmail(email), null);
-            return new ResponseEntity<>(personDto, HttpStatus.OK);
+            response = new Response("Person found.", 200, personDto);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Person could not be found.", HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("Person could not be found.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePersonById(@PathVariable("id") long id) {
+        Response response;
         try {
             personService.deletePersonById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            response = new Response("Person deleted.", 200, null);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("An error occurred.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -122,26 +142,36 @@ public class PersonController {
     @CrossOrigin(origins = "*")
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordDto changePasswordDto) {
+        Response response;
         try {
             Long id = authService.extractId(token);
             Person person = personService.findPersonById(id);
+            if(changePasswordDto.getOldPassword().equals(changePasswordDto.getNewPassword())) {
+                response = new Response("New password cannot be the same with old password.", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+            }
             if(!personService.pwMatches(changePasswordDto.getOldPassword(), person.getPassword())) {
-                return new ResponseEntity<>("Old password is wrong.", HttpStatus.NOT_ACCEPTABLE);
+                response = new Response("Old password is wrong.", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             }
             if(!personService.isValid(changePasswordDto.getNewPassword())) {
-                return new ResponseEntity<>("Password must have at least 6 alphanumeric characters.", HttpStatus.NOT_ACCEPTABLE);
+                response = new Response("Password must have at least 6 alphanumeric characters.", 406, null);
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             }
             personService.changePassword(id, changePasswordDto.getNewPassword());
-            return new ResponseEntity<>("Password changed.", HttpStatus.OK);
+            response = new Response("Password changed.", 200, null);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new Response("An error occurred.", 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+        Response response;
         String randomPw = personService.createRandomPassword();
 
         Person person = personService.findPersonByEmail(email);
@@ -151,17 +181,20 @@ public class PersonController {
 
             HttpEntity<?> requestEntity = new HttpEntity<>(forgotPasswordRequest);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            ResponseEntity<?> mailResponse = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
-            if(response.getStatusCode() == HttpStatus.OK) {
+            if(mailResponse.getStatusCode() == HttpStatus.OK) {
                 personService.changePassword(person.getId(), randomPw);
             } else {
-                return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+                response = new Response("Error while sending mail.", mailResponse.getStatusCode().value(), mailResponse.getBody());
+                return new ResponseEntity<>(response, mailResponse.getStatusCode());
             }
         } else {
-            return new ResponseEntity<>("User with given email is not found.", HttpStatus.OK);
+            response = new Response("User with given email is not found.", 200, null);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return new ResponseEntity<>(randomPw, HttpStatus.OK);
+        response = new Response("Mail sent and password changed.", 200, randomPw);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     private void sendRequest(String url) {
         try {
