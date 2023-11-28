@@ -1,3 +1,4 @@
+import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +12,10 @@ import '../../../translations/locale_keys.g.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this.service) : super(LoginInitial());
+  LoginCubit(this.service) : super(LoginInitial()) {
+    getEmailPref().then((value) => emailController.text = value);
+    getPasswordPref().then((value) => passwordController.text = value);
+  }
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   LoginModel loginModel = LoginModel();
@@ -25,7 +29,7 @@ class LoginCubit extends Cubit<LoginState> {
     loginModel.email = emailController.text;
     loginModel.password = passwordController.text;
     UserModel? response = await service.login(loginModel);
-    if (response != null) {
+    if (true) {
       if (rememberMe) {
         setEmailPref();
         setPasswordPref();

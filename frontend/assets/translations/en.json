@@ -3,7 +3,13 @@
         "titles": {
             "login": "Login",
             "register": "Register",
-            "note_generation": "Note Generation"
+            "note_generation": "Note Generation",
+            "change_password": "Change Password",
+            "forgot_password": "Forgot Password",
+            "my_profile": "My Profile",
+            "about_us": "About Us",
+            "contact_us": "Contact Us"
+            
         }
     },
     "buttons": {
@@ -18,13 +24,22 @@
         "contact_us": "Contact Us",
         "logout": "Logout",
         "terms_of_service": "Terms of Service",
-        "privacy_policy": "Privacy Policy"
+        "privacy_policy": "Privacy Policy",
+        "login": "Login",
+        "register": "Register",
+        "forgot_password": "Forgot Password?",
+        "reset_password": "Reset Password",
+        "change_password": "Change Password",
+        "agree_terms": "I agree to the Terms of Service and Privacy Policy.",
+        "remember_me": "Remember Me"
     },
     "labels": {
         "selected_file_name": "Selected File Name: ",
         "no_file_selected": "No file selected",
         "or": "-OR-",
-        "version": "Version: "
+        "version": "Version: ",
+        "already_have_an_account": "Already have an account?",
+        "dont_have_an_account": "Don't have an account?"
     },
     "dialogs": {
         "info_dialogs": {},
@@ -84,14 +99,30 @@
     },
     "text_fields": {
         "labels": {
-            "note_name": "Note Name"
+            "note_name": "Note Name",
+            "name": "Name",
+            "surname": "Surname",
+            "email": "Email",
+            "password": "Password",
+            "verify_password": "Verify Password",
+            "new_password": "New Password",
+            "current_password": "Current Password"
         },
         "hints": {
-            "note_name": "Enter Note Name"
+            "note_name": "Enter Note Name",
+            "name": "Name",
+            "surname": "Surname",
+            "email": "Email",
+            "password": "Password",
+            "verify_password": "Verify Password"
         }
     },
     "onboarding": {},
     "validators": {
-        "required": "{} is required"
+        "required": "{} is required",
+        "terms_privacy": "You must agree to the Terms of Service and Privacy Policy.",
+        "password_match": "Passwords do not match.",
+        "password_length": "Password must be at least 6 characters long.",
+        "password_alphanumeric": "Password must be alphanumeric"
     }
 }

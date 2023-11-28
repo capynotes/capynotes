@@ -19,7 +19,12 @@ class CodegenLoader extends AssetLoader{
     "titles": {
       "login": "Login",
       "register": "Register",
-      "note_generation": "Note Generation"
+      "note_generation": "Note Generation",
+      "change_password": "Change Password",
+      "forgot_password": "Forgot Password",
+      "my_profile": "My Profile",
+      "about_us": "About Us",
+      "contact_us": "Contact Us"
     }
   },
   "buttons": {
@@ -34,13 +39,22 @@ class CodegenLoader extends AssetLoader{
     "contact_us": "Contact Us",
     "logout": "Logout",
     "terms_of_service": "Terms of Service",
-    "privacy_policy": "Privacy Policy"
+    "privacy_policy": "Privacy Policy",
+    "login": "Login",
+    "register": "Register",
+    "forgot_password": "Forgot Password?",
+    "reset_password": "Reset Password",
+    "change_password": "Change Password",
+    "agree_terms": "I agree to the Terms of Service and Privacy Policy.",
+    "remember_me": "Remember Me"
   },
   "labels": {
     "selected_file_name": "Selected File Name: ",
     "no_file_selected": "No file selected",
     "or": "-OR-",
-    "version": "Version: "
+    "version": "Version: ",
+    "already_have_an_account": "Already have an account?",
+    "dont_have_an_account": "Don't have an account?"
   },
   "dialogs": {
     "info_dialogs": {},
@@ -100,15 +114,31 @@ class CodegenLoader extends AssetLoader{
   },
   "text_fields": {
     "labels": {
-      "note_name": "Note Name"
+      "note_name": "Note Name",
+      "name": "Name",
+      "surname": "Surname",
+      "email": "Email",
+      "password": "Password",
+      "verify_password": "Verify Password",
+      "new_password": "New Password",
+      "current_password": "Current Password"
     },
     "hints": {
-      "note_name": "Enter Note Name"
+      "note_name": "Enter Note Name",
+      "name": "Name",
+      "surname": "Surname",
+      "email": "Email",
+      "password": "Password",
+      "verify_password": "Verify Password"
     }
   },
   "onboarding": {},
   "validators": {
-    "required": "{} is required"
+    "required": "{} is required",
+    "terms_privacy": "You must agree to the Terms of Service and Privacy Policy.",
+    "password_match": "Passwords do not match.",
+    "password_length": "Password must be at least 6 characters long.",
+    "password_alphanumeric": "Password must be alphanumeric"
   }
 };
 static const Map<String,dynamic> tr = {
@@ -116,7 +146,11 @@ static const Map<String,dynamic> tr = {
     "titles": {
       "login": "Giriş Yap",
       "register": "Kayıt Ol",
-      "note_generation": "Not Oluşturma"
+      "note_generation": "Not Oluşturma",
+      "change_password": "Şifre Değiştir",
+      "forgot_password": "Şifremi Unuttum",
+      "my_profile": "Profilim",
+      "about_us": "Hakkımızda"
     }
   },
   "buttons": {
@@ -131,13 +165,22 @@ static const Map<String,dynamic> tr = {
     "contact_us": "Bize Ulaşın",
     "logout": "Çıkış Yap",
     "terms_of_service": "Kullanım Koşulları",
-    "privacy_policy": "Gizlilik Politikası"
+    "privacy_policy": "Gizlilik Politikası",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "forgot_password": "Şifremi Unuttum",
+    "reset_password": "Şifremi Sıfırla",
+    "change_password": "Şifre Değiştir",
+    "agree_terms": "Kullanım Koşullarını ve Gizlilik Politikasını kabul ediyorum.",
+    "remember_me": "Beni Hatırla"
   },
   "labels": {
     "selected_file_name": "Seçilen Dosya: ",
     "no_file_selected": "Dosya seçilmedi",
     "or": "-VEYA-",
-    "version": "Versiyon: "
+    "version": "Versiyon: ",
+    "already_have_an_account": "Zaten bir hesabınız var mı?",
+    "dont_have_an_account": "Hesabınız yok mu?"
   },
   "dialogs": {
     "info_dialogs": {},
@@ -197,15 +240,31 @@ static const Map<String,dynamic> tr = {
   },
   "text_fields": {
     "labels": {
-      "note_name": "Not Adı"
+      "note_name": "Not Adı",
+      "name": "İsim",
+      "surname": "Soyisim",
+      "email": "E-posta Adresi",
+      "password": "Şifre",
+      "verify_password": "Şifre Tekrar",
+      "new_password": "Yeni Şifre",
+      "current_password": "Mevcut Şifre"
     },
     "hints": {
-      "note_name": "Not Adı Giriniz"
+      "note_name": "Not Adı Giriniz",
+      "name": "İsim",
+      "surname": "Soyisim",
+      "email": "E-posta Adresi",
+      "password": "Şifre",
+      "verify_password": "Şifre Tekrar"
     }
   },
   "onboarding": {},
   "validators": {
-    "required": "{} boş bırakılamaz"
+    "required": "{} boş bırakılamaz",
+    "terms_privacy": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını kabul ediniz.",
+    "password_match": "Şifreler eşleşmiyor",
+    "password_length": "Şifre en az 6 karakter olmalıdır",
+    "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir"
   }
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "tr": tr};

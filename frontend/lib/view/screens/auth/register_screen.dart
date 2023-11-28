@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:capynotes/viewmodel/auth/register/register_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../model/auth/register_model.dart';
 import '../../../navigation/app_router.dart';
+import '../../../translations/locale_keys.g.dart';
 import '../../widgets/custom_widgets/custom_snackbars.dart';
 
 @RoutePage()
@@ -17,29 +17,13 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _surnameController = TextEditingController();
-  TextEditingController _verifyPasswordController = TextEditingController();
-  bool _agreeTerms = false;
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _nameController.dispose();
-    _surnameController.dispose();
-    _verifyPasswordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: Text(LocaleKeys.appbars_titles_register.tr()),
       ),
       body: BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
@@ -59,43 +43,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   children: [
                     CustomTextFormField(
-                      controller: _nameController,
-                      label: "Name",
+                      controller: context.read<RegisterCubit>().nameController,
+                      label: LocaleKeys.text_fields_labels_name.tr(),
                       enabled: state is! RegisterLoading,
                     ),
                     const SizedBox(height: 16.0),
                     CustomTextFormField(
-                      controller: _surnameController,
-                      label: "Surname",
+                      controller:
+                          context.read<RegisterCubit>().surnameController,
+                      label: LocaleKeys.text_fields_labels_surname.tr(),
                       enabled: state is! RegisterLoading,
                     ),
                     const SizedBox(height: 16.0),
                     CustomTextFormField(
-                      controller: _emailController,
-                      label: "Email",
+                      controller: context.read<RegisterCubit>().emailController,
+                      label: LocaleKeys.text_fields_labels_email.tr(),
                       enabled: state is! RegisterLoading,
                     ),
                     const SizedBox(height: 16.0),
                     CustomTextFormField(
-                      controller: _passwordController,
-                      label: "Password",
+                      controller:
+                          context.read<RegisterCubit>().passwordController,
+                      label: LocaleKeys.text_fields_labels_password.tr(),
                       isObscure: true,
                       enabled: state is! RegisterLoading,
                       customValidator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Password is required";
-                        }
-                        // Check if the verify password == password
-                        else if (value.length < 6) {
-                          return "Password must be at least 6 characters";
+                          return LocaleKeys.validators_required.tr(args: [
+                            LocaleKeys.text_fields_labels_password.tr()
+                          ]);
+                        } else if (value.length < 6) {
+                          return LocaleKeys.validators_password_length.tr();
                         }
                         // Check if password is alphanumeric
                         else if (!RegExp(
                                 r"^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$")
                             .hasMatch(value)) {
-                          return "Password must be alphanumeric";
-                        } else if (value != _verifyPasswordController.text) {
-                          return "Passwords do not match";
+                          return LocaleKeys.validators_password_alphanumeric
+                              .tr();
+                        } // Check if the verify password == password
+                        else if (value !=
+                            context
+                                .read<RegisterCubit>()
+                                .verifyPasswordController
+                                .text) {
+                          return LocaleKeys.validators_password_match.tr();
                         } else {
                           return null;
                         }
@@ -103,71 +95,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16.0),
                     CustomTextFormField(
-                        controller: _verifyPasswordController,
-                        label: "Verify Password",
+                        controller: context
+                            .read<RegisterCubit>()
+                            .verifyPasswordController,
+                        label:
+                            LocaleKeys.text_fields_labels_verify_password.tr(),
                         isObscure: true,
                         enabled: state is! RegisterLoading,
                         customValidator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Password is required";
-                          }
-                          // Check if the verify password == password
-                          else if (value.length < 6) {
-                            return "Password must be at least 6 characters";
+                            return LocaleKeys.validators_required.tr(args: [
+                              LocaleKeys.text_fields_labels_verify_password.tr()
+                            ]);
+                          } else if (value.length < 6) {
+                            return LocaleKeys.validators_password_length.tr();
                           }
                           // Check if password is alphanumeric
                           else if (!RegExp(
                                   r"^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$")
                               .hasMatch(value)) {
-                            return "Password must be alphanumeric";
-                          } else if (value != _passwordController.text) {
-                            return "Passwords do not match";
+                            return LocaleKeys.validators_password_alphanumeric
+                                .tr();
+                          } else if (value !=
+                              context
+                                  .read<RegisterCubit>()
+                                  .passwordController
+                                  .text) {
+                            return LocaleKeys.validators_password_match.tr();
                           } else {
                             return null;
                           }
                         }),
                     const SizedBox(height: 16.0),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _agreeTerms,
-                          onChanged: (value) {
-                            setState(() {
-                              _agreeTerms = value ?? false;
-                            });
-                          },
-                        ),
-                        const Text('I agree to the terms and conditions'),
-                      ],
-                    ),
+                    CheckboxListTile(
+                        value: context.read<RegisterCubit>().agreeTerms,
+                        onChanged: (value) {
+                          context.read<RegisterCubit>().changeTerms();
+                        },
+                        visualDensity: VisualDensity.compact,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Text(LocaleKeys.buttons_agree_terms.tr()),
+                        subtitle: (state is RegisterNoTerms)
+                            ? Text(
+                                LocaleKeys.validators_terms_privacy.tr(),
+                                style: const TextStyle(color: Colors.red),
+                              )
+                            : null),
                     const SizedBox(height: 16.0),
                     (state is RegisterLoading)
                         ? const CircularProgressIndicator()
                         : ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context.read<RegisterCubit>().registerModel =
-                                    RegisterModel(
-                                  name: _nameController.text,
-                                  surname: _surnameController.text,
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                );
-                                context.read<RegisterCubit>().register();
+                                if (context.read<RegisterCubit>().agreeTerms) {
+                                  context.read<RegisterCubit>().register();
+                                } else {
+                                  context.read<RegisterCubit>().emitNoTerms();
+                                }
                               }
                             },
-                            child: const Text('Register'),
+                            child: Text(LocaleKeys.buttons_register.tr()),
                           ),
                     const SizedBox(height: 16.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Already have an account?"),
+                        Text(LocaleKeys.labels_already_have_an_account.tr()),
                         TextButton(
                           onPressed: () {
-                            context.router.push(const LoginRoute());
+                            context.router.replaceNamed("/login");
                           },
-                          child: const Text('Login'),
+                          child: Text(LocaleKeys.buttons_login.tr()),
                         ),
                       ],
                     ),

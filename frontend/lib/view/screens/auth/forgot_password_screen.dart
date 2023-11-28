@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/viewmodel/auth/password/forgot_password/forgot_password_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../navigation/app_router.dart';
+import '../../../translations/locale_keys.g.dart';
 import '../../widgets/custom_widgets/custom_text_form_field.dart';
 
 @RoutePage()
@@ -23,7 +24,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Forgot Password'),
+        title: Text(LocaleKeys.appbars_titles_forgot_password.tr()),
       ),
       body: BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
         listener: (context, state) {
@@ -44,8 +45,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 children: [
                   CustomTextFormField(
                     controller: _emailController,
-                    label: 'Email',
-                    enabled: !(state is ForgotPasswordLoading),
+                    label: LocaleKeys.text_fields_labels_email.tr(),
+                    enabled: state is! ForgotPasswordLoading,
                   ),
                   const SizedBox(height: 20.0),
                   (state is ForgotPasswordLoading)
@@ -60,7 +61,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   );
                             }
                           },
-                          child: const Text('Reset Password'),
+                          child: Text(LocaleKeys.buttons_reset_password.tr()),
                         ),
                 ],
               ),

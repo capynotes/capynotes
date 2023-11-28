@@ -3,7 +3,11 @@
         "titles": {
             "login": "Giriş Yap",
             "register": "Kayıt Ol",
-            "note_generation": "Not Oluşturma"
+            "note_generation": "Not Oluşturma",
+            "change_password": "Şifre Değiştir",
+            "forgot_password": "Şifremi Unuttum",
+            "my_profile": "Profilim",
+            "about_us": "Hakkımızda"
         }
     },
     "buttons": {
@@ -18,13 +22,22 @@
         "contact_us": "Bize Ulaşın",
         "logout": "Çıkış Yap",
         "terms_of_service": "Kullanım Koşulları",
-        "privacy_policy": "Gizlilik Politikası"
+        "privacy_policy": "Gizlilik Politikası",
+        "login": "Giriş Yap",
+        "register": "Kayıt Ol",
+        "forgot_password": "Şifremi Unuttum",
+        "reset_password": "Şifremi Sıfırla",
+        "change_password": "Şifre Değiştir",
+        "agree_terms": "Kullanım Koşullarını ve Gizlilik Politikasını kabul ediyorum.",
+        "remember_me": "Beni Hatırla"
     },
     "labels": {
         "selected_file_name": "Seçilen Dosya: ",
         "no_file_selected": "Dosya seçilmedi",
         "or": "-VEYA-",
-        "version": "Versiyon: "
+        "version": "Versiyon: ",
+        "already_have_an_account": "Zaten bir hesabınız var mı?",
+        "dont_have_an_account": "Hesabınız yok mu?"
     },
     "dialogs": {
         "info_dialogs": {},
@@ -84,14 +97,30 @@
     },
     "text_fields": {
         "labels": {
-            "note_name": "Not Adı"
+            "note_name": "Not Adı",
+            "name": "İsim",
+            "surname": "Soyisim",
+            "email": "E-posta Adresi",
+            "password": "Şifre",
+            "verify_password": "Şifre Tekrar",
+            "new_password": "Yeni Şifre",
+            "current_password": "Mevcut Şifre"
         },
         "hints": {
-            "note_name": "Not Adı Giriniz"
+            "note_name": "Not Adı Giriniz",
+            "name": "İsim",
+            "surname": "Soyisim",
+            "email": "E-posta Adresi",
+            "password": "Şifre",
+            "verify_password": "Şifre Tekrar"
         }
     },
     "onboarding": {},
     "validators": {
-        "required": "{} boş bırakılamaz"
+        "required": "{} boş bırakılamaz",
+        "terms_privacy": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını kabul ediniz.",
+        "password_match": "Şifreler eşleşmiyor",
+        "password_length": "Şifre en az 6 karakter olmalıdır",
+        "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir"
     }
 }

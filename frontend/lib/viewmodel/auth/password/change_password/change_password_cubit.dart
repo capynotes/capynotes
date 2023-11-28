@@ -12,7 +12,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
   ChangePasswordCubit(this.service) : super(ChangePasswordInitial());
   AuthService service;
   ChangePasswordModel changePasswordModel =
-      ChangePasswordModel(id: UserInfo.loggedUser!.id);
+      ChangePasswordModel(id: UserInfo.loggedUser?.id);
 
   Future<void> changePassword() async {
     emit(ChangePasswordLoading());

@@ -4,9 +4,11 @@ import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/navigation/app_router.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/user/user_info_model.dart';
 import '../../../translations/locale_keys.g.dart';
+import '../../../viewmodel/auth/login/login_cubit.dart';
 import 'drawer_component.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -78,7 +80,12 @@ class CustomDrawer extends StatelessWidget {
               title: LocaleKeys.buttons_logout.tr(),
               onTap: () {
                 UserInfo.loggedUser = null;
-                context.router.popAndPush(const LoginRoute());
+                if (!context.read<LoginCubit>().rememberMe) {
+                  context.read<LoginCubit>().emailController.clear();
+                  context.read<LoginCubit>().passwordController.clear();
+                }
+
+                context.router.replaceNamed("/login");
               },
               prefixIcon: Icon(
                 Icons.exit_to_app_outlined,

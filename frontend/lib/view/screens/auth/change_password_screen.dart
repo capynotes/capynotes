@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_drawer.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:capynotes/viewmodel/auth/password/change_password/change_password_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../translations/locale_keys.g.dart';
 
 @RoutePage()
 class ChangePasswordScreen extends StatefulWidget {
@@ -25,8 +29,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Change Password'),
+        title: Text(LocaleKeys.appbars_titles_change_password.tr()),
       ),
+      endDrawer: CustomDrawer(),
       body: BlocConsumer<ChangePasswordCubit, ChangePasswordState>(
         listener: (context, state) {
           if (state is ChangePasswordSuccess) {
@@ -46,54 +51,56 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 children: [
                   CustomTextFormField(
                     controller: _currentPasswordController,
-                    label: 'Current Password',
-                    enabled: !(state is ChangePasswordLoading),
+                    label: LocaleKeys.text_fields_labels_current_password.tr(),
+                    enabled: state is! ChangePasswordLoading,
                     isObscure: true,
                   ),
                   CustomTextFormField(
                       controller: _newPasswordController,
-                      label: 'New Password',
-                      enabled: !(state is ChangePasswordLoading),
+                      label: LocaleKeys.text_fields_labels_new_password.tr(),
+                      enabled: state is! ChangePasswordLoading,
                       isObscure: true,
                       customValidator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Password is required";
-                        }
-                        // Check if the verify password == password
-                        else if (value.length < 6) {
-                          return "Password must be at least 6 characters";
+                          return LocaleKeys.validators_required.tr(args: [
+                            LocaleKeys.text_fields_labels_password.tr()
+                          ]);
+                        } else if (value.length < 6) {
+                          return LocaleKeys.validators_password_length.tr();
                         }
                         // Check if password is alphanumeric
                         else if (!RegExp(
                                 r"^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$")
                             .hasMatch(value)) {
-                          return "Password must be alphanumeric";
+                          return LocaleKeys.validators_password_alphanumeric
+                              .tr();
                         } else if (value != _newPasswordController.text) {
-                          return "Passwords do not match";
+                          return LocaleKeys.validators_password_match.tr();
                         } else {
                           return null;
                         }
                       }),
                   CustomTextFormField(
                       controller: _confirmPasswordController,
-                      label: 'Confirm Password',
-                      enabled: !(state is ChangePasswordLoading),
+                      label: LocaleKeys.text_fields_labels_verify_password.tr(),
+                      enabled: state is! ChangePasswordLoading,
                       isObscure: true,
                       customValidator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Password is required";
-                        }
-                        // Check if the verify password == password
-                        else if (value.length < 6) {
-                          return "Password must be at least 6 characters";
+                          return LocaleKeys.validators_required.tr(args: [
+                            LocaleKeys.text_fields_labels_password.tr()
+                          ]);
+                        } else if (value.length < 6) {
+                          return LocaleKeys.validators_password_length.tr();
                         }
                         // Check if password is alphanumeric
                         else if (!RegExp(
                                 r"^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$")
                             .hasMatch(value)) {
-                          return "Password must be alphanumeric";
+                          return LocaleKeys.validators_password_alphanumeric
+                              .tr();
                         } else if (value != _confirmPasswordController.text) {
-                          return "Passwords do not match";
+                          return LocaleKeys.validators_password_match.tr();
                         } else {
                           return null;
                         }
@@ -118,7 +125,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   .changePassword();
                             }
                           },
-                          child: const Text('Change Password'),
+                          child: Text(LocaleKeys.buttons_change_password.tr()),
                         ),
                 ],
               ),
