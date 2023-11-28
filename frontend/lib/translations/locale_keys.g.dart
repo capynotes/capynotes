@@ -30,6 +30,7 @@ abstract class  LocaleKeys {
   static const buttons_change_password = 'buttons.change_password';
   static const buttons_agree_terms = 'buttons.agree_terms';
   static const buttons_remember_me = 'buttons.remember_me';
+  static const buttons_lets_go = 'buttons.lets_go';
   static const buttons = 'buttons';
   static const labels_selected_file_name = 'labels.selected_file_name';
   static const labels_no_file_selected = 'labels.no_file_selected';

@@ -1,4 +1,3 @@
-import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +28,7 @@ class LoginCubit extends Cubit<LoginState> {
     loginModel.email = emailController.text;
     loginModel.password = passwordController.text;
     UserModel? response = await service.login(loginModel);
-    if (true) {
+    if (response != null) {
       if (rememberMe) {
         setEmailPref();
         setPasswordPref();
@@ -93,6 +92,7 @@ class LoginCubit extends Cubit<LoginState> {
     SharedPreferences prefs = await preferences;
     prefs.remove("email");
     prefs.remove("password");
+    prefs.remove("rememberMe");
   }
 
   void checkPrefs() {

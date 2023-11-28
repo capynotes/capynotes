@@ -28,7 +28,10 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorConstants.primaryColor,
-        title: Text(LocaleKeys.appbars_titles_note_generation.tr()),
+        title: Text(
+          LocaleKeys.appbars_titles_note_generation.tr(),
+          style: const TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       endDrawer: CustomDrawer(),
