@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:capynotes/view/screens/note_generation_screen.dart';
 import '../view/screens/about_us_screen.dart';
 import '../view/screens/auth/change_password_screen.dart';
@@ -50,11 +51,12 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
   void onNavigation(NavigationResolver resolver, StackRouter router) {
     if (resolver.route.name == LoginRoute.name ||
         resolver.route.name == RegisterRoute.name ||
-        resolver.route.name == ForgotPasswordRoute.name) {
+        resolver.route.name == ForgotPasswordRoute.name ||
+        resolver.route.name == OnBoardingRoute.name) {
       resolver.next();
     } else {
-      if (false) {
-        resolver.redirect(const LoginRoute());
+      if (UserInfo.loggedUser == null) {
+        resolver.redirect(const LoginRoute(), replace: true);
       } else {
         resolver.next();
       }

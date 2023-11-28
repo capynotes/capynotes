@@ -14,7 +14,9 @@ class AssetPaths {
   static String questionLottie = kIsWeb
       ? "lotties/question_lottie.json"
       : "assets/lotties/question_lottie.json";
-
+  static String successLottie = kIsWeb
+      ? "lotties/success_lottie.json"
+      : "assets/lotties/success_lottie.json";
   // Translations
   static String translations = kIsWeb ? "translations" : "assets/translations";
 }

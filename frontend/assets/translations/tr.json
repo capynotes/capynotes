@@ -29,7 +29,8 @@
         "reset_password": "Şifremi Sıfırla",
         "change_password": "Şifre Değiştir",
         "agree_terms": "Kullanım Koşullarını ve Gizlilik Politikasını kabul ediyorum.",
-        "remember_me": "Beni Hatırla"
+        "remember_me": "Beni Hatırla",
+        "lets_go": "Haydi Başlayalım!"
     },
     "labels": {
         "selected_file_name": "Seçilen Dosya: ",

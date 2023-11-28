@@ -4,8 +4,8 @@ import 'package:capynotes/viewmodel/auth/register/register_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../navigation/app_router.dart';
 import '../../../translations/locale_keys.g.dart';
+import '../../widgets/custom_widgets/custom_dialogs.dart';
 import '../../widgets/custom_widgets/custom_snackbars.dart';
 
 @RoutePage()
@@ -28,7 +28,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterSuccess) {
-            context.router.push(const LoginRoute());
+            CustomDialogs.showSuccessDialog(context, state.title,
+                state.description, LocaleKeys.buttons_lets_go.tr(), () {
+              context.router.replaceNamed("/login");
+            });
           } else if (state is RegisterError) {
             CustomSnackbars.displayErrorMotionToast(
                 context, state.title, state.description, () {});

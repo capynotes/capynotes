@@ -38,4 +38,26 @@ class CustomDialogs {
           ),
         ]);
   }
+
+  static void showSuccessDialog(BuildContext context, String title,
+      String description, String? okTxt, Function onOk) {
+    Dialogs.materialDialog(
+        color: Colors.white,
+        msg: description,
+        title: title,
+        barrierDismissible: false,
+        lottieBuilder:
+            Lottie.asset(AssetPaths.successLottie, fit: BoxFit.contain),
+        context: context,
+        actions: [
+          IconsButton(
+            onPressed: onOk,
+            text: okTxt ?? LocaleKeys.buttons_yes.tr(),
+            iconData: Icons.done,
+            color: Colors.green,
+            textStyle: const TextStyle(color: Colors.white),
+            iconColor: Colors.white,
+          ),
+        ]);
+  }
 }

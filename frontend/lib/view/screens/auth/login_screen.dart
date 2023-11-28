@@ -22,7 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(LocaleKeys.appbars_titles_login.tr())),
+      appBar: AppBar(
+        title: Text(
+          LocaleKeys.appbars_titles_login.tr(),
+        ),
+        centerTitle: true,
+      ),
       body: BlocConsumer<LoginCubit, LoginState>(
         bloc: context.read<LoginCubit>()..checkPrefs(),
         listener: (context, state) {

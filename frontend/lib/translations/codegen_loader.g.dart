@@ -46,7 +46,8 @@ class CodegenLoader extends AssetLoader{
     "reset_password": "Reset Password",
     "change_password": "Change Password",
     "agree_terms": "I agree to the Terms of Service and Privacy Policy.",
-    "remember_me": "Remember Me"
+    "remember_me": "Remember Me",
+    "lets_go": "Let's Go!"
   },
   "labels": {
     "selected_file_name": "Selected File Name: ",
@@ -172,7 +173,8 @@ static const Map<String,dynamic> tr = {
     "reset_password": "Şifremi Sıfırla",
     "change_password": "Şifre Değiştir",
     "agree_terms": "Kullanım Koşullarını ve Gizlilik Politikasını kabul ediyorum.",
-    "remember_me": "Beni Hatırla"
+    "remember_me": "Beni Hatırla",
+    "lets_go": "Haydi Başlayalım!"
   },
   "labels": {
     "selected_file_name": "Seçilen Dosya: ",

@@ -28,6 +28,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     registerModel.surname = surnameController.text;
     registerModel.email = emailController.text;
     registerModel.password = passwordController.text;
+    registerModel.role = "ROLE_USER";
 
     UserModel? registerResponse = await service.register(registerModel);
     if (registerResponse == null) {

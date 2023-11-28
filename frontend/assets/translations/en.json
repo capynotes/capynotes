@@ -31,7 +31,8 @@
         "reset_password": "Reset Password",
         "change_password": "Change Password",
         "agree_terms": "I agree to the Terms of Service and Privacy Policy.",
-        "remember_me": "Remember Me"
+        "remember_me": "Remember Me",
+        "lets_go": "Let's Go!"
     },
     "labels": {
         "selected_file_name": "Selected File Name: ",
