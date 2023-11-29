@@ -103,6 +103,7 @@ abstract class  LocaleKeys {
   static const validators_password_match = 'validators.password_match';
   static const validators_password_length = 'validators.password_length';
   static const validators_password_alphanumeric = 'validators.password_alphanumeric';
+  static const validators_invalid_email = 'validators.invalid_email';
   static const validators = 'validators';
 
 }

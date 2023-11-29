@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:capynotes/viewmodel/auth/register/register_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../translations/locale_keys.g.dart';
@@ -24,6 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(LocaleKeys.appbars_titles_register.tr()),
+        centerTitle: true,
       ),
       body: BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
@@ -41,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           return Form(
             key: _formKey,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -50,20 +52,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       label: LocaleKeys.text_fields_labels_name.tr(),
                       enabled: state is! RegisterLoading,
                     ),
-                    const SizedBox(height: 16.0),
                     CustomTextFormField(
                       controller:
                           context.read<RegisterCubit>().surnameController,
                       label: LocaleKeys.text_fields_labels_surname.tr(),
                       enabled: state is! RegisterLoading,
                     ),
-                    const SizedBox(height: 16.0),
                     CustomTextFormField(
                       controller: context.read<RegisterCubit>().emailController,
                       label: LocaleKeys.text_fields_labels_email.tr(),
                       enabled: state is! RegisterLoading,
+                      customValidator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return LocaleKeys.validators_required.tr(
+                              args: [LocaleKeys.text_fields_labels_email.tr()]);
+                        } else if (!EmailValidator.validate(value)) {
+                          return LocaleKeys.validators_invalid_email.tr();
+                        }
+                        return null;
+                      },
                     ),
-                    const SizedBox(height: 16.0),
                     CustomTextFormField(
                       controller:
                           context.read<RegisterCubit>().passwordController,
@@ -96,7 +104,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 16.0),
                     CustomTextFormField(
                         controller: context
                             .read<RegisterCubit>()
@@ -129,7 +136,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           }
                         }),
-                    const SizedBox(height: 16.0),
                     CheckboxListTile(
                         value: context.read<RegisterCubit>().agreeTerms,
                         onChanged: (value) {
@@ -144,7 +150,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 style: const TextStyle(color: Colors.red),
                               )
                             : null),
-                    const SizedBox(height: 16.0),
                     (state is RegisterLoading)
                         ? const CircularProgressIndicator()
                         : ElevatedButton(

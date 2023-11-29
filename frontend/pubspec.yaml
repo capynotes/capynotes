@@ -46,6 +46,7 @@ dependencies:
   flutter_onboarding_slider: ^1.0.11
   file_picker: ^6.1.1
   intl: ^0.18.1
+  email_validator: ^2.1.17
 
 
 dev_dependencies:

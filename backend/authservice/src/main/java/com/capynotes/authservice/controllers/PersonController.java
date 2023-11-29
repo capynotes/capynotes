@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+// @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/person")
 public class PersonController {
@@ -26,7 +26,7 @@ public class PersonController {
         this.authService = authService;
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         Response response;
@@ -46,7 +46,7 @@ public class PersonController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Person person) {
         Response response;
@@ -73,7 +73,7 @@ public class PersonController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @GetMapping("/all")
     public ResponseEntity<?> getAllPersons() {
         Response response;
@@ -88,7 +88,7 @@ public class PersonController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @GetMapping("/{id}")
     public ResponseEntity<?> getPersonById(@PathVariable("id") long id) {
         Response response;
@@ -103,7 +103,7 @@ public class PersonController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @GetMapping
     public ResponseEntity<?> getPersonByEmail(@RequestParam("email") String email) {
         Response response;
@@ -118,7 +118,7 @@ public class PersonController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePersonById(@PathVariable("id") long id) {
         Response response;
@@ -133,13 +133,13 @@ public class PersonController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @PutMapping
     public ResponseEntity<?> editPerson(@RequestBody Person person) {
         return null;
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordDto changePasswordDto) {
         Response response;
@@ -168,7 +168,7 @@ public class PersonController {
         }
     }
 
-    @CrossOrigin(origins = "*")
+    // @CrossOrigin(origins = "*")
     @GetMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
         Response response;

@@ -23,6 +23,7 @@ void main() async {
         supportedLocales: const [Locale('en'), Locale('tr')],
         path: AssetPaths.translations,
         fallbackLocale: const Locale('en'),
+        startLocale: const Locale('en'),
         child: MyApp(prefs: prefs)),
   );
 }

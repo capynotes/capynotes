@@ -124,6 +124,7 @@
         "terms_privacy": "You must agree to the Terms of Service and Privacy Policy.",
         "password_match": "Passwords do not match.",
         "password_length": "Password must be at least 6 characters long.",
-        "password_alphanumeric": "Password must be alphanumeric"
+        "password_alphanumeric": "Password must be alphanumeric",
+        "invalid_email": "Please enter a valid email address."
     }
 }
