@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/viewmodel/auth/password/forgot_password/forgot_password_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,6 +48,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     controller: _emailController,
                     label: LocaleKeys.text_fields_labels_email.tr(),
                     enabled: state is! ForgotPasswordLoading,
+                    customValidator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return LocaleKeys.validators_required.tr(
+                            args: [LocaleKeys.text_fields_labels_email.tr()]);
+                      } else if (!EmailValidator.validate(value)) {
+                        return LocaleKeys.validators_invalid_email.tr();
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20.0),
                   (state is ForgotPasswordLoading)

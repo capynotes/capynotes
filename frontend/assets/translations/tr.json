@@ -122,6 +122,7 @@
         "terms_privacy": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını kabul ediniz.",
         "password_match": "Şifreler eşleşmiyor",
         "password_length": "Şifre en az 6 karakter olmalıdır",
-        "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir"
+        "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir",
+        "email": "Lütfen geçerli bir e-posta adresi giriniz"
     }
 }

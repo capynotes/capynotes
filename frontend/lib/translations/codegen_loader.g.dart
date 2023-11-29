@@ -139,7 +139,8 @@ class CodegenLoader extends AssetLoader{
     "terms_privacy": "You must agree to the Terms of Service and Privacy Policy.",
     "password_match": "Passwords do not match.",
     "password_length": "Password must be at least 6 characters long.",
-    "password_alphanumeric": "Password must be alphanumeric"
+    "password_alphanumeric": "Password must be alphanumeric",
+    "invalid_email": "Please enter a valid email address."
   }
 };
 static const Map<String,dynamic> tr = {
@@ -266,7 +267,8 @@ static const Map<String,dynamic> tr = {
     "terms_privacy": "Lütfen Kullanım Koşullarını ve Gizlilik Politikasını kabul ediniz.",
     "password_match": "Şifreler eşleşmiyor",
     "password_length": "Şifre en az 6 karakter olmalıdır",
-    "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir"
+    "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir",
+    "email": "Lütfen geçerli bir e-posta adresi giriniz"
   }
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "tr": tr};
