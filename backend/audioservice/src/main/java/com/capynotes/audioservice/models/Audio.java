@@ -2,12 +2,14 @@ package com.capynotes.audioservice.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "audio")
+@NoArgsConstructor
 public class Audio {
 
     public Audio(String name, String url, Long userId, LocalDateTime uploadTime) {
