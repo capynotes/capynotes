@@ -26,6 +26,11 @@ public class GatewayApplication {
 							.prefixPath("/api")
 						)
 						.uri("http://localhost:8081")
+				).route(r -> r.path("/audio/**")
+						.filters(f -> f
+							.prefixPath("/api")
+						)
+						.uri("http://localhost:8083")
 				)
 				.build();
 	}
