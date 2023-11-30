@@ -1,6 +1,7 @@
 import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/navigation/app_router.dart';
 import 'package:capynotes/services/auth_service.dart';
+import 'package:capynotes/services/note_generation_service.dart';
 import 'package:capynotes/viewmodel/auth/login/login_cubit.dart';
 import 'package:capynotes/viewmodel/auth/password/change_password/change_password_cubit.dart';
 import 'package:capynotes/viewmodel/auth/password/forgot_password/forgot_password_cubit.dart';
@@ -32,6 +33,8 @@ class MyApp extends StatefulWidget {
   const MyApp({required this.prefs, super.key});
   final SharedPreferences prefs;
   static final AuthService authService = AuthService();
+  static final NoteGenerationService noteGenerationService =
+      NoteGenerationService();
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -61,7 +64,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => FlashcardCubit(),
         ),
         BlocProvider(
-          create: (context) => NoteGenerationCubit(),
+          create: (context) => NoteGenerationCubit(MyApp.noteGenerationService),
         ),
       ],
       child: MaterialApp.router(

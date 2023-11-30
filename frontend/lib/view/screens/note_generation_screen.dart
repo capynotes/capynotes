@@ -104,7 +104,16 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                           Text(LocaleKeys.labels_selected_file_name.tr()),
                           Text(context
                               .read<NoteGenerationCubit>()
-                              .selectedFileName)
+                              .selectedFileName),
+                          IconButton(
+                            onPressed: () {
+                              context
+                                  .read<NoteGenerationCubit>()
+                                  .clearSelectedFile();
+                            },
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
+                          )
                         ],
                       ),
                       const SizedBox(
@@ -149,12 +158,58 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                         height: 20,
                       ),
                       CustomElevatedButton(
-                          child: Text(LocaleKeys.buttons_generate_note.tr()),
+                          disabled:
+                              context.read<NoteGenerationCubit>().audioFile ==
+                                      null ||
+                                  context
+                                      .read<NoteGenerationCubit>()
+                                      .noteNameController
+                                      .text
+                                      .isEmpty,
                           onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              //TODO: send note generation request to backend
+                            if (formKey.currentState!.validate() &&
+                                context.read<NoteGenerationCubit>().audioFile !=
+                                    null) {
+                              context
+                                  .read<NoteGenerationCubit>()
+                                  .generateNote();
                             }
-                          }),
+                          },
+                          child: Text(LocaleKeys.buttons_generate_note.tr())),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      CustomElevatedButton(
+                          disabled: context
+                                  .read<NoteGenerationCubit>()
+                                  .transcription ==
+                              "",
+                          onPressed: () {
+                            if (context
+                                    .read<NoteGenerationCubit>()
+                                    .transcription !=
+                                "") {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: const Text("Transcription"),
+                                        content: SingleChildScrollView(
+                                          child: Text(context
+                                              .read<NoteGenerationCubit>()
+                                              .transcription),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("OK"))
+                                        ],
+                                      ));
+                            }
+                          },
+                          child:
+                              const Text("(Temp) Click to see transcription")),
                     ],
                   ),
                 ),

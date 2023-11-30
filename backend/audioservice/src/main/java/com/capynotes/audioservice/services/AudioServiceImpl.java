@@ -43,7 +43,7 @@ public class AudioServiceImpl implements AudioService {
         try {
             amazonS3.putObject(new PutObjectRequest(bucketName, fileName, multipartFile.getInputStream(), metadata));
         } catch (Exception e) {
-            throw new FileUploadException("Could not upload the file!");
+            throw new FileUploadException("Could not upload the file!" + e.toString());
         }
 
         String url = amazonS3.getUrl(bucketName, fileName).toString();
