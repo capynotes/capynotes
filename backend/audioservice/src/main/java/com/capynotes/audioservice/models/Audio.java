@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Audio {
 
-    public Audio(String name, String url, Long userId, LocalDateTime uploadTime) {
+    public Audio(String name, String url, Long userId, LocalDateTime uploadTime, String transcription) {
         this.name = name;
         this.url = url;
         this.userId = userId;
         this.uploadTime = uploadTime;
+        this.transcription = transcription;
     }
 
     @Id
@@ -31,4 +32,6 @@ public class Audio {
     private Long userId;
 
     private LocalDateTime uploadTime;
+
+    private String transcription;
 }
