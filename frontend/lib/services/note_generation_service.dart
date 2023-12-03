@@ -7,9 +7,11 @@ import 'dart:io';
 
 import 'package:http/http.dart';
 
+import '../model/audio_model.dart';
+
 class NoteGenerationService {
   //TODO: refactor
-  Future<String?> generateNote(File file, String fileName) async {
+  Future<AudioModel?> generateNote(File file, String fileName) async {
     try {
       Response? res;
       var request = http.MultipartRequest('POST',
@@ -20,7 +22,8 @@ class NoteGenerationService {
       res = await http.Response.fromStream(response);
       dynamic body = json.decode(res.body);
       ResponseModel responseModel = ResponseModel.fromJson(body);
-      return responseModel.data;
+      AudioModel? audioModel = AudioModel.fromJson(responseModel.data);
+      return audioModel;
     } catch (e) {
       return null;
     }

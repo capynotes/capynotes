@@ -48,7 +48,7 @@ public class AudioServiceImpl implements AudioService {
 
         String url = amazonS3.getUrl(bucketName, fileName).toString();
         LocalDateTime dateTime = LocalDateTime.now();
-        Audio audio = new Audio(fileName, url, userId, dateTime);
+        Audio audio = new Audio(fileName, url, userId, dateTime, null);
         audioRepository.save(audio);
         return audio;
     }
@@ -84,6 +84,18 @@ public class AudioServiceImpl implements AudioService {
             throw new FileNotFoundException("User with id " + userId + " does not have any uploaded audios.");
         }
         return audios.get();
+    }
+
+    @Override
+    public Audio updateAudioTranscription(Long audioId, String transcription) {
+        Optional<Audio> optionalAudio = audioRepository.findById(audioId);
+        if (optionalAudio.isEmpty()) {
+            throw new IllegalArgumentException("Audio with id " + audioId + " does not exist.");
+        }
+        Audio audio = optionalAudio.get();
+        audio.setTranscription(transcription);
+        audioRepository.save(audio);
+        return audio;
     }
 
     private boolean bucketIsEmpty() {

@@ -15,4 +15,5 @@ public interface AudioService {
     Audio uploadAudio(MultipartFile multipartFile, Long userId) throws IOException, FileUploadException;
     Object downloadAudio(String fileName) throws IOException, FileDownloadException;
     List<Audio> findAudioByUserId(Long userId) throws FileNotFoundException;
+    Audio updateAudioTranscription(Long audioId, String transcription);
 }

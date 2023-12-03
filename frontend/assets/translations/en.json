@@ -8,8 +8,8 @@
             "forgot_password": "Forgot Password",
             "my_profile": "My Profile",
             "about_us": "About Us",
-            "contact_us": "Contact Us"
-            
+            "contact_us": "Contact Us",
+            "my_audios": "My Audios"
         }
     },
     "buttons": {
@@ -40,7 +40,9 @@
         "or": "-OR-",
         "version": "Version: ",
         "already_have_an_account": "Already have an account?",
-        "dont_have_an_account": "Don't have an account?"
+        "dont_have_an_account": "Don't have an account?",
+        "transcription": "Transcription",
+        "uploaded_at": "Uploaded at: "
     },
     "dialogs": {
         "info_dialogs": {},

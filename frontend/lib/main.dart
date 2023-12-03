@@ -2,6 +2,7 @@ import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/navigation/app_router.dart';
 import 'package:capynotes/services/auth_service.dart';
 import 'package:capynotes/services/note_generation_service.dart';
+import 'package:capynotes/viewmodel/audio_cubit/audio_cubit.dart';
 import 'package:capynotes/viewmodel/auth/login/login_cubit.dart';
 import 'package:capynotes/viewmodel/auth/password/change_password/change_password_cubit.dart';
 import 'package:capynotes/viewmodel/auth/password/forgot_password/forgot_password_cubit.dart';
@@ -14,6 +15,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/asset_paths.dart';
+import 'services/audio_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +37,7 @@ class MyApp extends StatefulWidget {
   static final AuthService authService = AuthService();
   static final NoteGenerationService noteGenerationService =
       NoteGenerationService();
+  static final AudioService audioService = AudioService();
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -65,6 +68,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => NoteGenerationCubit(MyApp.noteGenerationService),
+        ),
+        BlocProvider(
+          create: (context) => AudioCubit(MyApp.audioService),
         ),
       ],
       child: MaterialApp.router(

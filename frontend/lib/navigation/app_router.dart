@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
+import 'package:capynotes/view/screens/my_audios_screen.dart';
 import 'package:capynotes/view/screens/note_generation_screen.dart';
 import '../view/screens/about_us_screen.dart';
 import '../view/screens/auth/change_password_screen.dart';
@@ -45,6 +46,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(page: NoteGenerationRoute.page, path: "/note-generation"),
         AutoRoute(page: AboutUsRoute.page, path: "/about-us"),
         AutoRoute(page: ContactUsRoute.page, path: "/contact-us"),
+        AutoRoute(page: MyAudiosRoute.page, path: "/my-audios")
       ];
 
   @override
