@@ -9,6 +9,7 @@ abstract class  LocaleKeys {
   static const appbars_titles_my_profile = 'appbars.titles.my_profile';
   static const appbars_titles_about_us = 'appbars.titles.about_us';
   static const appbars_titles_contact_us = 'appbars.titles.contact_us';
+  static const appbars_titles_my_audios = 'appbars.titles.my_audios';
   static const appbars_titles = 'appbars.titles';
   static const appbars = 'appbars';
   static const buttons_browse_files_audio = 'buttons.browse_files_audio';
@@ -38,6 +39,8 @@ abstract class  LocaleKeys {
   static const labels_version = 'labels.version';
   static const labels_already_have_an_account = 'labels.already_have_an_account';
   static const labels_dont_have_an_account = 'labels.dont_have_an_account';
+  static const labels_transcription = 'labels.transcription';
+  static const labels_uploaded_at = 'labels.uploaded_at';
   static const labels = 'labels';
   static const dialogs_info_dialogs = 'dialogs.info_dialogs';
   static const dialogs_success_dialogs_file_pick_success_title = 'dialogs.success_dialogs.file_pick_success.title';

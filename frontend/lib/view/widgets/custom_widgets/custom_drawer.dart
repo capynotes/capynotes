@@ -52,7 +52,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           Expanded(
             child: DrawerComponent(
-              title: "My Audios",
+              title: LocaleKeys.appbars_titles_my_audios.tr(),
               onTap: () {
                 context.router.popAndPush(const MyAudiosRoute());
               },

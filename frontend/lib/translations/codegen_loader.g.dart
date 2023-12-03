@@ -24,7 +24,8 @@ class CodegenLoader extends AssetLoader{
       "forgot_password": "Forgot Password",
       "my_profile": "My Profile",
       "about_us": "About Us",
-      "contact_us": "Contact Us"
+      "contact_us": "Contact Us",
+      "my_audios": "My Audios"
     }
   },
   "buttons": {
@@ -55,7 +56,9 @@ class CodegenLoader extends AssetLoader{
     "or": "-OR-",
     "version": "Version: ",
     "already_have_an_account": "Already have an account?",
-    "dont_have_an_account": "Don't have an account?"
+    "dont_have_an_account": "Don't have an account?",
+    "transcription": "Transcription",
+    "uploaded_at": "Uploaded at: "
   },
   "dialogs": {
     "info_dialogs": {},
@@ -152,7 +155,9 @@ static const Map<String,dynamic> tr = {
       "change_password": "Şifre Değiştir",
       "forgot_password": "Şifremi Unuttum",
       "my_profile": "Profilim",
-      "about_us": "Hakkımızda"
+      "about_us": "Hakkımızda",
+      "contact_us": "Bize Ulaşın",
+      "my_audios": "Seslerim"
     }
   },
   "buttons": {
@@ -183,7 +188,9 @@ static const Map<String,dynamic> tr = {
     "or": "-VEYA-",
     "version": "Versiyon: ",
     "already_have_an_account": "Zaten bir hesabınız var mı?",
-    "dont_have_an_account": "Hesabınız yok mu?"
+    "dont_have_an_account": "Hesabınız yok mu?",
+    "transcription": "Transkript",
+    "uploaded_at": "Yükleme Tarihi: "
   },
   "dialogs": {
     "info_dialogs": {},
