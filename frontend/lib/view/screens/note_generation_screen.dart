@@ -30,7 +30,6 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
         backgroundColor: ColorConstants.primaryColor,
         title: Text(
           LocaleKeys.appbars_titles_note_generation.tr(),
-          style: const TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
@@ -109,15 +108,17 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                             Text(context
                                 .read<NoteGenerationCubit>()
                                 .selectedFileName),
-                            IconButton(
-                              onPressed: () {
-                                context
-                                    .read<NoteGenerationCubit>()
-                                    .clearSelectedFile();
-                              },
-                              icon: const Icon(Icons.delete),
-                              color: Colors.red,
-                            )
+                            if (context.read<NoteGenerationCubit>().audioFile !=
+                                null)
+                              IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<NoteGenerationCubit>()
+                                      .clearSelectedFile();
+                                },
+                                icon: const Icon(Icons.delete),
+                                color: Colors.red,
+                              )
                           ],
                         ),
                         const SizedBox(

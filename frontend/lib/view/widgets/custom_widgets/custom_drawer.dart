@@ -17,9 +17,8 @@ class CustomDrawer extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    String nameField = "Can Ersoy";
-    // TODO: uncomment this line when user info is ready
-    //"${UserInfo.loggedUser!.name} ${UserInfo.loggedUser!.surname}";
+    String nameField =
+        "${UserInfo.loggedUser!.name} ${UserInfo.loggedUser!.surname}";
     return Drawer(
       backgroundColor: ColorConstants.primaryColor,
       child: Column(
@@ -47,6 +46,18 @@ class CustomDrawer extends StatelessWidget {
               },
               prefixIcon: Icon(
                 Icons.person,
+                color: ColorConstants.primaryColor,
+              ),
+            ),
+          ),
+          Expanded(
+            child: DrawerComponent(
+              title: "My Audios",
+              onTap: () {
+                context.router.popAndPush(const MyAudiosRoute());
+              },
+              prefixIcon: Icon(
+                Icons.audiotrack_outlined,
                 color: ColorConstants.primaryColor,
               ),
             ),
