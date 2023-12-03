@@ -57,6 +57,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const LoginScreen(),
       );
     },
+    MyAudiosRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MyAudiosScreen(),
+      );
+    },
     NoteGenerationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -178,6 +184,20 @@ class LoginRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'LoginRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MyAudiosScreen]
+class MyAudiosRoute extends PageRouteInfo<void> {
+  const MyAudiosRoute({List<PageRouteInfo>? children})
+      : super(
+          MyAudiosRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MyAudiosRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

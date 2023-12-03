@@ -32,6 +32,7 @@ public class Audio {
     private Long userId;
 
     private LocalDateTime uploadTime;
-
+    
+    @Column(columnDefinition = "TEXT")
     private String transcription;
 }

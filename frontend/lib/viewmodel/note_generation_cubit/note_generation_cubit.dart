@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:capynotes/services/note_generation_service.dart';
 
+import '../../model/audio_model.dart';
 import '../../translations/locale_keys.g.dart';
 
 part 'note_generation_state.dart';
@@ -18,7 +19,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   TextEditingController noteNameController = TextEditingController();
   String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   File? audioFile;
-  String transcription = "";
+  AudioModel? uploadedAudio;
   Future<void> pickAudio() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -47,10 +48,10 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
     var response = await service.generateNote(audioFile!, selectedFileName);
 
     if (response != null) {
-      transcription = response;
+      uploadedAudio = response;
       emit(NoteGenerationSuccess(
           LocaleKeys.dialogs_success_dialogs_note_generation_success_title.tr(),
-          response));
+          uploadedAudio!.name ?? ""));
     } else {
       emit(NoteGenerationError(
           LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),

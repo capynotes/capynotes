@@ -7,11 +7,10 @@ import 'package:capynotes/viewmodel/note_generation_cubit/note_generation_cubit.
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
-
 import '../../constants/asset_paths.dart';
 import '../../translations/locale_keys.g.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
+import '../widgets/loading_lottie_widget.dart';
 
 @RoutePage()
 class NoteGenerationScreen extends StatefulWidget {
@@ -52,9 +51,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
         },
         builder: (context, state) {
           if (state is NoteGenerationLoading) {
-            return Center(
-              child: Lottie.asset(AssetPaths.loadingLottie),
-            );
+            return const LoadingLottie();
           } else {
             return Padding(
               padding: const EdgeInsets.all(20.0),
@@ -180,37 +177,6 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                         const SizedBox(
                           height: 2,
                         ),
-                        CustomElevatedButton(
-                            disabled: context
-                                    .read<NoteGenerationCubit>()
-                                    .transcription ==
-                                "",
-                            onPressed: () {
-                              if (context
-                                      .read<NoteGenerationCubit>()
-                                      .transcription !=
-                                  "") {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: const Text("Transcription"),
-                                          content: SingleChildScrollView(
-                                            child: Text(context
-                                                .read<NoteGenerationCubit>()
-                                                .transcription),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text("OK"))
-                                          ],
-                                        ));
-                              }
-                            },
-                            child: const Text(
-                                "(Temp) Click to see transcription")),
                       ],
                     ),
                   ),
