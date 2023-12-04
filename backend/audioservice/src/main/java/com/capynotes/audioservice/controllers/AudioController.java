@@ -11,6 +11,7 @@ import com.capynotes.audioservice.dtos.AudioDto;
 import com.capynotes.audioservice.dtos.Response;
 import com.capynotes.audioservice.dtos.TranscribeRequest;
 import com.capynotes.audioservice.dtos.TranscribeResponse;
+import com.capynotes.audioservice.enums.AudioStatus;
 import com.capynotes.audioservice.exceptions.FileEmptyException;
 import com.capynotes.audioservice.models.Audio;
 import com.capynotes.audioservice.services.AudioService;
@@ -36,6 +37,7 @@ public class AudioController {
         Long userId = 1L;
         try {
             Audio newAudio = audioService.uploadAudio(file, userId);
+            newAudio = audioService.updateAudioStatus(newAudio.getId(), AudioStatus.PENDING);
             // TODO: Maybe move this to service etc.
             // Send request to S2T service
             String url = "http://localhost:5000/transcribe";
@@ -45,10 +47,11 @@ public class AudioController {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<TranscribeResponse> transcribeResponse = restTemplate.exchange(url, HttpMethod.POST, requestEntity,
                     TranscribeResponse.class);
-
+            
             if (transcribeResponse.getStatusCode() == HttpStatus.OK) {
                 TranscribeResponse body = transcribeResponse.getBody();
                 newAudio = audioService.updateAudioTranscription(newAudio.getId(), body.getTranscription());
+                newAudio = audioService.updateAudioStatus(newAudio.getId(), AudioStatus.DONE);
                 AudioDto audioDto = new AudioDto(newAudio);
                 response = new Response("Upload successful.", 200, audioDto);
                 return new ResponseEntity<>(response, HttpStatus.OK);

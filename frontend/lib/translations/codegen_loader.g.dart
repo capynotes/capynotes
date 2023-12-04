@@ -48,7 +48,8 @@ class CodegenLoader extends AssetLoader{
     "change_password": "Change Password",
     "agree_terms": "I agree to the Terms of Service and Privacy Policy.",
     "remember_me": "Remember Me",
-    "lets_go": "Let's Go!"
+    "lets_go": "Let's Go!",
+    "lets_generate_notes": "Let's Generate Notes!"
   },
   "labels": {
     "selected_file_name": "Selected File Name: ",
@@ -58,7 +59,11 @@ class CodegenLoader extends AssetLoader{
     "already_have_an_account": "Already have an account?",
     "dont_have_an_account": "Don't have an account?",
     "transcription": "Transcription",
-    "uploaded_at": "Uploaded at: "
+    "uploaded_at": "Uploaded at: ",
+    "status": "Status: ",
+    "no_pending_audios": "No Pending Audios",
+    "no_transcribed_audios": "No Transcribed Audios",
+    "no_audios_found": "No Audios Uploaded"
   },
   "dialogs": {
     "info_dialogs": {},
@@ -144,6 +149,21 @@ class CodegenLoader extends AssetLoader{
     "password_length": "Password must be at least 6 characters long.",
     "password_alphanumeric": "Password must be alphanumeric",
     "invalid_email": "Please enter a valid email address."
+  },
+  "enum_names": {
+    "audio_status": {
+      "no_request": "No Request",
+      "pending": "Pending",
+      "done": "Done",
+      "error": "Error"
+    }
+  },
+  "tabbars": {
+    "my_audios": {
+      "pending": "Pending",
+      "done": "Done",
+      "all": "All"
+    }
   }
 };
 static const Map<String,dynamic> tr = {
@@ -180,7 +200,8 @@ static const Map<String,dynamic> tr = {
     "change_password": "Şifre Değiştir",
     "agree_terms": "Kullanım Koşullarını ve Gizlilik Politikasını kabul ediyorum.",
     "remember_me": "Beni Hatırla",
-    "lets_go": "Haydi Başlayalım!"
+    "lets_go": "Haydi Başlayalım!",
+    "lets_generate_notes": "Haydi Not Oluşturalım!"
   },
   "labels": {
     "selected_file_name": "Seçilen Dosya: ",
@@ -190,7 +211,11 @@ static const Map<String,dynamic> tr = {
     "already_have_an_account": "Zaten bir hesabınız var mı?",
     "dont_have_an_account": "Hesabınız yok mu?",
     "transcription": "Transkript",
-    "uploaded_at": "Yükleme Tarihi: "
+    "uploaded_at": "Yükleme Tarihi: ",
+    "status": "Durum: ",
+    "no_pending_audios": "Bekleyen Ses Dosyası Yok",
+    "no_transcribed_audios": "Tamamlanan Ses Dosyası Yok",
+    "no_audios_found": "Yüklenen Ses Dosyası Bulunamadı"
   },
   "dialogs": {
     "info_dialogs": {},
@@ -276,6 +301,21 @@ static const Map<String,dynamic> tr = {
     "password_length": "Şifre en az 6 karakter olmalıdır",
     "password_alphanumeric": "Şifre en az 1 harf ve 1 rakam içermelidir",
     "email": "Lütfen geçerli bir e-posta adresi giriniz"
+  },
+  "enum_names": {
+    "audio_status": {
+      "no_request": "İstek yok",
+      "pending": "Beklemede",
+      "done": "Tamamlanandı",
+      "error": "Hata"
+    }
+  },
+  "tabbars": {
+    "my_audios": {
+      "pending": "Bekleyenler",
+      "done": "Tamamlananlar",
+      "all": "Tümü"
+    }
   }
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"en": en, "tr": tr};

@@ -7,8 +7,13 @@ final class AudioInitial extends AudioState {}
 final class AudioLoading extends AudioState {}
 
 final class AudioDisplay extends AudioState {
-  List<AudioModel> myAudios;
-  AudioDisplay({required this.myAudios});
+  List<AudioModel> pendingAudios;
+  List<AudioModel> doneAudios;
+  List<AudioModel> allAudios;
+  AudioDisplay(
+      {required this.pendingAudios,
+      required this.doneAudios,
+      required this.allAudios});
 }
 
 final class AudioNotFound extends AudioState {}

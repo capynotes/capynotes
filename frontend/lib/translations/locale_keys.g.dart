@@ -32,6 +32,7 @@ abstract class  LocaleKeys {
   static const buttons_agree_terms = 'buttons.agree_terms';
   static const buttons_remember_me = 'buttons.remember_me';
   static const buttons_lets_go = 'buttons.lets_go';
+  static const buttons_lets_generate_notes = 'buttons.lets_generate_notes';
   static const buttons = 'buttons';
   static const labels_selected_file_name = 'labels.selected_file_name';
   static const labels_no_file_selected = 'labels.no_file_selected';
@@ -41,6 +42,10 @@ abstract class  LocaleKeys {
   static const labels_dont_have_an_account = 'labels.dont_have_an_account';
   static const labels_transcription = 'labels.transcription';
   static const labels_uploaded_at = 'labels.uploaded_at';
+  static const labels_status = 'labels.status';
+  static const labels_no_pending_audios = 'labels.no_pending_audios';
+  static const labels_no_transcribed_audios = 'labels.no_transcribed_audios';
+  static const labels_no_audios_found = 'labels.no_audios_found';
   static const labels = 'labels';
   static const dialogs_info_dialogs = 'dialogs.info_dialogs';
   static const dialogs_success_dialogs_file_pick_success_title = 'dialogs.success_dialogs.file_pick_success.title';
@@ -108,5 +113,16 @@ abstract class  LocaleKeys {
   static const validators_password_alphanumeric = 'validators.password_alphanumeric';
   static const validators_invalid_email = 'validators.invalid_email';
   static const validators = 'validators';
+  static const enum_names_audio_status_no_request = 'enum_names.audio_status.no_request';
+  static const enum_names_audio_status_pending = 'enum_names.audio_status.pending';
+  static const enum_names_audio_status_done = 'enum_names.audio_status.done';
+  static const enum_names_audio_status_error = 'enum_names.audio_status.error';
+  static const enum_names_audio_status = 'enum_names.audio_status';
+  static const enum_names = 'enum_names';
+  static const tabbars_my_audios_pending = 'tabbars.my_audios.pending';
+  static const tabbars_my_audios_done = 'tabbars.my_audios.done';
+  static const tabbars_my_audios_all = 'tabbars.my_audios.all';
+  static const tabbars_my_audios = 'tabbars.my_audios';
+  static const tabbars = 'tabbars';
 
 }
