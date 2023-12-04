@@ -1,3 +1,4 @@
 backend/notificationservice/src/main/resources/application-local.properties
 backend/audioservice/src/main/resources/application-local.properties
 backend/authservice/src/main/resources/application-local.properties
+frontend/devtools_options.yaml

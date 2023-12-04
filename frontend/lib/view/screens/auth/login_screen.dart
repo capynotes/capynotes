@@ -89,7 +89,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     CheckboxListTile(
                         value: (context.read<LoginCubit>().rememberMe),
                         onChanged: (value) {
-                          context.read<LoginCubit>().changeRememberMe();
+                          context
+                              .read<LoginCubit>()
+                              .changeRememberMe(value ?? false);
                         },
                         controlAffinity: ListTileControlAffinity.leading,
                         title: Text(LocaleKeys.buttons_remember_me.tr())),

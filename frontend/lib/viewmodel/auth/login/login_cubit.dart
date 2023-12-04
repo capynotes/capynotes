@@ -45,9 +45,9 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  void changeRememberMe() {
+  void changeRememberMe(bool value) {
     emit(LoginChecking());
-    rememberMe = !rememberMe;
+    rememberMe = value;
     emit(LoginDisplay());
   }
 
@@ -96,10 +96,12 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void checkPrefs() {
+    updatePrefRememberMe();
     emit(LoginFirstTime());
   }
 
-  void updatePrefRememberMe() {
-    getRememberMe().then((value) => rememberMe = value);
+  Future<void> updatePrefRememberMe() async {
+    await getRememberMe().then((value) => rememberMe = value);
+    emit(LoginDisplay());
   }
 }
