@@ -1,3 +1,5 @@
+import 'package:capynotes/enums/audio_status_enum.dart';
+
 class AudioModel {
   int? id;
   String? name;
@@ -5,6 +7,7 @@ class AudioModel {
   int? userId;
   DateTime? uploadTime;
   String? transcription;
+  AudioStatus? status;
 
   AudioModel(
       {this.id,
@@ -12,7 +15,8 @@ class AudioModel {
       this.url,
       this.userId,
       this.uploadTime,
-      this.transcription});
+      this.transcription,
+      this.status});
 
   AudioModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -21,6 +25,7 @@ class AudioModel {
     userId = json['userId'];
     uploadTime = DateTime.parse(json['uploadTime']);
     transcription = json['transcription'];
+    status = getAudioStatusFromString(json['status']);
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +36,7 @@ class AudioModel {
     data['userId'] = userId;
     data['uploadTime'] = uploadTime.toString();
     data['transcription'] = transcription;
+    data['status'] = status.toString();
     return data;
   }
 }

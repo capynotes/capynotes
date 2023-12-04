@@ -2,6 +2,7 @@ package com.capynotes.audioservice.services;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.capynotes.audioservice.enums.AudioStatus;
 import com.capynotes.audioservice.exceptions.FileDownloadException;
 import com.capynotes.audioservice.exceptions.FileUploadException;
 import com.capynotes.audioservice.models.Audio;
@@ -48,7 +49,7 @@ public class AudioServiceImpl implements AudioService {
 
         String url = amazonS3.getUrl(bucketName, fileName).toString();
         LocalDateTime dateTime = LocalDateTime.now();
-        Audio audio = new Audio(fileName, url, userId, dateTime, null);
+        Audio audio = new Audio(fileName, url, userId, dateTime, null, AudioStatus.NO_REQUEST);
         audioRepository.save(audio);
         return audio;
     }
@@ -94,6 +95,18 @@ public class AudioServiceImpl implements AudioService {
         }
         Audio audio = optionalAudio.get();
         audio.setTranscription(transcription);
+        audioRepository.save(audio);
+        return audio;
+    }
+
+    @Override
+    public Audio updateAudioStatus(Long audioId, AudioStatus status) {
+        Optional<Audio> optionalAudio = audioRepository.findById(audioId);
+        if (optionalAudio.isEmpty()) {
+            throw new IllegalArgumentException("Audio with id " + audioId + " does not exist.");
+        }
+        Audio audio = optionalAudio.get();
+        audio.setStatus(status);
         audioRepository.save(audio);
         return audio;
     }

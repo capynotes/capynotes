@@ -1,5 +1,6 @@
 package com.capynotes.audioservice.services;
 
+import com.capynotes.audioservice.enums.AudioStatus;
 import com.capynotes.audioservice.exceptions.FileDownloadException;
 import com.capynotes.audioservice.exceptions.FileUploadException;
 import com.capynotes.audioservice.models.Audio;
@@ -16,4 +17,5 @@ public interface AudioService {
     Object downloadAudio(String fileName) throws IOException, FileDownloadException;
     List<Audio> findAudioByUserId(Long userId) throws FileNotFoundException;
     Audio updateAudioTranscription(Long audioId, String transcription);
+    Audio updateAudioStatus(Long audioId, AudioStatus status);
 }

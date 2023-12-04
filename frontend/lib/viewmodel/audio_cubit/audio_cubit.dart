@@ -1,3 +1,4 @@
+import 'package:capynotes/enums/audio_status_enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/audio_model.dart';
@@ -11,13 +12,22 @@ class AudioCubit extends Cubit<AudioState> {
 
   Future<void> getMyAudios() async {
     emit(AudioLoading());
-    List<AudioModel>? myAudios = await service.getMyAudios();
-    if (myAudios == null) {
+    List<AudioModel>? allAudios = await service.getMyAudios();
+    if (allAudios == null) {
       emit(AudioError("Error", "Error"));
-    } else if (myAudios.isEmpty) {
+    } else if (allAudios.isEmpty) {
       emit(AudioNotFound());
     } else {
-      emit(AudioDisplay(myAudios: myAudios));
+      List<AudioModel>? pendingAudios = allAudios
+          .where((element) => element.status == AudioStatus.PENDING)
+          .toList();
+      List<AudioModel>? doneAudios = allAudios
+          .where((element) => element.status == AudioStatus.DONE)
+          .toList();
+      emit(AudioDisplay(
+          pendingAudios: pendingAudios,
+          doneAudios: doneAudios,
+          allAudios: allAudios));
     }
   }
 }

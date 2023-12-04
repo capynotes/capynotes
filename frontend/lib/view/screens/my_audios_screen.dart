@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/constants/colors.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:capynotes/viewmodel/audio_cubit/audio_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../translations/locale_keys.g.dart';
-import '../../utils.dart';
+import '../widgets/audio_list_view.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
 
 @RoutePage()
@@ -16,90 +17,68 @@ class MyAudiosScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(LocaleKeys.appbars_titles_my_audios.tr()),
-          backgroundColor: ColorConstants.primaryColor,
-          centerTitle: true,
-        ),
-        endDrawer: CustomDrawer(),
-        body: BlocConsumer<AudioCubit, AudioState>(
-          bloc: context.read<AudioCubit>()..getMyAudios(),
-          listener: (context, state) {
-            // TODO: implement listener
-          },
-          builder: (context, state) {
-            if (state is AudioDisplay) {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await context.read<AudioCubit>().getMyAudios();
-                  },
-                  child: Column(
-                    children: [
-                      ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                          title: Text(LocaleKeys
-                                              .labels_transcription
-                                              .tr()),
-                                          content: SingleChildScrollView(
-                                            child: Text(state.myAudios[index]
-                                                    .transcription ??
-                                                "No transcription available yet"),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text("OK"))
-                                          ],
-                                        ));
-                              },
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0)),
-                              tileColor: ColorConstants.primaryColor,
-                              title:
-                                  Text(state.myAudios[index].name ?? "No Name"),
-                              leading: Text(
-                                "${index + 1}",
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: ColorConstants.lightBlue,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(
-                                Icons.multitrack_audio_outlined,
-                                color: ColorConstants.lightBlue,
-                              ),
-                              subtitle: Text(
-                                  "${LocaleKeys.labels_uploaded_at.tr()} ${Utils.dateToString(state.myAudios[index].uploadTime!)}"),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider();
-                          },
-                          itemCount: state.myAudios.length),
-                    ],
-                  ),
-                ),
-              );
-            } else if (state is AudioLoading) {
-              return const LoadingLottie();
-            } else if (state is AudioNotFound) {
-              return const Center(child: Text("No Audios Found"));
-            } else {
-              return const Center(
-                  child: Text("An Error Occured While Fetching Audios"));
-            }
-          },
-        ));
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+          appBar: AppBar(
+              title: Text(LocaleKeys.appbars_titles_my_audios.tr()),
+              backgroundColor: ColorConstants.primaryColor,
+              centerTitle: true,
+              bottom: TabBar(tabs: [
+                Tab(text: LocaleKeys.tabbars_my_audios_pending.tr()),
+                Tab(text: LocaleKeys.tabbars_my_audios_done.tr()),
+                Tab(text: LocaleKeys.tabbars_my_audios_all.tr()),
+              ])),
+          endDrawer: CustomDrawer(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              context.read<AudioCubit>().getMyAudios();
+            },
+            child: const Icon(Icons.refresh),
+          ),
+          body: BlocBuilder<AudioCubit, AudioState>(
+            bloc: context.read<AudioCubit>()..getMyAudios(),
+            builder: (context, state) {
+              if (state is AudioDisplay) {
+                return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TabBarView(children: [
+                      state.pendingAudios.isNotEmpty
+                          ? AudioListView(audioList: state.pendingAudios)
+                          : Center(
+                              child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(LocaleKeys.labels_no_pending_audios.tr()),
+                                const SizedBox(height: 16.0),
+                                CustomElevatedButton(
+                                    onPressed: () {
+                                      context.router
+                                          .replaceNamed("/note-generation");
+                                    },
+                                    child: Text(LocaleKeys
+                                        .buttons_lets_generate_notes
+                                        .tr()))
+                              ],
+                            )),
+                      state.doneAudios.isNotEmpty
+                          ? AudioListView(audioList: state.doneAudios)
+                          : Text(LocaleKeys.labels_no_transcribed_audios.tr()),
+                      state.allAudios.isNotEmpty
+                          ? AudioListView(audioList: state.allAudios)
+                          : Text(LocaleKeys.labels_no_audios_found.tr()),
+                    ]));
+              } else if (state is AudioLoading) {
+                return const LoadingLottie();
+              } else if (state is AudioNotFound) {
+                return Center(
+                    child: Text(LocaleKeys.labels_no_audios_found.tr()));
+              } else {
+                return const Center(
+                    child: Text("An Error Occured While Fetching Audios"));
+              }
+            },
+          )),
+    );
   }
 }
