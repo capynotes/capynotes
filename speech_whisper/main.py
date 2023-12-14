@@ -1,9 +1,11 @@
+#Pure Whisper S2T example snippet
 """ import whisper
 
 model = whisper.load_model("small.en")
 result = model.transcribe("./test1.mp3")
 
 print(result["text"]) """
+
 import boto3
 import whisper
 import os
