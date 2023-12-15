@@ -9,7 +9,8 @@ def create_app():
 
     # Set up extensions
     app.extensions['transcribe'] = boto3.client('transcribe', **get_aws_credentials())
-
+    app.extensions['s3'] = boto3.client('s3', **get_aws_credentials())
+    
     # Register blueprints
     from app.routes import main_bp
     app.register_blueprint(main_bp)
