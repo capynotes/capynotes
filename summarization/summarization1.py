@@ -12,6 +12,8 @@ making landscape of the English language, and following in the naturalist’s tr
 speculation, and documentation—activities we don’t normally associate with language."""
 max = 150 
 min = 60
+
+
 if len(sys.argv) > 1:
     long_text_path = sys.argv[1]
     f = open(long_text_path)
@@ -20,6 +22,7 @@ if len(sys.argv) > 1:
         max = int(sys.argv[2])
         if len(sys.argv) > 3:
             min = int(sys.argv[3])
+           
 
 
 long_text2 = """In recent years, advancements in artificial intelligence (AI) have revolutionized various industries, from healthcare to finance. The integration of machine learning algorithms and deep neural networks has enabled computers to analyze vast amounts of data, identify patterns, and make predictions with unprecedented accuracy. One notable application is in the field of autonomous vehicles, where AI plays a crucial role in enhancing safety and navigation. However, the rapid evolution of AI also raises ethical concerns, such as bias in algorithms and the potential for job displacement. Despite these challenges, the transformative impact of AI on society is undeniable, prompting ongoing discussions about responsible development and deployment"""
