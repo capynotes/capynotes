@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app.transcribe import transcribe_audio
+from app.transcribe import aws_transcribe_audio
+from app.transcribe import whisper_transcribe_audio
 from app.video_to_mp4 import video_to_mp4
 
 main_bp = Blueprint('main', __name__)
@@ -13,7 +14,7 @@ def transcribe_route():
     file_name = data.get('file_name')
 
     # Transcribe the audio file
-    transcription = transcribe_audio(file_name)
+    transcription = whisper_transcribe_audio(file_name)
 
     # Return the transcription in the response
     return jsonify({'transcription': transcription})
@@ -29,7 +30,7 @@ def youtube_route():
     # convert to mp4
     object_name = video_to_mp4(video_url)
     if object_name:
-        transcription = transcribe_audio(object_name)
+        transcription = whisper_transcribe_audio(object_name)
     else:
         transcription = "An Error Occurred. Please Try Again Later."
     # Return the transcription in the response

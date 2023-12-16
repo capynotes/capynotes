@@ -2,3 +2,9 @@ backend/notificationservice/src/main/resources/application-local.properties
 backend/audioservice/src/main/resources/application-local.properties
 backend/authservice/src/main/resources/application-local.properties
 frontend/devtools_options.yaml
+speech/app/__pycache__/__init__.cpython-310.pyc
+speech/app/__pycache__/routes.cpython-310.pyc
+speech/app/__pycache__/s3_handler.cpython-310.pyc
+speech/app/__pycache__/transcribe.cpython-310.pyc
+speech/app/__pycache__/video_to_mp4.cpython-310.pyc
+speech/__pycache__/config.cpython-310.pyc

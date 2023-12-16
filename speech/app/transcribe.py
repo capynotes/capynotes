@@ -1,7 +1,10 @@
 import pandas as pd
 import time
 from flask import current_app
+import whisper
+import os
 from app.s3_handler import get_job_uri
+from config import get_bucket_name
 
 def check_job_name(transcribe_client, job_name):
     job_verification = True
@@ -19,7 +22,8 @@ def check_job_name(transcribe_client, job_name):
     
     return job_name
 
-def transcribe_audio(audio_file_name):
+# Transcribe the audio file with AWS Transcribe
+def aws_transcribe_audio(audio_file_name):
     transcribe_client = current_app.extensions['transcribe']
 
     job_uri = get_job_uri(audio_file_name)
@@ -48,3 +52,15 @@ def transcribe_audio(audio_file_name):
         data = pd.read_json(result['TranscriptionJob']['Transcript']['TranscriptFileUri'])
   
     return data['results'][1][0]['transcript']
+
+# Transcribe the audio file with OpenAI - Whisper
+def whisper_transcribe_audio(audio_file_name):
+    s3_client = current_app.extensions['s3']
+    bucket_name = get_bucket_name()
+    s3_client.download_file(bucket_name, audio_file_name, "speech\\app\\downloads\\" + audio_file_name)
+    file_path = "speech\\app\\downloads\\" + audio_file_name
+    model = whisper.load_model("medium.en")
+    result = model.transcribe(file_path)
+    os.remove(file_path)
+    return result["text"]
+  
