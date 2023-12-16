@@ -2,6 +2,7 @@ import pandas as pd
 import time
 from flask import current_app
 import whisper
+import torch
 import os
 from app.s3_handler import get_job_uri
 from config import get_bucket_name
@@ -59,8 +60,10 @@ def whisper_transcribe_audio(audio_file_name):
     bucket_name = get_bucket_name()
     s3_client.download_file(bucket_name, audio_file_name, "speech\\app\\downloads\\" + audio_file_name)
     file_path = "speech\\app\\downloads\\" + audio_file_name
-    model = whisper.load_model("medium.en")
-    result = model.transcribe(file_path)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = whisper.load_model("medium.en").to(device)
+    result = model.transcribe(file_path, verbose=False)
     os.remove(file_path)
     return result["text"]
   
