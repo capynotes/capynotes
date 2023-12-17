@@ -14,7 +14,7 @@ def upload_mp4_to_s3(file_path, file_name):
         print(f"Error uploading file: {e}")
         return False
     
-def video_to_mp4(video_url):
+def video_to_mp4(video_url, note_name):
     # get video url 
     yt = YouTube(video_url) 
 
@@ -22,11 +22,11 @@ def video_to_mp4(video_url):
     video = yt.streams.filter(file_extension='mp4', only_audio=True).first() 
     
     # check for destination to save file 
-    destination = "speech\\downloads"
+    destination = "speech\\app\\downloads"
 
     # download the file 
-    out_file = video.download(output_path=destination) 
-    video_name = yt.title 
+    out_file = video.download(output_path=destination, filename=note_name)
+    video_name = note_name 
     # save the file to locale 
     base, ext = os.path.splitext(out_file) 
     new_file_path = base + '.mp4'

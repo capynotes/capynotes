@@ -67,6 +67,14 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                               .read<NoteGenerationCubit>()
                               .videoUrlController,
                         ),
+                        CustomElevatedButton(
+                          child: Text("Submit Video"),
+                          onPressed: () {
+                            context
+                                .read<NoteGenerationCubit>()
+                                .generateNoteFromURL();
+                          },
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -196,7 +204,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                                       null) {
                                 context
                                     .read<NoteGenerationCubit>()
-                                    .generateNote();
+                                    .generateNoteFromFile();
                               }
                             },
                             child: Text(LocaleKeys.buttons_generate_note.tr())),

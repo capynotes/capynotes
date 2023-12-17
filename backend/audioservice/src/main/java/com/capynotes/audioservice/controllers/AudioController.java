@@ -11,6 +11,7 @@ import com.capynotes.audioservice.dtos.AudioDto;
 import com.capynotes.audioservice.dtos.Response;
 import com.capynotes.audioservice.dtos.TranscribeRequest;
 import com.capynotes.audioservice.dtos.TranscribeResponse;
+import com.capynotes.audioservice.dtos.VideoTranscribeRequest;
 import com.capynotes.audioservice.enums.AudioStatus;
 import com.capynotes.audioservice.exceptions.FileEmptyException;
 import com.capynotes.audioservice.models.Audio;
@@ -36,7 +37,7 @@ public class AudioController {
         }
         Long userId = 1L;
         try {
-            Audio newAudio = audioService.uploadAudio(file, userId);
+            Audio newAudio = audioService.uploadAudioFromFile(file, userId);
             newAudio = audioService.updateAudioStatus(newAudio.getId(), AudioStatus.PENDING);
             // TODO: Maybe move this to service etc.
             // Send request to S2T service
@@ -45,9 +46,10 @@ public class AudioController {
 
             HttpEntity<?> requestEntity = new HttpEntity<>(transcribeRequest);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<TranscribeResponse> transcribeResponse = restTemplate.exchange(url, HttpMethod.POST, requestEntity,
+            ResponseEntity<TranscribeResponse> transcribeResponse = restTemplate.exchange(url, HttpMethod.POST,
+                    requestEntity,
                     TranscribeResponse.class);
-            
+
             if (transcribeResponse.getStatusCode() == HttpStatus.OK) {
                 TranscribeResponse body = transcribeResponse.getBody();
                 newAudio = audioService.updateAudioTranscription(newAudio.getId(), body.getTranscription());
@@ -60,6 +62,24 @@ public class AudioController {
                 return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new Response("An error occurred." + e.toString(), 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/from-video")
+    public ResponseEntity<?> uploadFromVideo(@RequestBody VideoTranscribeRequest videoTranscribeRequest) {
+        
+        Response response;
+        String videoUrl = videoTranscribeRequest.getVideoUrl();
+        String fileName = videoTranscribeRequest.getNoteName();
+        Long userId = 1L;
+        try {
+            Audio newAudio = audioService.uploadAudioFromURL(videoUrl, fileName, userId);
+            response = new Response("Video transcribed successfully" , 200, newAudio);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             response = new Response("An error occurred." + e.toString(), 500, null);
