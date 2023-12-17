@@ -17,6 +17,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
 
   bool isGenerateFlashcards = true;
   TextEditingController noteNameController = TextEditingController();
+  TextEditingController videoUrlController = TextEditingController();
   String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   File? audioFile;
   AudioModel? uploadedAudio;
