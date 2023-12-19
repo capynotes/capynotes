@@ -2,6 +2,8 @@ package com.capynotes.audioservice.services;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.capynotes.audioservice.dtos.VideoTranscribeRequest;
+import com.capynotes.audioservice.dtos.VideoTranscribeResponse;
 import com.capynotes.audioservice.enums.AudioStatus;
 import com.capynotes.audioservice.exceptions.FileDownloadException;
 import com.capynotes.audioservice.exceptions.FileUploadException;
@@ -10,7 +12,9 @@ import com.capynotes.audioservice.repositories.AudioRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
@@ -18,9 +22,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 @Service
 public class AudioServiceImpl implements AudioService {
@@ -37,7 +41,7 @@ public class AudioServiceImpl implements AudioService {
     }
 
     @Override
-    public Audio uploadAudio(MultipartFile multipartFile, Long userId) throws IOException, FileUploadException {
+    public Audio uploadAudioFromFile(MultipartFile multipartFile, Long userId) throws IOException, FileUploadException {
         String fileName = UUID.randomUUID().toString() + "_" + multipartFile.getOriginalFilename();
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
@@ -52,6 +56,35 @@ public class AudioServiceImpl implements AudioService {
         Audio audio = new Audio(fileName, url, userId, dateTime, null, AudioStatus.NO_REQUEST);
         audioRepository.save(audio);
         return audio;
+    }
+
+    // @Override
+    public Audio uploadAudioFromURL(String videoUrl, String fileName, Long userId) {
+        String newName = UUID.randomUUID().toString() + "_" + fileName;
+        // Send request to Flask, it uploads the file to S3, generates the transcript, returns S3 url and transcript
+        LocalDateTime uploadTime = LocalDateTime.now();
+        String url = "http://localhost:5000/youtube";
+        VideoTranscribeRequest transcribeRequest = new VideoTranscribeRequest(videoUrl, newName);
+        Audio newAudio = new Audio(newName, null, userId, uploadTime, null, AudioStatus.PENDING);
+        audioRepository.save(newAudio);
+
+        HttpEntity<?> requestEntity = new HttpEntity<>(transcribeRequest);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<VideoTranscribeResponse> transcribeResponse = restTemplate.exchange(url, HttpMethod.POST,
+                requestEntity,
+                VideoTranscribeResponse.class);
+
+        if (transcribeResponse.getStatusCode() == HttpStatus.OK) {
+            VideoTranscribeResponse body = transcribeResponse.getBody();
+            newAudio = updateAudioTranscription(newAudio.getId(), body.getTranscription());
+            newAudio = updateAudioStatus(newAudio.getId(), AudioStatus.DONE);
+            URL fileUrl = amazonS3.getUrl(bucketName, newAudio.getName());
+            newAudio = updateAudioURL(newAudio.getId(), fileUrl.toString());
+        } else {
+            //TODO: Handle error
+            newAudio = updateAudioStatus(newAudio.getId(), AudioStatus.ERROR);
+        }
+        return newAudio;
     }
 
     @Override
@@ -78,10 +111,11 @@ public class AudioServiceImpl implements AudioService {
             }
         }
     }
+
     @Override
     public List<Audio> findAudioByUserId(Long userId) throws FileNotFoundException {
         Optional<List<Audio>> audios = audioRepository.findAudioByUserId(userId);
-        if(audios.isEmpty()) {
+        if (audios.isEmpty()) {
             throw new FileNotFoundException("User with id " + userId + " does not have any uploaded audios.");
         }
         return audios.get();
@@ -111,9 +145,21 @@ public class AudioServiceImpl implements AudioService {
         return audio;
     }
 
+    @Override
+    public Audio updateAudioURL(Long audioId, String url) {
+        Optional<Audio> optionalAudio = audioRepository.findById(audioId);
+        if (optionalAudio.isEmpty()) {
+            throw new IllegalArgumentException("Audio with id " + audioId + " does not exist.");
+        }
+        Audio audio = optionalAudio.get();
+        audio.setUrl(url);
+        audioRepository.save(audio);
+        return audio;
+    }
+
     private boolean bucketIsEmpty() {
         ListObjectsV2Result result = amazonS3.listObjectsV2(this.bucketName);
-        if (result == null){
+        if (result == null) {
             return false;
         }
         List<S3ObjectSummary> objects = result.getObjectSummaries();

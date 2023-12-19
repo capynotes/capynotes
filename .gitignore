@@ -5,3 +5,9 @@ frontend/devtools_options.yaml
 summarization/app/__pycache__/__init__.cpython-310.pyc
 summarization/app/__pycache__/routes.cpython-310.pyc
 summarization/app/__pycache__/summarize.cpython-310.pyc
+speech/app/__pycache__/__init__.cpython-310.pyc
+speech/app/__pycache__/routes.cpython-310.pyc
+speech/app/__pycache__/s3_handler.cpython-310.pyc
+speech/app/__pycache__/transcribe.cpython-310.pyc
+speech/app/__pycache__/video_to_mp4.cpython-310.pyc
+speech/__pycache__/config.cpython-310.pyc
