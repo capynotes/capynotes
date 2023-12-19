@@ -16,6 +16,7 @@ public class AudioDto {
         this.userId = audio.getUserId();
         this.uploadTime = audio.getUploadTime();
         this.transcription = audio.getTranscription();
+        this.summary = audio.getSummary();
     }
 
     private Long id;
@@ -24,5 +25,6 @@ public class AudioDto {
     private Long userId;
     private LocalDateTime uploadTime;
     private String transcription;
+    private String summary;
 
 }

@@ -20,4 +20,5 @@ public interface AudioService {
     Audio updateAudioTranscription(Long audioId, String transcription);
     Audio updateAudioStatus(Long audioId, AudioStatus status);
     Audio updateAudioURL(Long audioId, String url);
+    Audio updateAudioSummary(Long audioId, String summary);
 }

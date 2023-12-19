@@ -8,6 +8,7 @@ class AudioModel {
   DateTime? uploadTime;
   String? transcription;
   AudioStatus? status;
+  String? summary;
 
   AudioModel(
       {this.id,
@@ -16,7 +17,8 @@ class AudioModel {
       this.userId,
       this.uploadTime,
       this.transcription,
-      this.status});
+      this.status,
+      this.summary});
 
   AudioModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -26,6 +28,7 @@ class AudioModel {
     uploadTime = DateTime.parse(json['uploadTime']);
     transcription = json['transcription'];
     status = getAudioStatusFromString(json['status']);
+    summary = json['summary'];
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +40,7 @@ class AudioModel {
     data['uploadTime'] = uploadTime.toString();
     data['transcription'] = transcription;
     data['status'] = status.toString();
+    data['summary'] = summary;
     return data;
   }
 }
