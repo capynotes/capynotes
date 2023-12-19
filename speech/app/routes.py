@@ -25,10 +25,11 @@ def youtube_route():
     data = request.get_json()
 
     # Extract necessary information (e.g., url) from the data
-    video_url = data.get('url')
+    video_url = data.get('videoUrl')
+    note_name = data.get('noteName')
 
     # convert to mp4
-    object_name = video_to_mp4(video_url)
+    object_name = video_to_mp4(video_url, note_name)
     if object_name:
         transcription = whisper_transcribe_audio(object_name)
     else:

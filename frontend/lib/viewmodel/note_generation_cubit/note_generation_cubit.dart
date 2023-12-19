@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:capynotes/services/note_generation_service.dart';
 
 import '../../model/audio_model.dart';
+import '../../model/video_model.dart';
 import '../../translations/locale_keys.g.dart';
 
 part 'note_generation_state.dart';
@@ -17,6 +18,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
 
   bool isGenerateFlashcards = true;
   TextEditingController noteNameController = TextEditingController();
+  TextEditingController videoUrlController = TextEditingController();
   String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   File? audioFile;
   AudioModel? uploadedAudio;
@@ -42,10 +44,31 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
 
   Future<void> recordAudio() async {}
 
-  Future<void> generateNote() async {
+  Future<void> generateNoteFromFile() async {
     emit(NoteGenerationLoading());
     // send generation request
-    var response = await service.generateNote(audioFile!, selectedFileName);
+    var response =
+        await service.generateNoteFromFile(audioFile!, selectedFileName);
+
+    if (response != null) {
+      uploadedAudio = response;
+      emit(NoteGenerationSuccess(
+          LocaleKeys.dialogs_success_dialogs_note_generation_success_title.tr(),
+          uploadedAudio!.name ?? ""));
+    } else {
+      emit(NoteGenerationError(
+          LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),
+          LocaleKeys.dialogs_error_dialogs_note_generation_error_description
+              .tr()));
+    }
+  }
+
+  Future<void> generateNoteFromURL() async {
+    emit(NoteGenerationLoading());
+    // send generation request
+    VideoModel videoModel = VideoModel(
+        url: videoUrlController.text, noteName: noteNameController.text);
+    var response = await service.generateNoteFromURL(videoModel);
 
     if (response != null) {
       uploadedAudio = response;

@@ -60,24 +60,57 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                     key: formKey,
                     child: Column(
                       children: [
+                        CustomTextFormField(
+                          label: "Video URL",
+                          hint: "Enter Video URL",
+                          controller: context
+                              .read<NoteGenerationCubit>()
+                              .videoUrlController,
+                        ),
+                        CustomElevatedButton(
+                          child: Text("Submit Video"),
+                          onPressed: () {
+                            context
+                                .read<NoteGenerationCubit>()
+                                .generateNoteFromURL();
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(LocaleKeys.labels_or.tr(),
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: ColorConstants.primaryColor,
+                                fontWeight: FontWeight.w800)),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         CustomElevatedButton(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Image.asset(
-                                    AssetPaths.micImage,
-                                    color: ColorConstants.primaryColor,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(LocaleKeys.buttons_record_audio.tr()),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
+                                  Icon(Icons.mic),
+                                  Text(LocaleKeys.buttons_record_audio.tr())
                                 ],
                               ),
+                              // Column(
+                              //   children: [
+                              //     Image.asset(
+                              //       AssetPaths.micImage,
+                              //       color: ColorConstants.primaryColor,
+                              //     ),
+                              //     const SizedBox(
+                              //       height: 20,
+                              //     ),
+                              //     Text(LocaleKeys.buttons_record_audio.tr()),
+                              //     const SizedBox(
+                              //       height: 10,
+                              //     ),
+                              //   ],
+                              // ),
                             ),
                             onPressed: () {}),
                         const SizedBox(
@@ -171,7 +204,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                                       null) {
                                 context
                                     .read<NoteGenerationCubit>()
-                                    .generateNote();
+                                    .generateNoteFromFile();
                               }
                             },
                             child: Text(LocaleKeys.buttons_generate_note.tr())),

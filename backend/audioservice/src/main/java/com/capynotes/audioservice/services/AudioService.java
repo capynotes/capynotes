@@ -13,9 +13,11 @@ import java.util.List;
 
 @Service
 public interface AudioService {
-    Audio uploadAudio(MultipartFile multipartFile, Long userId) throws IOException, FileUploadException;
+    Audio uploadAudioFromFile(MultipartFile multipartFile, Long userId) throws IOException, FileUploadException;
+    Audio uploadAudioFromURL(String videoUrl, String fileName, Long userId);
     Object downloadAudio(String fileName) throws IOException, FileDownloadException;
     List<Audio> findAudioByUserId(Long userId) throws FileNotFoundException;
     Audio updateAudioTranscription(Long audioId, String transcription);
     Audio updateAudioStatus(Long audioId, AudioStatus status);
+    Audio updateAudioURL(Long audioId, String url);
 }
