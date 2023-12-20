@@ -79,8 +79,8 @@ class AudioListView extends StatelessWidget {
                     ])),
                 Row(
                   children: [
-                    CustomElevatedButton(
-                        child: Text("See Transcription"),
+                    TextButton(
+                        child: Text("Transcription"),
                         onPressed: () {
                           showDialog(
                               context: context,
@@ -101,8 +101,8 @@ class AudioListView extends StatelessWidget {
                                     ],
                                   ));
                         }),
-                    CustomElevatedButton(
-                        child: Text("See Summary"),
+                    TextButton(
+                        child: Text("Summary"),
                         onPressed: () {
                           showDialog(
                               context: context,

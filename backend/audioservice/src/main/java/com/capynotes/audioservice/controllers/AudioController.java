@@ -62,7 +62,7 @@ public class AudioController {
             }
             //TODO: these wont be handled here
             // Send request to summary service, get response, update summary, return response
-            String summaryUrl = "http://localhost:5001/summary";
+            String summaryUrl = "http://localhost:5001/summarize";
             
             try {
                 SummaryRequest summaryRequest = new SummaryRequest(newAudio.getTranscription());

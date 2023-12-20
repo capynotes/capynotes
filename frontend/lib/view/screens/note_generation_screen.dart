@@ -67,6 +67,9 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                               .read<NoteGenerationCubit>()
                               .videoUrlController,
                         ),
+                        SizedBox(
+                          height: 20,
+                        ),
                         CustomElevatedButton(
                           child: Text("Submit Video"),
                           onPressed: () {
