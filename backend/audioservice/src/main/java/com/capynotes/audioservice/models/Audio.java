@@ -14,13 +14,14 @@ import com.capynotes.audioservice.enums.AudioStatus;
 @NoArgsConstructor
 public class Audio {
 
-    public Audio(String name, String url, Long userId, LocalDateTime uploadTime, String transcription, AudioStatus status) {
+    public Audio(String name, String url, Long userId, LocalDateTime uploadTime, String transcription, AudioStatus status, String summary) {
         this.name = name;
         this.url = url;
         this.userId = userId;
         this.uploadTime = uploadTime;
         this.transcription = transcription;
         this.status = status;
+        this.summary = summary;
     }
 
     @Id
@@ -42,4 +43,7 @@ public class Audio {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private AudioStatus status;
+
+    @Column(columnDefinition = "TEXT")
+    private String summary;
 }

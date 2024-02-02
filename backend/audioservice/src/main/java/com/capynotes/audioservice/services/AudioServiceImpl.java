@@ -53,7 +53,7 @@ public class AudioServiceImpl implements AudioService {
 
         String url = amazonS3.getUrl(bucketName, fileName).toString();
         LocalDateTime dateTime = LocalDateTime.now();
-        Audio audio = new Audio(fileName, url, userId, dateTime, null, AudioStatus.NO_REQUEST);
+        Audio audio = new Audio(fileName, url, userId, dateTime, null, AudioStatus.NO_REQUEST, null);
         audioRepository.save(audio);
         return audio;
     }
@@ -65,7 +65,7 @@ public class AudioServiceImpl implements AudioService {
         LocalDateTime uploadTime = LocalDateTime.now();
         String url = "http://localhost:5000/youtube";
         VideoTranscribeRequest transcribeRequest = new VideoTranscribeRequest(videoUrl, newName);
-        Audio newAudio = new Audio(newName, null, userId, uploadTime, null, AudioStatus.PENDING);
+        Audio newAudio = new Audio(newName, null, userId, uploadTime, null, AudioStatus.PENDING, null);
         audioRepository.save(newAudio);
 
         HttpEntity<?> requestEntity = new HttpEntity<>(transcribeRequest);
@@ -153,6 +153,17 @@ public class AudioServiceImpl implements AudioService {
         }
         Audio audio = optionalAudio.get();
         audio.setUrl(url);
+        audioRepository.save(audio);
+        return audio;
+    }
+    @Override
+    public Audio updateAudioSummary(Long audioId, String summary) {
+        Optional<Audio> optionalAudio = audioRepository.findById(audioId);
+        if (optionalAudio.isEmpty()) {
+            throw new IllegalArgumentException("Audio with id " + audioId + " does not exist.");
+        }
+        Audio audio = optionalAudio.get();
+        audio.setSummary(summary);
         audioRepository.save(audio);
         return audio;
     }

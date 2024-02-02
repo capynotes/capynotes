@@ -1,3 +1,4 @@
+import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -75,7 +76,53 @@ class AudioListView extends StatelessWidget {
                                       ? const Color.fromARGB(255, 0, 255, 8)
                                       : Colors.red,
                               fontWeight: FontWeight.normal))
-                    ]))
+                    ])),
+                Row(
+                  children: [
+                    TextButton(
+                        child: Text("Transcription"),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text(
+                                        LocaleKeys.labels_transcription.tr()),
+                                    content: SingleChildScrollView(
+                                      child: Text(
+                                          audioList[index].transcription ??
+                                              "No transcription available yet"),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("OK"))
+                                    ],
+                                  ));
+                        }),
+                    TextButton(
+                        child: Text("Summary"),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text("Summary"),
+                                    content: SingleChildScrollView(
+                                      child: Text(audioList[index].summary ??
+                                          "No summary available yet"),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("OK"))
+                                    ],
+                                  ));
+                        })
+                  ],
+                )
               ],
             ),
           );
