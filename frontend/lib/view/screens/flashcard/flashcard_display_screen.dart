@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 @RoutePage()
 class FlashcardScreen extends StatelessWidget {
-  const FlashcardScreen({super.key});
-
+  const FlashcardScreen({super.key, @PathParam('id') required this.setID});
+  final int setID;
   @override
   Widget build(BuildContext context) {
     CarouselController controller = CarouselController();

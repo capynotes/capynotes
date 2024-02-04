@@ -16,6 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/asset_paths.dart';
 import 'services/audio_service.dart';
+import 'services/note_service.dart';
+import 'viewmodel/note_cubit/note_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,7 @@ class MyApp extends StatefulWidget {
   static final NoteGenerationService noteGenerationService =
       NoteGenerationService();
   static final AudioService audioService = AudioService();
+  static final NoteService noteService = NoteService();
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -71,6 +74,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => AudioCubit(MyApp.audioService),
+        ),
+        BlocProvider(
+          create: (context) => NoteCubit(MyApp.noteService),
         ),
       ],
       child: MaterialApp.router(

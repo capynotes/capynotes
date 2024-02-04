@@ -6,5 +6,7 @@ class ApiConstants {
   static String forgotPw = "person/forgot-password?email=";
   static String generateNote = "audio/upload";
   static String getMyAudios = "audio/";
+  static String getMyNotes = "notes/";
+  static String getNote = "note/";
   static String fromVideo = "audio/from-video";
 }
