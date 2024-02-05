@@ -39,6 +39,7 @@ class MyNotesScreen extends StatelessWidget {
           body: BlocBuilder<NoteCubit, NoteState>(
             bloc: context.read<NoteCubit>()..getMyNotes(),
             builder: (context, state) {
+              print(state);
               if (state is NotesDisplay) {
                 return Padding(
                     padding: const EdgeInsets.all(16.0),

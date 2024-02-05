@@ -11,7 +11,11 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
-    List<NoteModel>? allNotes = await service.getMyNotes();
+    // List<NoteModel>? allNotes = await service.getMyNotes();
+    List<NoteModel>? allNotes = [
+      NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now()),
+      NoteModel(id: 2, title: "Note 2", uploadTime: DateTime.now()),
+    ];
     if (allNotes == null) {
       emit(NoteError("Error", "Error"));
     } else if (allNotes.isEmpty) {
@@ -33,10 +37,15 @@ class NoteCubit extends Cubit<NoteState> {
   Future<void> getNote(int id) async {
     emit(NoteLoading());
     NoteModel? note = await service.getNote(id);
+    note = NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now());
     if (note == null) {
       emit(NoteNotFound());
     } else {
       emit(NoteDisplay(note: note));
     }
+  }
+
+  Future<void> createFlashcardSet() async {
+    emit(NoteLoading());
   }
 }

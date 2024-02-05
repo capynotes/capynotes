@@ -24,10 +24,16 @@ class NoteScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
             appBar: AppBar(
-              title: const Text("Note Screen"),
-              centerTitle: true,
-              backgroundColor: ColorConstants.primaryColor,
-            ),
+                title: const Text("Note Screen"),
+                centerTitle: true,
+                backgroundColor: ColorConstants.primaryColor,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    context.read<NoteCubit>().getMyNotes();
+                    context.router.pop();
+                  },
+                )),
             endDrawer: CustomDrawer(),
             body: Center(
               child: SingleChildScrollView(
@@ -75,9 +81,25 @@ class NoteScreen extends StatelessWidget {
                             ),
                           ),
                         ]),
-                    const SizedBox(height: 16.0),
-                    const Text("Flashcard Sets"),
-                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Flashcard Sets",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CreateFlashcardSetDialog();
+                                  });
+                            })
+                      ],
+                    ),
                     //TODO: if flashcardset list not null
                     false
                         ? Column(
@@ -89,65 +111,41 @@ class NoteScreen extends StatelessWidget {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return Form(
-                                            child: AlertDialog(
-                                                content: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    TextFormField(
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              labelText:
-                                                                  "Flashcard Set Title"),
-                                                    ),
-                                                  ],
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                      child: const Text(
-                                                        "Create Set",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.green),
-                                                      ),
-                                                      onPressed: () {
-                                                        // TODO: Send create flashcard set request
-                                                      }),
-                                                  TextButton(
-                                                      child: const Text(
-                                                        "Cancel",
-                                                        style: TextStyle(
-                                                            color: Colors.red),
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      })
-                                                ]),
-                                          );
+                                          return CreateFlashcardSetDialog();
                                         });
                                   }),
                             ],
                           )
-                        : ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: const Text("Flashcard Set Title"),
-                                subtitle: const Text("Card Count"),
-                                dense: true,
-                                trailing: const Icon(Icons.add_card_sharp),
-                                onTap: () {
-                                  //TODO: Navigate to flashcard set screen
-                                  context.router.pushNamed("/flashcard/1");
+                        : Padding(
+                            padding: const EdgeInsets.fromLTRB(25.0, 0, 25, 0),
+                            child: ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ListTile(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          side: const BorderSide(
+                                              color: Colors.grey)),
+                                      title: const Text("Flashcard Set Title"),
+                                      subtitle: const Text("Card Count"),
+                                      dense: true,
+                                      trailing: IconButton(
+                                          icon: const Icon(Icons.edit),
+                                          onPressed: () {}),
+                                      onTap: () {
+                                        //TODO: Navigate to flashcard set screen
+                                        context.router
+                                            .navigateNamed("/flashcard/1");
+                                      },
+                                    ),
+                                  );
                                 },
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const Divider();
-                            },
-                            itemCount: 14)
+                                itemCount: 14),
+                          )
                   ],
                 ),
               ),
@@ -161,6 +159,46 @@ class NoteScreen extends StatelessWidget {
           return const Center(child: Text("Error"));
         }
       },
+    );
+  }
+}
+
+class CreateFlashcardSetDialog extends StatelessWidget {
+  const CreateFlashcardSetDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      child: AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: "Flashcard Set Title"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+                child: const Text(
+                  "Create Set",
+                  style: TextStyle(color: Colors.green),
+                ),
+                onPressed: () {
+                  // TODO: Send create flashcard set request
+                }),
+            TextButton(
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                })
+          ]),
     );
   }
 }

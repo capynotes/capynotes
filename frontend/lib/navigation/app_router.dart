@@ -41,7 +41,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
               if (isFirstTime) {
                 resolver.next();
               } else {
-                pushNamed("/note-generation");
+                navigateNamed("/note-generation");
               }
             })
           ],
