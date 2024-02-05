@@ -33,6 +33,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ContactUsScreen(),
       );
     },
+    EditFlashcardRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const EditFlashcardScreen(),
+      );
+    },
     FlashcardRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<FlashcardRouteArgs>(
@@ -146,6 +152,20 @@ class ContactUsRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ContactUsRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [EditFlashcardScreen]
+class EditFlashcardRoute extends PageRouteInfo<void> {
+  const EditFlashcardRoute({List<PageRouteInfo>? children})
+      : super(
+          EditFlashcardRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'EditFlashcardRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
