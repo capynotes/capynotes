@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class Flashcard {
 
     private String back;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "set_id")
     private FlashcardSet set;

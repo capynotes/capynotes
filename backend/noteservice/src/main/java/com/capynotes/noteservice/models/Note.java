@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.models;
 
+import com.capynotes.noteservice.enums.NoteStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,4 +25,8 @@ public class Note {
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FlashcardSet> cardSets;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private NoteStatus status;
 }
