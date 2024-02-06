@@ -15,6 +15,8 @@ public class FlashcardSet {
 
     private Long userId;
 
+    private String title;
+
     private LocalDateTime creationTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -15,9 +15,12 @@ public class Flashcard {
 
     private String back;
 
-    private Long userId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "set_id")
     private FlashcardSet set;
+
+    public void edit(Flashcard newFlashcard) {
+        this.front = newFlashcard.getFront();
+        this.back = newFlashcard.getBack();
+    }
 }
