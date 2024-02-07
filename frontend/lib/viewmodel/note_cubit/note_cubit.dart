@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:just_audio/just_audio.dart';
 import '../../model/note_model.dart';
 import '../../services/note_service.dart';
 
@@ -8,6 +8,9 @@ part 'note_state.dart';
 class NoteCubit extends Cubit<NoteState> {
   NoteCubit(this.service) : super(NoteInitial());
   final NoteService service;
+  final String path = "assets/audio/csgo.mp3";
+  NoteModel? selectedNote;
+  final AudioPlayer player = AudioPlayer();
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
@@ -36,12 +39,13 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> getNote(int id) async {
     emit(NoteLoading());
-    NoteModel? note = await service.getNote(id);
-    note = NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now());
-    if (note == null) {
+    selectedNote = await service.getNote(id);
+    selectedNote =
+        NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now());
+    if (selectedNote == null) {
       emit(NoteNotFound());
     } else {
-      emit(NoteDisplay(note: note));
+      emit(NoteDisplay(note: selectedNote!));
     }
   }
 
