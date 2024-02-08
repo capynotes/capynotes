@@ -13,8 +13,7 @@ class FlashcardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     CarouselController controller = CarouselController();
     return BlocConsumer<FlashcardCubit, FlashcardState>(
-      bloc: BlocProvider.of<FlashcardCubit>(context)
-        ..getFlashcardSet(id: setID),
+      bloc: context.read<FlashcardCubit>()..getFlashcardSet(id: setID),
       listener: (context, state) {
         // TODO: implement listener
       },
