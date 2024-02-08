@@ -1,5 +1,5 @@
 class ApiConstants {
-  static String baseUrl = "http://192.168.31.47:8080/";
+  static String baseUrl = "http://139.179.54.219:8080/";
   static String register = "person/register";
   static String login = "person/login";
   static String changePw = "person/change-password";
@@ -14,4 +14,5 @@ class ApiConstants {
   static String getFlashcardSet = "flashcard/set/";
   static String addFlashcard = "flashcard/add";
   static String flashcard = "flashcard/";
+  static String editFlashcard = "flashcard/edit";
 }

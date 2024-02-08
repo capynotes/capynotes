@@ -15,6 +15,8 @@ class FlashcardCubit extends Cubit<FlashcardState> {
   final FlashcardService service;
   TextEditingController frontController = TextEditingController();
   TextEditingController backController = TextEditingController();
+  TextEditingController editFrontController = TextEditingController();
+  TextEditingController editBackController = TextEditingController();
   FlashcardSetModel? flashcards;
   List<FlipCard> allFlashcardList = [];
 
@@ -45,6 +47,23 @@ class FlashcardCubit extends Cubit<FlashcardState> {
     }
     emit(FlashcardSuccess(
         "Deleted Successfully", "Flashcard deleted successfully."));
+  }
+
+  Future<void> editFlashcard({required int id}) async {
+    emit(FlashcardLoading());
+    FlashcardModel flashcard = FlashcardModel(
+      id: id,
+      front: editFrontController.text,
+      back: editBackController.text,
+    );
+    FlashcardModel? result = await service.editFlashcard(flashcard);
+    if (result == null) {
+      emit(FlashcardError(
+          "Edit Failed", "Could not edit flashcard. Please try again."));
+      return;
+    }
+    emit(FlashcardSuccess(
+        "Edited Successfully", "Flashcard edited successfully."));
   }
 
   Future<void> getFlashcardSet({required int id}) async {

@@ -110,26 +110,127 @@ class EditFlashcardSetScreen extends StatelessWidget {
                               .allFlashcardList
                               .length;
                       i++)
-                    GestureDetector(
-                      child: context.read<FlashcardCubit>().allFlashcardList[i],
-                      onLongPress: () {
-                        CustomDialogs.showConfirmDialog(
-                            context,
-                            "Confirm Delete Flashcard",
-                            "Are you sure you want to delete this flashcard?",
-                            () {
-                          context.read<FlashcardCubit>().deleteFlashcard(
-                              id: context
-                                  .read<FlashcardCubit>()
-                                  .flashcards!
-                                  .cards![i]
-                                  .id!);
-                          Navigator.pop(context);
-                          context
-                              .read<FlashcardCubit>()
-                              .getFlashcardSet(id: setID);
-                        });
-                      },
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                            // height: MediaQuery.of(context).size.height * 0.2,
+                            flex: 10,
+                            child: context
+                                .read<FlashcardCubit>()
+                                .allFlashcardList[i]),
+                        Spacer(),
+                        Expanded(
+                          flex: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    final editFormKey = GlobalKey<FormState>();
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("Edit Flashcard"),
+                                            content: Form(
+                                              key: editFormKey,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  CustomTextFormField(
+                                                    label: "Front",
+                                                    controller: context
+                                                        .read<FlashcardCubit>()
+                                                        .editFrontController,
+                                                  ),
+                                                  const SizedBox(height: 16),
+                                                  CustomTextFormField(
+                                                    label: "Back",
+                                                    controller: context
+                                                        .read<FlashcardCubit>()
+                                                        .editBackController,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Cancel")),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    if (editFormKey
+                                                        .currentState!
+                                                        .validate()) {
+                                                      context
+                                                          .read<
+                                                              FlashcardCubit>()
+                                                          .editFlashcard(
+                                                              id: context
+                                                                  .read<
+                                                                      FlashcardCubit>()
+                                                                  .flashcards!
+                                                                  .cards![i]
+                                                                  .id!);
+                                                      Navigator.pop(context);
+                                                    }
+                                                  },
+                                                  child: Text("Edit")),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Text("Edit")),
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red),
+                                  onPressed: () {
+                                    CustomDialogs.showConfirmDialog(
+                                        context,
+                                        "Confirm Delete Flashcard",
+                                        "Are you sure you want to delete this flashcard?",
+                                        () {
+                                      context
+                                          .read<FlashcardCubit>()
+                                          .deleteFlashcard(
+                                              id: context
+                                                  .read<FlashcardCubit>()
+                                                  .flashcards!
+                                                  .cards![i]
+                                                  .id!);
+                                      Navigator.pop(context);
+                                      context
+                                          .read<FlashcardCubit>()
+                                          .getFlashcardSet(id: setID);
+                                    });
+                                  },
+                                  child: Text("Delete",
+                                      style: TextStyle(color: Colors.white))),
+                            ],
+                          ),
+                        )
+                      ],
+                      // onLongPress: () {
+                      //   CustomDialogs.showConfirmDialog(
+                      //       context,
+                      //       "Confirm Delete Flashcard",
+                      //       "Are you sure you want to delete this flashcard?",
+                      //       () {
+                      //     context.read<FlashcardCubit>().deleteFlashcard(
+                      //         id: context
+                      //             .read<FlashcardCubit>()
+                      //             .flashcards!
+                      //             .cards![i]
+                      //             .id!);
+                      //     Navigator.pop(context);
+                      //     context
+                      //         .read<FlashcardCubit>()
+                      //         .getFlashcardSet(id: setID);
+                      //   });
+                      // },
                     )
                 ]),
           ),

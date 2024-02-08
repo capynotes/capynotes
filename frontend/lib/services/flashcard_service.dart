@@ -44,6 +44,25 @@ class FlashcardService {
     }
   }
 
+  Future<FlashcardModel?> editFlashcard(FlashcardModel flashcardModel) async {
+    try {
+      Response? response;
+      response = await Api.instance.putRequest(ApiConstants.baseUrl,
+          ApiConstants.editFlashcard, jsonEncode(flashcardModel.toJson()));
+      if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(body);
+        FlashcardModel flashcardModel =
+            FlashcardModel.fromJson(responseModel.data);
+        return flashcardModel;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<FlashcardSetModel?> getFlashcardSet(int setID) async {
     try {
       Response? response;
