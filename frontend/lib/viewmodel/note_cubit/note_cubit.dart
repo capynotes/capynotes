@@ -13,7 +13,7 @@ class NoteCubit extends Cubit<NoteState> {
   final NoteService service;
   final String path = "assets/audio/csgo.mp3";
   NoteModel? selectedNote;
-  final AudioPlayer player = AudioPlayer();
+  // AudioPlayer player = AudioPlayer();
   TextEditingController fcSetNameController = TextEditingController();
 
   Future<void> getMyNotes() async {

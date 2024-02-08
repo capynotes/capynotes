@@ -1,7 +1,9 @@
 import 'package:audio_session/audio_session.dart';
 import 'package:capynotes/view/widgets/play_audio/control_buttons.dart';
+import 'package:capynotes/viewmodel/note_cubit/note_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -9,10 +11,9 @@ import 'seekbar.dart';
 
 class PlayerWidget extends StatefulWidget {
   final String path;
-  final AudioPlayer player;
+  final AudioPlayer player = AudioPlayer();
 
-  const PlayerWidget({Key? key, required this.path, required this.player})
-      : super(key: key);
+  PlayerWidget({Key? key, required this.path}) : super(key: key);
 
   @override
   PlayerWidgetState createState() => PlayerWidgetState();
@@ -27,10 +28,12 @@ class PlayerWidgetState extends State<PlayerWidget>
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
+
     _init();
   }
 
   Future<void> _init() async {
+    print("init");
     // Inform the operating system of our app's audio attributes etc.
     // We pick a reasonable default for an app that plays speech.
     final session = await AudioSession.instance;

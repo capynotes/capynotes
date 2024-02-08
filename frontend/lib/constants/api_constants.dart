@@ -1,5 +1,5 @@
 class ApiConstants {
-  static String baseUrl = "http://139.179.54.219:8080/";
+  static String baseUrl = "http://139.179.224.183:8080/";
   static String register = "person/register";
   static String login = "person/login";
   static String changePw = "person/change-password";
