@@ -33,10 +33,17 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ContactUsScreen(),
       );
     },
-    EditFlashcardRoute.name: (routeData) {
+    EditFlashcardSetRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<EditFlashcardSetRouteArgs>(
+          orElse: () =>
+              EditFlashcardSetRouteArgs(setID: pathParams.getInt('id')));
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const EditFlashcardScreen(),
+        child: EditFlashcardSetScreen(
+          key: args.key,
+          setID: args.setID,
+        ),
       );
     },
     FlashcardRoute.name: (routeData) {
@@ -157,17 +164,42 @@ class ContactUsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [EditFlashcardScreen]
-class EditFlashcardRoute extends PageRouteInfo<void> {
-  const EditFlashcardRoute({List<PageRouteInfo>? children})
-      : super(
-          EditFlashcardRoute.name,
+/// [EditFlashcardSetScreen]
+class EditFlashcardSetRoute extends PageRouteInfo<EditFlashcardSetRouteArgs> {
+  EditFlashcardSetRoute({
+    Key? key,
+    required int setID,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditFlashcardSetRoute.name,
+          args: EditFlashcardSetRouteArgs(
+            key: key,
+            setID: setID,
+          ),
+          rawPathParams: {'id': setID},
           initialChildren: children,
         );
 
-  static const String name = 'EditFlashcardRoute';
+  static const String name = 'EditFlashcardSetRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<EditFlashcardSetRouteArgs> page =
+      PageInfo<EditFlashcardSetRouteArgs>(name);
+}
+
+class EditFlashcardSetRouteArgs {
+  const EditFlashcardSetRouteArgs({
+    this.key,
+    required this.setID,
+  });
+
+  final Key? key;
+
+  final int setID;
+
+  @override
+  String toString() {
+    return 'EditFlashcardSetRouteArgs{key: $key, setID: $setID}';
+  }
 }
 
 /// generated route for

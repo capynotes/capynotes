@@ -40,12 +40,12 @@ class CustomDrawer extends StatelessWidget {
           ),
           Expanded(
             child: DrawerComponent(
-              title: LocaleKeys.buttons_my_profile.tr(),
+              title: "My Notes",
               onTap: () {
-                context.router.popAndPush(const ProfileRoute());
+                context.router.popAndPush(const MyNotesRoute());
               },
               prefixIcon: Icon(
-                Icons.person,
+                Icons.notes_rounded,
                 color: ColorConstants.primaryColor,
               ),
             ),
@@ -58,6 +58,18 @@ class CustomDrawer extends StatelessWidget {
               },
               prefixIcon: Icon(
                 Icons.audiotrack_outlined,
+                color: ColorConstants.primaryColor,
+              ),
+            ),
+          ),
+          Expanded(
+            child: DrawerComponent(
+              title: LocaleKeys.buttons_my_profile.tr(),
+              onTap: () {
+                context.router.popAndPush(const ProfileRoute());
+              },
+              prefixIcon: Icon(
+                Icons.person,
                 color: ColorConstants.primaryColor,
               ),
             ),

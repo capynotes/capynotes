@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import '../../model/flashcard/add_flashcard_set_model.dart';
+import '../../model/flashcard/flashcard_set_model.dart';
 import '../../model/note_model.dart';
 import '../../services/note_service.dart';
 
@@ -11,6 +14,7 @@ class NoteCubit extends Cubit<NoteState> {
   final String path = "assets/audio/csgo.mp3";
   NoteModel? selectedNote;
   final AudioPlayer player = AudioPlayer();
+  TextEditingController fcSetNameController = TextEditingController();
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
@@ -39,7 +43,7 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> getNote(int id) async {
     emit(NoteLoading());
-    selectedNote = await service.getNote(id);
+    // selectedNote = await service.getNote(id);
     selectedNote =
         NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now());
     if (selectedNote == null) {
@@ -51,5 +55,17 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> createFlashcardSet() async {
     emit(NoteLoading());
+    AddFlashcardSetModel fcSetModel = AddFlashcardSetModel(
+        userId: 1,
+        title: fcSetNameController.text,
+        note: NoteID(id: selectedNote!.id));
+    FlashcardSetModel? result = await service.createFlashcardSet(fcSetModel);
+    if (result == null) {
+      emit(NoteError("Creation Failed", "Could not create flashcard set"));
+    } else {
+      print(result);
+      emit(NoteSuccess("Set Created Successfully",
+          "Flashcard Set \"${result.title}\" Created Successfully"));
+    }
   }
 }

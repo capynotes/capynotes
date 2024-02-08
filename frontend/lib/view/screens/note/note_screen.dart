@@ -1,6 +1,7 @@
 import 'package:accordion/accordion.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,7 @@ import '../../widgets/play_audio/player_widget.dart';
 
 @RoutePage()
 class NoteScreen extends StatelessWidget {
-  NoteScreen({super.key, @PathParam('id') required this.noteID});
+  const NoteScreen({super.key, @PathParam('id') required this.noteID});
   final int noteID;
 
   @override
@@ -20,7 +21,19 @@ class NoteScreen extends StatelessWidget {
     return BlocConsumer<NoteCubit, NoteState>(
       bloc: context.read<NoteCubit>()..getNote(noteID),
       listener: (context, state) {
-        // TODO: implement listener
+        if (state is NoteError) {
+          CustomSnackbars.displayErrorMotionToast(
+              context,
+              state.title,
+              state.description,
+              () => context.read<NoteCubit>().getNote(noteID));
+        } else if (state is NoteSuccess) {
+          CustomSnackbars.displaySuccessMotionToast(
+              context,
+              state.title,
+              state.description,
+              () => context.read<NoteCubit>().getNote(noteID));
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -33,7 +46,6 @@ class NoteScreen extends StatelessWidget {
                   onPressed: () {
                     context.router.pop();
                     context.read<NoteCubit>().getMyNotes();
-                    print("object");
                   },
                 )),
             endDrawer: CustomDrawer(),
@@ -105,7 +117,10 @@ class NoteScreen extends StatelessWidget {
                                 showDialog(
                                     context: context,
                                     builder: (context) {
-                                      return CreateFlashcardSetDialog();
+                                      return CreateFlashcardSetDialog(
+                                          controller: context
+                                              .read<NoteCubit>()
+                                              .fcSetNameController);
                                     });
                               })
                         ],
@@ -121,7 +136,10 @@ class NoteScreen extends StatelessWidget {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            return CreateFlashcardSetDialog();
+                                            return CreateFlashcardSetDialog(
+                                                controller: context
+                                                    .read<NoteCubit>()
+                                                    .fcSetNameController);
                                           });
                                     }),
                               ],
@@ -142,7 +160,10 @@ class NoteScreen extends StatelessWidget {
                                     dense: true,
                                     trailing: IconButton(
                                         icon: const Icon(Icons.edit),
-                                        onPressed: () {}),
+                                        onPressed: () {
+                                          context.router
+                                              .pushNamed("/edit-flashcard/1");
+                                        }),
                                     onTap: () {
                                       //TODO: Navigate to flashcard set screen
                                       context.router
@@ -171,32 +192,31 @@ class NoteScreen extends StatelessWidget {
 }
 
 class CreateFlashcardSetDialog extends StatelessWidget {
-  const CreateFlashcardSetDialog({
-    super.key,
-  });
-
+  CreateFlashcardSetDialog({super.key, required this.controller});
+  final TextEditingController controller;
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: formKey,
       child: AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
+                controller: controller,
                 decoration:
                     const InputDecoration(labelText: "Flashcard Set Title"),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Title cannot be empty";
+                  }
+                  return null;
+                },
               ),
             ],
           ),
           actions: [
-            TextButton(
-                child: const Text(
-                  "Create Set",
-                  style: TextStyle(color: Colors.green),
-                ),
-                onPressed: () {
-                  // TODO: Send create flashcard set request
-                }),
             TextButton(
                 child: const Text(
                   "Cancel",
@@ -204,7 +224,18 @@ class CreateFlashcardSetDialog extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
-                })
+                }),
+            TextButton(
+                child: const Text(
+                  "Create Set",
+                  style: TextStyle(color: Colors.green),
+                ),
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    context.read<NoteCubit>().createFlashcardSet();
+                    Navigator.pop(context);
+                  }
+                }),
           ]),
     );
   }

@@ -37,12 +37,12 @@ class CustomTextFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(color: Colors.white),
-        ),
+        // Text(
+        //   label,
+        //   style: TextStyle(color: Colors.white),
+        // ),
         const SizedBox(
-          height: 2,
+          height: 10,
         ),
         TextFormField(
           controller: controller,

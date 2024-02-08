@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:capynotes/model/flashcard/add_flashcard_set_model.dart';
+import 'package:capynotes/model/flashcard/flashcard_set_model.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:http/http.dart';
 
@@ -41,6 +43,26 @@ class NoteService {
         ResponseModel responseModel = ResponseModel.fromJson(body);
         NoteModel noteModel = NoteModel.fromJson(responseModel.data);
         return noteModel;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<FlashcardSetModel?> createFlashcardSet(
+      AddFlashcardSetModel requestBody) async {
+    try {
+      Response? response;
+      response = await Api.instance.postRequest(ApiConstants.baseUrl,
+          ApiConstants.createFlashcardSet, jsonEncode(requestBody.toJson()));
+      if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(body);
+        FlashcardSetModel flashcardSetModel =
+            FlashcardSetModel.fromJson(responseModel.data);
+        return flashcardSetModel;
       } else {
         return null;
       }

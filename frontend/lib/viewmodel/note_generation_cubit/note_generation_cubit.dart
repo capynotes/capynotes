@@ -16,12 +16,13 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   NoteGenerationCubit(this.service) : super(NoteGenerationInitial());
   NoteGenerationService service;
 
-  bool isGenerateFlashcards = true;
+  // bool isGenerateFlashcards = true;
   TextEditingController noteNameController = TextEditingController();
   TextEditingController videoUrlController = TextEditingController();
   String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   File? audioFile;
   AudioModel? uploadedAudio;
+
   Future<void> pickAudio() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -87,11 +88,11 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
     emit(NoteGenerationDisplay());
   }
 
-  void changeGenerateFlashcards(bool value) {
-    emit(NoteGenerationCheck());
-    isGenerateFlashcards = value;
-    emit(NoteGenerationDisplay());
-  }
+  // void changeGenerateFlashcards(bool value) {
+  //   emit(NoteGenerationCheck());
+  //   isGenerateFlashcards = value;
+  //   emit(NoteGenerationDisplay());
+  // }
 
   void clearSelectedFile() {
     emit(NoteGenerationCheck());

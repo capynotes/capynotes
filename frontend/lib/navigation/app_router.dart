@@ -9,7 +9,7 @@ import '../view/screens/auth/forgot_password_screen.dart';
 import '../view/screens/auth/login_screen.dart';
 import '../view/screens/auth/register_screen.dart';
 import '../view/screens/contact_us_screen.dart';
-import '../view/screens/flashcard/edit_flashcard_screen.dart';
+import '../view/screens/flashcard/edit_flashcard_set_screen.dart';
 import '../view/screens/flashcard/flashcard_display_screen.dart';
 import '../view/screens/note/my_notes_screen.dart';
 import '../view/screens/note/note_screen.dart';
@@ -31,7 +31,8 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(page: ForgotPasswordRoute.page, path: "/forgot-password"),
         AutoRoute(page: ProfileRoute.page, path: "/profile"),
         AutoRoute(page: FlashcardRoute.page, path: "/flashcard/:id"),
-        AutoRoute(page: EditFlashcardRoute.page, path: "/edit-flashcard"),
+        AutoRoute(
+            page: EditFlashcardSetRoute.page, path: "/edit-flashcard/:id"),
         AutoRoute(page: MyNotesRoute.page, path: "/my-notes"),
         AutoRoute(page: NoteRoute.page, path: "/note/:id"),
         AutoRoute(
@@ -63,7 +64,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         resolver.route.name == NoteRoute.name || //TODO: Delete this line
         resolver.route.name == FlashcardRoute.name || //TODO: Delete this line
         resolver.route.name ==
-            EditFlashcardRoute.name || //TODO: Delete this line
+            EditFlashcardSetRoute.name || //TODO: Delete this line
         resolver.route.name == OnBoardingRoute.name) {
       resolver.next();
     } else {

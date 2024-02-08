@@ -1,6 +1,7 @@
 import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/navigation/app_router.dart';
 import 'package:capynotes/services/auth_service.dart';
+import 'package:capynotes/services/flashcard_service.dart';
 import 'package:capynotes/services/note_generation_service.dart';
 import 'package:capynotes/viewmodel/audio_cubit/audio_cubit.dart';
 import 'package:capynotes/viewmodel/auth/login/login_cubit.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatefulWidget {
       NoteGenerationService();
   static final AudioService audioService = AudioService();
   static final NoteService noteService = NoteService();
+  static final FlashcardService flashcardService = FlashcardService();
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -67,7 +69,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
             create: (context) => ForgotPasswordCubit(MyApp.authService)),
         BlocProvider(
-          create: (context) => FlashcardCubit(),
+          create: (context) => FlashcardCubit(MyApp.flashcardService),
         ),
         BlocProvider(
           create: (context) => NoteGenerationCubit(MyApp.noteGenerationService),

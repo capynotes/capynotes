@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,39 +12,52 @@ class FlashcardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CarouselController controller = CarouselController();
-    return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Scheduling Algorithms"),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: BlocBuilder<FlashcardCubit, FlashcardState>(
-            builder: (context, state) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      flex: 8,
-                      child: CarouselSlider(
-                        items: context.read<FlashcardCubit>().allFlashcardList,
-                        carouselController: controller,
-                        options: CarouselOptions(
-                            autoPlay: false,
-                            scrollPhysics: const NeverScrollableScrollPhysics(),
-                            viewportFraction: 1),
-                      )),
-                  const Spacer(flex: 1),
-                  Expanded(
-                    flex: 3,
-                    child: _buildButtonsRow(context, controller),
-                  )
-                ],
-              );
-            },
-          ),
-        ));
+    return BlocConsumer<FlashcardCubit, FlashcardState>(
+      bloc: BlocProvider.of<FlashcardCubit>(context)
+        ..getFlashcardSet(id: setID),
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        if (state is FlashcardDisplay) {
+          return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: Text(context.read<FlashcardCubit>().flashcards!.title ??
+                    "Error Loading Flashcards"),
+              ),
+              body: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          flex: 8,
+                          child: CarouselSlider(
+                            items:
+                                context.read<FlashcardCubit>().allFlashcardList,
+                            carouselController: controller,
+                            options: CarouselOptions(
+                                autoPlay: false,
+                                scrollPhysics:
+                                    const NeverScrollableScrollPhysics(),
+                                viewportFraction: 1),
+                          )),
+                      const Spacer(flex: 1),
+                      Expanded(
+                        flex: 3,
+                        child: _buildButtonsRow(context, controller),
+                      )
+                    ],
+                  )));
+        } else if (state is FlashcardLoading) {
+          return const LoadingLottie();
+        } else {
+          return const Center(child: Text("Error"));
+        }
+      },
+    );
   }
 
   Row _buildButtonsRow(BuildContext context, CarouselController controller) {
