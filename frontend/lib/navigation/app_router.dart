@@ -1,15 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:capynotes/view/screens/my_audios_screen.dart';
-import 'package:capynotes/view/screens/note_generation_screen.dart';
+import 'package:capynotes/view/screens/note/note_generation_screen.dart';
+import 'package:flutter/material.dart';
 import '../view/screens/about_us_screen.dart';
 import '../view/screens/auth/change_password_screen.dart';
 import '../view/screens/auth/forgot_password_screen.dart';
 import '../view/screens/auth/login_screen.dart';
 import '../view/screens/auth/register_screen.dart';
 import '../view/screens/contact_us_screen.dart';
-import '../view/screens/flashcard/add_flashcard_screen.dart';
+import '../view/screens/flashcard/edit_flashcard_set_screen.dart';
 import '../view/screens/flashcard/flashcard_display_screen.dart';
+import '../view/screens/note/my_notes_screen.dart';
+import '../view/screens/note/note_screen.dart';
 import '../view/screens/onboarding_screen.dart';
 import '../view/screens/profile_screen.dart';
 
@@ -27,8 +30,11 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(page: ChangePasswordRoute.page, path: "/change-password"),
         AutoRoute(page: ForgotPasswordRoute.page, path: "/forgot-password"),
         AutoRoute(page: ProfileRoute.page, path: "/profile"),
-        AutoRoute(page: FlashcardRoute.page, path: "/flashcards"),
-        AutoRoute(page: AddFlashcardRoute.page, path: "/add-flashcard"),
+        AutoRoute(page: FlashcardRoute.page, path: "/flashcard/:id"),
+        AutoRoute(
+            page: EditFlashcardSetRoute.page, path: "/edit-flashcard/:id"),
+        AutoRoute(page: MyNotesRoute.page, path: "/my-notes"),
+        AutoRoute(page: NoteRoute.page, path: "/note/:id"),
         AutoRoute(
           page: OnBoardingRoute.page,
           path: "/onboarding",
@@ -38,7 +44,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
               if (isFirstTime) {
                 resolver.next();
               } else {
-                pushNamed("/note-generation");
+                navigateNamed("/note-generation");
               }
             })
           ],
@@ -54,6 +60,11 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
     if (resolver.route.name == LoginRoute.name ||
         resolver.route.name == RegisterRoute.name ||
         resolver.route.name == ForgotPasswordRoute.name ||
+        resolver.route.name == MyNotesRoute.name || //TODO: Delete this line
+        resolver.route.name == NoteRoute.name || //TODO: Delete this line
+        resolver.route.name == FlashcardRoute.name || //TODO: Delete this line
+        resolver.route.name ==
+            EditFlashcardSetRoute.name || //TODO: Delete this line
         resolver.route.name == OnBoardingRoute.name) {
       resolver.next();
     } else {

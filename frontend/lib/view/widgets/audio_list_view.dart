@@ -6,7 +6,7 @@ import '../../constants/colors.dart';
 import '../../enums/audio_status_enum.dart';
 import '../../model/audio_model.dart';
 import '../../translations/locale_keys.g.dart';
-import '../../utils.dart';
+import '../../utility/utils.dart';
 
 class AudioListView extends StatelessWidget {
   const AudioListView({

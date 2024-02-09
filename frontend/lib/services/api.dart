@@ -1,3 +1,4 @@
+import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
@@ -5,7 +6,10 @@ class Api {
   static Api get instance => _instance;
   Api._init();
 
-  Map<String, String> get tokenHeader => {"Content-Type": "application/json"};
+  Map<String, String> get tokenHeader => {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${UserInfo.loggedUser?.token}"
+      };
 
   Future<http.Response> getRequest(String adress, String path) async {
     final response =
