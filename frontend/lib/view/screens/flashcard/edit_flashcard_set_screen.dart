@@ -81,7 +81,7 @@ class EditFlashcardSetScreen extends StatelessWidget {
                                 }),
                             TextButton(
                                 child: const Text(
-                                  "Create Set",
+                                  "Add Flashcard",
                                   style: TextStyle(color: Colors.green),
                                 ),
                                 onPressed: () {
@@ -135,7 +135,8 @@ class EditFlashcardSetScreen extends StatelessWidget {
                                           context: context,
                                           builder: (context) {
                                             return AlertDialog(
-                                              title: Text("Edit Flashcard"),
+                                              title:
+                                                  const Text("Edit Flashcard"),
                                               content: Form(
                                                 key: editFormKey,
                                                 child: Column(
@@ -165,7 +166,11 @@ class EditFlashcardSetScreen extends StatelessWidget {
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
-                                                    child: Text("Cancel")),
+                                                    child: const Text(
+                                                      "Cancel",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    )),
                                                 TextButton(
                                                     onPressed: () {
                                                       if (editFormKey
@@ -184,7 +189,10 @@ class EditFlashcardSetScreen extends StatelessWidget {
                                                         Navigator.pop(context);
                                                       }
                                                     },
-                                                    child: Text("Edit")),
+                                                    child: Text("Edit",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.green))),
                                               ],
                                             );
                                           });

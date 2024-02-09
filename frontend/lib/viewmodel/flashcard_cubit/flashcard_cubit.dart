@@ -77,8 +77,10 @@ class FlashcardCubit extends Cubit<FlashcardState> {
       allFlashcardList = List.generate(
         flashcards!.cards!.length,
         (index) => FlipCard(
-          frontWidget:
-              FlashcardFace(text: flashcards!.cards![index].front ?? ""),
+          frontWidget: FlashcardFace(
+            text: flashcards!.cards![index].front ?? "",
+            color: Colors.cyan,
+          ),
           backWidget: FlashcardFace(text: flashcards!.cards![index].back ?? ""),
           controller: flashcards!.cards![index].controller,
           rotateSide: RotateSide.left,
