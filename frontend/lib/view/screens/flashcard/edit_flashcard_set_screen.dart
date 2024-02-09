@@ -226,7 +226,7 @@ class EditFlashcardSetScreen extends StatelessWidget {
         } else if (state is FlashcardLoading) {
           return const LoadingLottie();
         } else {
-          return const Center(child: Text("Error"));
+          return const Center(child: Text(""));
         }
       },
     );

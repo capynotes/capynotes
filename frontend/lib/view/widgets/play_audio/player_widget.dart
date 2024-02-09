@@ -45,7 +45,8 @@ class PlayerWidgetState extends State<PlayerWidget>
     });
     // Try to load audio from a source and catch any errors.
     try {
-      await widget.player.setAudioSource(AudioSource.asset(widget.path));
+      await widget.player
+          .setAudioSource(AudioSource.uri(Uri.parse(widget.path)));
     } catch (e) {
       debugPrint("Error loading audio source: $e");
     }

@@ -58,11 +58,13 @@ class NoteScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         PlayerWidget(
-                          path: context
-                              .read<NoteCubit>()
-                              .path, //Change with selected note's path
-                          // player: context.read<NoteCubit>().player,
-                        ),
+                            path:
+                                "https://cs49x-transcribe.s3.eu-north-1.amazonaws.com/02f042a6-4f94-4e6e-a789-306dcce591d7_os1.mp3"
+                            // context
+                            //     .read<NoteCubit>()
+                            //     .path, //Change with selected note's path
+                            // player: context.read<NoteCubit>().player,
+                            ),
                         const SizedBox(height: 16.0),
                         CustomElevatedButton(
                             child: const Row(
@@ -185,7 +187,7 @@ class NoteScreen extends StatelessWidget {
         } else if (state is NoteNotFound) {
           return const Center(child: Text("Note not found"));
         } else {
-          return const Center(child: Text("Error"));
+          return const Center(child: Text(""));
         }
       },
     );
