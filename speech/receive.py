@@ -2,6 +2,28 @@
 import os
 import sys
 import pika
+from database import get_note_from_database, insert_transcription, insert_timestamps
+from transcribe import whisper_transcribe_audio
+
+def callback(ch, method, properties, body):
+    note_id = int(body.decode())
+    note_data = get_note_from_database(note_id)
+    audio_file_name = note_data[3]
+    result = whisper_transcribe_audio(audio_file_name)
+    transcription = result["text"]
+    segments = result["segments"]
+
+    print(f" [x] Received Note ID: {note_id}, Data: {note_data}, Audio name: {audio_file_name}")
+    print(transcription)
+
+    transcription_id_value = insert_transcription(note_id, transcription)
+
+    transformed_list = [{'transcription_id': transcription_id_value,
+                    'start': item['start'],
+                    'end': item['end'],
+                    'phrase': item['text']}
+                    for item in segments]
+    insert_timestamps(transformed_list)
 
 def main():
     connection = pika.BlockingConnection(
@@ -10,9 +32,6 @@ def main():
     channel = connection.channel()
 
     channel.queue_declare(queue="transcription_queue")
-
-    def callback(ch, method, properties, body):
-        print(f" [x] Received {body.decode()}")
 
     channel.basic_consume(
         queue="transcription_queue",
