@@ -1,7 +1,7 @@
 import psycopg2
 from db_config import DB_CONFIG
 
-conenction = None
+connection = None
 
 def initialize_connection():
     global connection
@@ -47,7 +47,7 @@ def insert_timestamps(data_list):
 
     fields = data_list[0].keys()
     values_placeholder = ', '.join(['%s' for _ in fields])
-    insert_query = f"INSERT INTO timestamp ({', '.join(fields)}) VALUES ({values_placeholder});"
+    insert_query = f"INSERT INTO timestamp (transcription_id, start, finish, phrase) VALUES ({values_placeholder});"
 
     values_list = [tuple(row[field] for field in fields) for row in data_list]
 
