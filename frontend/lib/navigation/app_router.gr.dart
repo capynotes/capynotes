@@ -21,12 +21,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const AboutUsScreen(),
       );
     },
-    AddFlashcardRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AddFlashcardScreen(),
-      );
-    },
     ChangePasswordRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -39,10 +33,29 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const ContactUsScreen(),
       );
     },
-    FlashcardRoute.name: (routeData) {
+    EditFlashcardSetRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<EditFlashcardSetRouteArgs>(
+          orElse: () =>
+              EditFlashcardSetRouteArgs(setID: pathParams.getInt('id')));
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const FlashcardScreen(),
+        child: EditFlashcardSetScreen(
+          key: args.key,
+          setID: args.setID,
+        ),
+      );
+    },
+    FlashcardRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<FlashcardRouteArgs>(
+          orElse: () => FlashcardRouteArgs(setID: pathParams.getInt('id')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: FlashcardScreen(
+          key: args.key,
+          setID: args.setID,
+        ),
       );
     },
     ForgotPasswordRoute.name: (routeData) {
@@ -63,10 +76,28 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MyAudiosScreen(),
       );
     },
+    MyNotesRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MyNotesScreen(),
+      );
+    },
     NoteGenerationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const NoteGenerationScreen(),
+      );
+    },
+    NoteRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<NoteRouteArgs>(
+          orElse: () => NoteRouteArgs(noteID: pathParams.getInt('id')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: NoteScreen(
+          key: args.key,
+          noteID: args.noteID,
+        ),
       );
     },
     OnBoardingRoute.name: (routeData) {
@@ -105,20 +136,6 @@ class AboutUsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [AddFlashcardScreen]
-class AddFlashcardRoute extends PageRouteInfo<void> {
-  const AddFlashcardRoute({List<PageRouteInfo>? children})
-      : super(
-          AddFlashcardRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'AddFlashcardRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [ChangePasswordScreen]
 class ChangePasswordRoute extends PageRouteInfo<void> {
   const ChangePasswordRoute({List<PageRouteInfo>? children})
@@ -147,17 +164,81 @@ class ContactUsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [EditFlashcardSetScreen]
+class EditFlashcardSetRoute extends PageRouteInfo<EditFlashcardSetRouteArgs> {
+  EditFlashcardSetRoute({
+    Key? key,
+    required int setID,
+    List<PageRouteInfo>? children,
+  }) : super(
+          EditFlashcardSetRoute.name,
+          args: EditFlashcardSetRouteArgs(
+            key: key,
+            setID: setID,
+          ),
+          rawPathParams: {'id': setID},
+          initialChildren: children,
+        );
+
+  static const String name = 'EditFlashcardSetRoute';
+
+  static const PageInfo<EditFlashcardSetRouteArgs> page =
+      PageInfo<EditFlashcardSetRouteArgs>(name);
+}
+
+class EditFlashcardSetRouteArgs {
+  const EditFlashcardSetRouteArgs({
+    this.key,
+    required this.setID,
+  });
+
+  final Key? key;
+
+  final int setID;
+
+  @override
+  String toString() {
+    return 'EditFlashcardSetRouteArgs{key: $key, setID: $setID}';
+  }
+}
+
+/// generated route for
 /// [FlashcardScreen]
-class FlashcardRoute extends PageRouteInfo<void> {
-  const FlashcardRoute({List<PageRouteInfo>? children})
-      : super(
+class FlashcardRoute extends PageRouteInfo<FlashcardRouteArgs> {
+  FlashcardRoute({
+    Key? key,
+    required int setID,
+    List<PageRouteInfo>? children,
+  }) : super(
           FlashcardRoute.name,
+          args: FlashcardRouteArgs(
+            key: key,
+            setID: setID,
+          ),
+          rawPathParams: {'id': setID},
           initialChildren: children,
         );
 
   static const String name = 'FlashcardRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<FlashcardRouteArgs> page =
+      PageInfo<FlashcardRouteArgs>(name);
+}
+
+class FlashcardRouteArgs {
+  const FlashcardRouteArgs({
+    this.key,
+    required this.setID,
+  });
+
+  final Key? key;
+
+  final int setID;
+
+  @override
+  String toString() {
+    return 'FlashcardRouteArgs{key: $key, setID: $setID}';
+  }
 }
 
 /// generated route for
@@ -203,6 +284,20 @@ class MyAudiosRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MyNotesScreen]
+class MyNotesRoute extends PageRouteInfo<void> {
+  const MyNotesRoute({List<PageRouteInfo>? children})
+      : super(
+          MyNotesRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MyNotesRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [NoteGenerationScreen]
 class NoteGenerationRoute extends PageRouteInfo<void> {
   const NoteGenerationRoute({List<PageRouteInfo>? children})
@@ -214,6 +309,44 @@ class NoteGenerationRoute extends PageRouteInfo<void> {
   static const String name = 'NoteGenerationRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NoteScreen]
+class NoteRoute extends PageRouteInfo<NoteRouteArgs> {
+  NoteRoute({
+    Key? key,
+    required int noteID,
+    List<PageRouteInfo>? children,
+  }) : super(
+          NoteRoute.name,
+          args: NoteRouteArgs(
+            key: key,
+            noteID: noteID,
+          ),
+          rawPathParams: {'id': noteID},
+          initialChildren: children,
+        );
+
+  static const String name = 'NoteRoute';
+
+  static const PageInfo<NoteRouteArgs> page = PageInfo<NoteRouteArgs>(name);
+}
+
+class NoteRouteArgs {
+  const NoteRouteArgs({
+    this.key,
+    required this.noteID,
+  });
+
+  final Key? key;
+
+  final int noteID;
+
+  @override
+  String toString() {
+    return 'NoteRouteArgs{key: $key, noteID: $noteID}';
+  }
 }
 
 /// generated route for

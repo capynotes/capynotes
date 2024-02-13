@@ -7,10 +7,9 @@ import 'package:capynotes/viewmodel/note_generation_cubit/note_generation_cubit.
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../constants/asset_paths.dart';
-import '../../translations/locale_keys.g.dart';
-import '../widgets/custom_widgets/custom_drawer.dart';
-import '../widgets/loading_lottie_widget.dart';
+import '../../../translations/locale_keys.g.dart';
+import '../../widgets/custom_widgets/custom_drawer.dart';
+import '../../widgets/loading_lottie_widget.dart';
 
 @RoutePage()
 class NoteGenerationScreen extends StatefulWidget {
@@ -160,34 +159,34 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: CheckboxListTile(
-                            tileColor: ColorConstants.primaryColor,
-                            side: BorderSide(
-                                color: ColorConstants.lightBlue, width: 2),
-                            activeColor: ColorConstants.lightBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
-                            checkColor: ColorConstants.primaryColor,
-                            controlAffinity: ListTileControlAffinity.leading,
-                            value: context
-                                .read<NoteGenerationCubit>()
-                                .isGenerateFlashcards,
-                            onChanged: (value) {
-                              context
-                                  .read<NoteGenerationCubit>()
-                                  .changeGenerateFlashcards(value ?? true);
-                            },
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(
-                              LocaleKeys.buttons_generate_flashcards.tr(),
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
+                        // SizedBox(
+                        //   width: MediaQuery.of(context).size.width / 1.5,
+                        //   child: CheckboxListTile(
+                        //     tileColor: ColorConstants.primaryColor,
+                        //     side: BorderSide(
+                        //         color: ColorConstants.lightBlue, width: 2),
+                        //     activeColor: ColorConstants.lightBlue,
+                        //     shape: RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(16)),
+                        //     checkColor: ColorConstants.primaryColor,
+                        //     controlAffinity: ListTileControlAffinity.leading,
+                        //     value: context
+                        //         .read<NoteGenerationCubit>()
+                        //         .isGenerateFlashcards,
+                        //     onChanged: (value) {
+                        //       context
+                        //           .read<NoteGenerationCubit>()
+                        //           .changeGenerateFlashcards(value ?? true);
+                        //     },
+                        //     contentPadding: EdgeInsets.zero,
+                        //     title: Text(
+                        //       LocaleKeys.buttons_generate_flashcards.tr(),
+                        //       style: const TextStyle(
+                        //           color: Colors.white,
+                        //           fontWeight: FontWeight.w500),
+                        //     ),
+                        //   ),
+                        // ),
                         CustomTextFormField(
                           label: LocaleKeys.text_fields_labels_note_name.tr(),
                           hint: LocaleKeys.text_fields_hints_note_name.tr(),
