@@ -2,7 +2,7 @@ from keybert import KeyBERT
 
 def extract_keywords(text):
     kwModel = KeyBERT()
-    keywordsAndScores = kw_model.extract_keywords(text, keyphrase_ngram_range=(1,1))
+    keywordsAndScores = kwModel.extract_keywords(text, keyphrase_ngram_range=(1,1))
 
     keywords = []
 
