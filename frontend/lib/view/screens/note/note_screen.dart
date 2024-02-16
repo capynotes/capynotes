@@ -1,12 +1,15 @@
 import 'package:accordion/accordion.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/view/screens/note/note_pdf_screen.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../constants/colors.dart';
+import '../../../utility/utils.dart';
 import '../../../viewmodel/note_cubit/note_cubit.dart';
 import '../../widgets/custom_widgets/custom_drawer.dart';
 import '../../widgets/play_audio/player_widget.dart';
@@ -66,18 +69,40 @@ class NoteScreen extends StatelessWidget {
                             // player: context.read<NoteCubit>().player,
                             ),
                         const SizedBox(height: 16.0),
-                        CustomElevatedButton(
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text("Download PDF"),
-                                SizedBox(width: 8.0),
-                                Icon(
-                                  Icons.download,
-                                ),
-                              ],
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CustomElevatedButton(
+                              child: const Text("View PDF"),
+                              onPressed: () => kIsWeb
+                                  ? Utils.launchURL(
+                                      'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
+                                  : Navigator.push(
+                                      context,
+                                      MaterialPageRoute<dynamic>(
+                                        builder: (_) => const NotePDFScreen(
+                                          url:
+                                              'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
+                                          noteName: "Peter J. Denning",
+                                        ),
+                                      ),
+                                    ),
                             ),
-                            onPressed: () {}),
+                            const SizedBox(width: 8.0),
+                            CustomElevatedButton(
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Download PDF"),
+                                    SizedBox(width: 8.0),
+                                    Icon(
+                                      Icons.download,
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () {}),
+                          ],
+                        ),
                         Accordion(
                             headerBorderColor: Colors.blueGrey,
                             headerBorderColorOpened: Colors.transparent,
