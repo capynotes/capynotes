@@ -1,7 +1,7 @@
 DB_CONFIG = {
     'user': 'postgres',
-    'password': '3216',
+    'password': 'admin',
     'host': 'localhost',
-    'port': '5433',
-    'database': 'audioservicedb'
+    'port': '5432',
+    'database': 'capynotesDB'
 }
