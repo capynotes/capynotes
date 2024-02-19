@@ -7,6 +7,7 @@ import com.capynotes.noteservice.services.NoteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/note")
@@ -15,11 +16,11 @@ public class NoteController {
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
     }
-    @PostMapping("/create")
-    public ResponseEntity<?> createNote(@RequestBody Note note) {
+    @PostMapping("/upload-audio")
+    public ResponseEntity<?> uploadAudio(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String fileName, @RequestParam("userId") Long userId) {
         Response response;
         try {
-            noteService.createNote(note, null);
+            Note note = noteService.uploadAudio(file, userId, fileName);
             response = new Response("Note created.", 200, note);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

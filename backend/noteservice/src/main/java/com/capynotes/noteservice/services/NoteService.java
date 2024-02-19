@@ -13,9 +13,7 @@ import java.util.List;
 
 @Service
 public interface NoteService {
-    Note createNote(Note note, String summary);
     void deleteNote(Long id);
-    Note uploadNote(MultipartFile multipartFile, Long userId) throws IOException, FileUploadException;
-    Object downloadNote(String fileName) throws IOException, FileDownloadException;
-    Note updateNoteStatus(Long noteId, NoteStatus status);
+    Note uploadAudio(MultipartFile multipartFile, Long userId, String fileName) throws IOException, FileUploadException;
+    List<Note> findNotesByUserId(Long userId) throws FileNotFoundException;
 }
