@@ -21,8 +21,6 @@ def callback_recv(ch, method, properties, body):
     transcription = result["text"]
     segments = result["segments"]
 
-    print(f" [x] Received Note ID: {note_id}, Data: {note_data}, Audio name: {audio_file_name}")
-
     transcription_id_value = insert_transcription(note_id, transcription)
 
     transformed_list = [{'transcription_id': transcription_id_value,
