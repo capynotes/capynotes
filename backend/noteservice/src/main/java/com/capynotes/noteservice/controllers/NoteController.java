@@ -2,6 +2,7 @@ package com.capynotes.noteservice.controllers;
 
 import com.capynotes.noteservice.dtos.NoteRequest;
 import com.capynotes.noteservice.dtos.Response;
+import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
 import com.capynotes.noteservice.models.Note;
 import com.capynotes.noteservice.services.NoteService;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,21 @@ public class NoteController {
         Response response;
         try {
             Note note = noteService.uploadAudio(file, userId, fileName);
+            response = new Response("Note created.", 200, note);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response = new Response("An error occurred." + e.toString(), 500, null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/from-video")
+    public ResponseEntity<?> uploadFromVideo(@RequestBody VideoTranscribeRequest videoTranscribeRequest, @RequestParam("userId") Long userId) {
+        Response response;
+        String videoUrl = videoTranscribeRequest.getVideoUrl();
+        String fileName = videoTranscribeRequest.getNoteName();
+        try {
+            Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
             response = new Response("Note created.", 200, note);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

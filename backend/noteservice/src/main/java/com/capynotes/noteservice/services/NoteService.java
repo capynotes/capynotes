@@ -15,5 +15,6 @@ import java.util.List;
 public interface NoteService {
     void deleteNote(Long id);
     Note uploadAudio(MultipartFile multipartFile, Long userId, String fileName) throws IOException, FileUploadException;
+    Note uploadAudioFromURL(String videoUrl, String fileName, Long userId);
     List<Note> findNotesByUserId(Long userId) throws FileNotFoundException;
 }
