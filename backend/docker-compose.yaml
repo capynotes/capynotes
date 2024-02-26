@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  db:
+    image: 'postgres'
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5432:5432"
+
+  gateway-spring-app:
+    image: 'gateway-image'
+    build:
+      context: ./gateway
+    container_name: gateway-spring-app
+    ports:
+      - "8080:8080"
+
+  notification-service-spring-app:
+    image: 'notification-service-image'
+    build:
+      context: ./notificationservice
+    container_name: notification-service-spring-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+    ports:
+      - "8081:8081"
+
+  auth-service-spring-app:
+    image: 'auth-service-image'
+    build:
+      context: ./authservice
+    container_name: auth-service-spring-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/authservicedb'
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8082:8082"
+
+  note-service-spring-app:
+    image: 'note-service-image'
+    build:
+      context: ./noteservice
+    container_name: note-service-spring-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/noteservicedb'
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8083:8083"
+
