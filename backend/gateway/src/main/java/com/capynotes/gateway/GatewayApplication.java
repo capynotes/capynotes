@@ -23,11 +23,11 @@ public class GatewayApplication {
 				.route(r -> r.path("/note/**")
 						.filters(f -> f
 								.prefixPath("/api"))
-						.uri("http://notification-service-spring-app:8084"))
+						.uri("http://note-service-spring-app:8083"))
 				.route(r -> r.path("/flashcard/**")
 						.filters(f -> f
 								.prefixPath("/api"))
-						.uri("http://note-service-spring-app:8084"))
+						.uri("http://note-service-spring-app:8083"))
 				.build();
 	}
 
