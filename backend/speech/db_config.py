@@ -1,7 +1,7 @@
 DB_CONFIG = {
     'user': 'postgres',
     'password': 'admin',
-    'host': 'localhost',
+    'host': 'db',
     'port': '5432',
     'database': 'noteservicedb'
 }

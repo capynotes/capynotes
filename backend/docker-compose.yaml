@@ -1,8 +1,20 @@
 version: '3.8'
 services:
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
   db:
     image: 'postgres'
     container_name: db
+    depends_on:
+      - rabbitmq
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -57,6 +69,16 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_RABBITMQ_HOST: rabbitmq
     ports:
       - "8083:8083"
+  speech_service:
+    image: 'speech-service-image'
+    build:
+      context: ./speech
+    container_name: speech-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - db
 

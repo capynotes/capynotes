@@ -38,11 +38,15 @@ public class NoteController {
     @PostConstruct
     public void init() {
         factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost("rabbitmq");
+        factory.setPort(5672);
+        factory.setUsername("guest");
+        factory.setPassword("guest");
         try {
             connection = factory.newConnection();
             channel = connection.createChannel();
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+            System.out.println(" [*] Waiting for messages.");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {

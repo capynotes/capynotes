@@ -1,27 +1,27 @@
-#!/usr/bin/env python
 import os
 import time
 import sys
 import pika
-from database import get_note_from_database, insert_transcription, insert_timestamps
-from transcribe import whisper_transcribe_audio
 
-connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+from database import get_trascription_from_database, insert_summary
+from summarize import summarize_text
+
+connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
 channel_send = connection_send.channel()
-channel_send.queue_declare(queue="summarization_queue")
+channel_send.queue_declare(queue="keyword_queue")
 
-def send_to_summarize(transcription_id):
+def send_to_keyword_extraction(summary_id):
     global connection_send, channel_send
 
     while True:
         try:
             if not connection_send or connection_send.is_closed:
-                connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+                connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
                 channel_send = connection_send.channel()
-                channel_send.queue_declare(queue="summarization_queue")
+                channel_send.queue_declare(queue="keyword_queue")
 
-            channel_send.basic_publish(exchange="", routing_key="summarization_queue", body=str(transcription_id))
-            print(" [x] Sent ", str(transcription_id))
+            channel_send.basic_publish(exchange="", routing_key="keyword_queue", body=str(summary_id))
+            print(" [x] Sent ", str(summary_id))
             break
 
         except pika.exceptions.StreamLostError as e:
@@ -32,35 +32,37 @@ def send_to_summarize(transcription_id):
             print(f"An unexpected error occurred: {e}")
             time.sleep(5)
 
+    channel_send.basic_publish(exchange="", routing_key="keyword_queue", body=str(summary_id))
+    print(" [x] Sent ", str(summary_id))
+
 def callback_recv(ch, method, properties, body):
-    note_id = int(body.decode())
-    note_data = get_note_from_database(note_id)
-    audio_file_name = note_data[3]
-    result = whisper_transcribe_audio(audio_file_name)
-    transcription = result["text"]
-    segments = result["segments"]
+    transcription_id = int(body.decode())
 
-    transcription_id_value = insert_transcription(note_id, transcription)
+    # return the transcription information of the note
+    transcription_data = get_trascription_from_database(transcription_id)
 
-    transformed_list = [{'transcription_id': transcription_id_value,
-                    'start': item['start'],
-                    'finish': item['end'],
-                    'phrase': item['text']}
-                    for item in segments]
-    insert_timestamps(transformed_list)
+    # ob tain the note_id of the received trancription
+    note_id = transcription_data[1]
 
-    send_to_summarize(transcription_id_value)
+    # summarize the transcription
+    summary = summarize_text(transcription_data[2])
+
+    # insert currently created dummary to the summary table
+    summary_id = insert_summary(note_id, summary)
+
+    # push the summary id to keyword extraction queue
+    send_to_keyword_extraction(summary_id)
 
 def main():
     while True:
         try:
             connection_recv = pika.BlockingConnection(
-                pika.ConnectionParameters(host="localhost"),
+                pika.ConnectionParameters(host="rabbitmq"),
             )
             channel_recv = connection_recv.channel()
-            channel_recv.queue_declare(queue="transcription_queue")
+            channel_recv.queue_declare(queue="summarization_queue")
             channel_recv.basic_consume(
-                queue="transcription_queue",
+                queue="summarization_queue",
                 on_message_callback=callback_recv,
                 auto_ack=True,
             )
