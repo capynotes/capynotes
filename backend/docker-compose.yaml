@@ -3,6 +3,11 @@ services:
   rabbitmq:
     image: 'rabbitmq:3-management'
     container_name: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -14,7 +19,8 @@ services:
     image: 'postgres'
     container_name: db
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -79,6 +85,16 @@ services:
     container_name: speech-service
     ports:
       - "8084:8084"
+    depends_on:
+      - db
+
+  summarization_service:
+    image: 'summarization-service-image'
+    build:
+      context: ./summarization
+    container_name: summarization-service
+    ports:
+      - "8085:8085"
     depends_on:
       - db
 
