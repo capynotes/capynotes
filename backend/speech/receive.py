@@ -33,10 +33,10 @@ def send_to_summarize(transcription_id):
             time.sleep(5)
 
 def callback_recv(ch, method, properties, body):
-    print(" [x] Received %r" % body)
+    print(" [x] Received ", str(body))
     note_id = int(body.decode())
     note_data = get_note_from_database(note_id)
-    audio_file_name = note_data[3]
+    audio_file_name = note_data[5]
     result = whisper_transcribe_audio(audio_file_name)
     transcription = result["text"]
     segments = result["segments"]

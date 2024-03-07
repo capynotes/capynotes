@@ -64,8 +64,6 @@ public class NoteServiceImpl implements NoteService {
         LocalDateTime dateTime = LocalDateTime.now();
         Note note = new Note(fileName, userId, url, dateTime, NoteStatus.TRANSCRIBING);
         note = noteRepository.save(note);
-        Long note_id = note.getId();
-        // This method needs to send note_id, which is just created, over a rabbit mq queue
         return note;
     }
 

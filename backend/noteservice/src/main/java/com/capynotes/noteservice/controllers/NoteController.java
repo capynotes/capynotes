@@ -6,8 +6,10 @@ import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
 import com.capynotes.noteservice.models.Note;
 import com.capynotes.noteservice.services.NoteService;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.springframework.http.HttpStatus;
@@ -79,6 +81,8 @@ public class NoteController {
         String fileName = videoTranscribeRequest.getNoteName();
         try {
             Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
+            channel.basicPublish("", QUEUE_NAME, null, note.getId().toString().getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Sent '" + note.getId().toString() + "'");
             response = new Response("Note created.", 200, note);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -99,6 +103,17 @@ public class NoteController {
             e.printStackTrace();
             response = new Response("An error occurred." + e.toString(), 500, null);
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public Response getAudio(@PathVariable("id") Long id) throws FileNotFoundException {
+        List<Note> notes;
+        try {
+            notes = noteService.findNotesByUserId(id);
+            return new Response("Notes retrieved successfully.", 200, notes);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
         }
     }
 }

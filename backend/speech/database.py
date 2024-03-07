@@ -6,6 +6,26 @@ connection = None
 def initialize_connection():
     global connection
     connection = psycopg2.connect(**DB_CONFIG)
+    cursor = connection.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS transcript(
+            id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+            note_id bigint NOT NULL,
+            transcription character varying COLLATE pg_catalog."default" NOT NULL,
+            CONSTRAINT transcript_pkey PRIMARY KEY (id)
+        ) '''
+    )
+    connection.commit()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS timestamp(
+            id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+            transcription_id bigint NOT NULL,
+            start real NOT NULL,
+            finish real NOT NULL,
+            phrase character varying COLLATE pg_catalog."default" NOT NULL,
+            CONSTRAINT timestamp_pkey PRIMARY KEY (id)
+        )'''
+    )
+    connection.commit()
+    cursor.close()
 
 def get_note_from_database(note_id):
     global connection
@@ -13,10 +33,10 @@ def get_note_from_database(note_id):
         initialize_connection()
     cursor = connection.cursor()
 
-    query = f"SELECT * FROM Note WHERE id = {note_id};"
+    query = f"SELECT * FROM note WHERE id = {note_id};"
     cursor.execute(query)
     result = cursor.fetchone()
-
+    print(result)
     cursor.close()
 
     return result
