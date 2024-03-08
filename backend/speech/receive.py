@@ -37,19 +37,21 @@ def callback_recv(ch, method, properties, body):
     note_id = int(body.decode())
     note_data = get_note_from_database(note_id)
     audio_file_name = note_data[5]
+    print("File to be transcribed: ", audio_file_name)
     result = whisper_transcribe_audio(audio_file_name)
     transcription = result["text"]
     segments = result["segments"]
-
+    print("Inserting transcription into database...")
     transcription_id_value = insert_transcription(note_id, transcription)
-
+    print("Transcription inserted into database")
     transformed_list = [{'transcription_id': transcription_id_value,
                     'start': item['start'],
                     'finish': item['end'],
                     'phrase': item['text']}
                     for item in segments]
+    print("Inserting timestamps into database...")
     insert_timestamps(transformed_list)
-
+    print("Timestamps inserted into database")
     send_to_summarize(transcription_id_value)
 
 def main():

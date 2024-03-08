@@ -36,7 +36,6 @@ def get_note_from_database(note_id):
     query = f"SELECT * FROM note WHERE id = {note_id};"
     cursor.execute(query)
     result = cursor.fetchone()
-    print(result)
     cursor.close()
 
     return result
@@ -55,6 +54,9 @@ def insert_transcription(note_id, transcription):
     
     transcription_id = cursor.fetchone()[0]
 
+    connection.commit()
+    update_query = f"UPDATE note SET status = 'SUMMARIZING' WHERE note_id = {note_id};"
+    cursor.execute(update_query)
     connection.commit()
     cursor.close()
     return transcription_id
