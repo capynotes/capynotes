@@ -43,7 +43,7 @@ class NoteScreen extends StatelessWidget {
         if (state is NoteDisplay) {
           return Scaffold(
               appBar: AppBar(
-                  title: Text(state.note.title ?? "No Title"),
+                  title: Text(state.note.note!.title ?? "No Title"),
                   centerTitle: true,
                   backgroundColor: ColorConstants.primaryColor,
                   leading: IconButton(
@@ -62,7 +62,7 @@ class NoteScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         PlayerWidget(
-                          path: state.note.audioName!,
+                          path: state.note.note!.audioName!,
                           // context
                           //     .read<NoteCubit>()
                           //     .path, //Change with selected note's path
@@ -75,16 +75,16 @@ class NoteScreen extends StatelessWidget {
                             CustomElevatedButton(
                               child: const Text("View PDF"),
                               onPressed: () => kIsWeb
-                                  ? Utils.launchURL(state.note.pdfUrl ??
+                                  ? Utils.launchURL(state.note.note!.pdfUrl ??
                                       'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
                                   : Navigator.push(
                                       context,
                                       MaterialPageRoute<dynamic>(
                                         builder: (_) => NotePDFScreen(
-                                          url: state.note.pdfUrl ??
+                                          url: state.note.note!.pdfUrl ??
                                               'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
-                                          noteName:
-                                              state.note.title ?? "No Title",
+                                          noteName: state.note.note!.title ??
+                                              "No Title",
                                         ),
                                       ),
                                     ),
@@ -122,14 +122,15 @@ class NoteScreen extends StatelessWidget {
                             children: [
                               AccordionSection(
                                   header: const Text("Summary"),
-                                  content: const Text(
-                                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")),
+                                  content: Text(state.note.summary?.summary ??
+                                      "No Summary")),
                               AccordionSection(
                                 header: const Text("Transcript"),
-                                content: const SingleChildScrollView(
-                                  child: Text(
-                                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-                                ),
+                                content: SingleChildScrollView(
+                                    child: Text(
+                                  state.note.transcript?.transcription ??
+                                      "No Transcript",
+                                )),
                               ),
                             ]),
                         Row(
@@ -154,7 +155,7 @@ class NoteScreen extends StatelessWidget {
                                 })
                           ],
                         ),
-                        state.note.cardSets!.isEmpty
+                        state.note.note!.cardSets!.isEmpty
                             ? Column(
                                 children: [
                                   const Text("No Flashcard Sets Found"),
@@ -178,9 +179,10 @@ class NoteScreen extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   return FlashcardSetTile(
                                       flashcardSet:
-                                          state.note.cardSets![index]);
+                                          state.note.note!.cardSets![index]);
                                 },
-                                itemCount: state.note.cardSets?.length ?? 0)
+                                itemCount:
+                                    state.note.note!.cardSets?.length ?? 0)
                       ],
                     ),
                   ),

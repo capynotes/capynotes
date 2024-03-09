@@ -13,7 +13,7 @@ class NoteListView extends StatelessWidget {
     super.key,
     required this.noteList,
   });
-  final List<NoteModel> noteList;
+  final List<Note> noteList;
   @override
   Widget build(BuildContext context) {
     return ListView.separated(

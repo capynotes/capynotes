@@ -1,7 +1,41 @@
-import 'package:capynotes/enums/note_status_enum.dart';
 import 'package:capynotes/model/flashcard/flashcard_set_model.dart';
+import 'package:capynotes/model/summary_model.dart';
+
+import '../enums/note_status_enum.dart';
+import 'transcript_model.dart';
 
 class NoteModel {
+  Note? note;
+  Transcript? transcript;
+  Summary? summary;
+
+  NoteModel({this.note, this.transcript, this.summary});
+
+  NoteModel.fromJson(Map<String, dynamic> json) {
+    note = json['note'] != null ? Note.fromJson(json['note']) : null;
+    transcript = json['transcript'] != null
+        ? Transcript.fromJson(json['transcript'])
+        : null;
+    summary =
+        json['summary'] != null ? Summary.fromJson(json['summary']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (note != null) {
+      data['note'] = note!.toJson();
+    }
+    if (transcript != null) {
+      data['transcript'] = transcript!.toJson();
+    }
+    if (summary != null) {
+      data['summary'] = summary!.toJson();
+    }
+    return data;
+  }
+}
+
+class Note {
   int? id;
   String? title;
   String? pdfUrl;
@@ -11,7 +45,7 @@ class NoteModel {
   List<FlashcardSetModel>? cardSets;
   NoteStatus? status;
 
-  NoteModel(
+  Note(
       {this.id,
       this.title,
       this.pdfUrl,
@@ -21,7 +55,7 @@ class NoteModel {
       this.cardSets,
       this.status});
 
-  NoteModel.fromJson(Map<String, dynamic> json) {
+  Note.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     pdfUrl = json['pdfUrl'];

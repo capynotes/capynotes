@@ -19,19 +19,19 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
-    List<NoteModel>? allNotes = await service.getMyNotes();
-
+    List<Note>? allNotes = await service.getMyNotes();
+    print(allNotes);
     if (allNotes == null) {
       emit(NoteError("Error", "Error"));
     } else if (allNotes.isEmpty) {
       emit(NoteNotFound());
     } else {
-      List<NoteModel>? pendingNotes = allNotes
+      List<Note>? pendingNotes = allNotes
           .where((element) =>
               element.status == NoteStatus.TRANSCRIBING ||
               element.status == NoteStatus.SUMMARIZING)
           .toList();
-      List<NoteModel>? doneNotes = allNotes
+      List<Note>? doneNotes = allNotes
           .where((element) => element.status == NoteStatus.DONE)
           .toList();
       emit(NotesDisplay(
@@ -56,7 +56,7 @@ class NoteCubit extends Cubit<NoteState> {
     AddFlashcardSetModel fcSetModel = AddFlashcardSetModel(
         userId: 1,
         title: fcSetNameController.text,
-        note: NoteID(id: selectedNote!.id));
+        note: NoteID(id: selectedNote!.note!.id));
     FlashcardSetModel? result = await service.createFlashcardSet(fcSetModel);
     if (result == null) {
       emit(NoteError("Creation Failed", "Could not create flashcard set"));
