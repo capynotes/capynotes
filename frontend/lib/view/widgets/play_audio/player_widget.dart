@@ -11,9 +11,10 @@ import 'seekbar.dart';
 
 class PlayerWidget extends StatefulWidget {
   final String path;
-  final AudioPlayer player = AudioPlayer();
+  final AudioPlayer player;
 
-  PlayerWidget({Key? key, required this.path}) : super(key: key);
+  PlayerWidget({Key? key, required this.path, required this.player})
+      : super(key: key);
 
   @override
   PlayerWidgetState createState() => PlayerWidgetState();
