@@ -7,14 +7,21 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
 import com.capynotes.noteservice.dtos.VideoTranscribeResponse;
 import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
 import com.capynotes.noteservice.exceptions.FileUploadException;
 import com.capynotes.noteservice.models.Note;
+import com.capynotes.noteservice.models.Summary;
+import com.capynotes.noteservice.models.Timestamp;
+import com.capynotes.noteservice.models.Transcript;
 import com.capynotes.noteservice.repositories.NoteRepository;
 
+import com.capynotes.noteservice.repositories.SummaryRepository;
+import com.capynotes.noteservice.repositories.TimestampRepository;
+import com.capynotes.noteservice.repositories.TranscriptRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
@@ -38,15 +45,23 @@ import java.util.UUID;
 @Service
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
+    private final TranscriptRepository transcriptRepository;
+    private final SummaryRepository summaryRepository;
+    private final TimestampRepository timestampRepository;
     
     @Value("${aws.bucket.name}")
     private String bucketName;
 
     private final AmazonS3 amazonS3;
 
-    public NoteServiceImpl(AmazonS3 amazonS3, NoteRepository noteRepository) {
+    public NoteServiceImpl(AmazonS3 amazonS3, NoteRepository noteRepository,
+                           TranscriptRepository transcriptRepository, SummaryRepository summaryRepository,
+                           TimestampRepository timestampRepository) {
         this.amazonS3 = amazonS3;
         this.noteRepository = noteRepository;
+        this.transcriptRepository = transcriptRepository;
+        this.summaryRepository = summaryRepository;
+        this.timestampRepository = timestampRepository;
     }
 
     @Override
@@ -134,12 +149,28 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note findNoteByNoteId(Long noteId) throws FileNotFoundException {
+    public NoteDto findNoteByNoteId(Long noteId) throws FileNotFoundException {
         Optional<Note> note = noteRepository.findNoteById(noteId);
+        Optional<Transcript> transcriptOpt = transcriptRepository.getTranscriptByNote_id(noteId);
+        Optional<Summary> summary = summaryRepository.getSummaryByNote_id(noteId);
         if(note.isEmpty()) {
             throw new FileNotFoundException("Note with id " + noteId + " does not exist.");
         }
-        return note.get();
+        if(transcriptOpt.isEmpty()) {
+            throw new FileNotFoundException("Transcript for Note with id " + noteId + " is not ready.");
+        }
+        if(summary.isEmpty()) {
+            throw new FileNotFoundException("Summary for Note with id " + noteId + " is not ready.");
+        }
+        Optional<List<Timestamp>> timestamps = timestampRepository.getTimestampsByTranscriptId(transcriptOpt.get().getId());
+        if(timestamps.isEmpty()) {
+            throw new FileNotFoundException("Timestamps for Note with id " + noteId + " is not ready.");
+        }
+        Transcript transcript = transcriptOpt.get();
+        transcript.setTimestamps(timestamps.get());
+
+        NoteDto noteDto = new NoteDto(note.get(), transcript, summary.get());
+        return noteDto;
     }
     
     // For download audio function

@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.controllers;
 
+import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.dtos.NoteRequest;
 import com.capynotes.noteservice.dtos.Response;
 import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
@@ -119,7 +120,7 @@ public class NoteController {
 
     @GetMapping("/{id}")
     public Response getNote(@PathVariable("id") Long id) throws FileNotFoundException {
-        Note note;
+        NoteDto note;
         try {
             note = noteService.findNoteByNoteId(id);
             return new Response("Note retrieved successfully.", 200, note);
