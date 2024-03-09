@@ -7,9 +7,9 @@ final class NoteInitial extends NoteState {}
 final class NoteLoading extends NoteState {}
 
 final class NotesDisplay extends NoteState {
-  List<NoteModel> pendingNotes;
-  List<NoteModel> doneNotes;
-  List<NoteModel> allNotes;
+  List<Note> pendingNotes;
+  List<Note> doneNotes;
+  List<Note> allNotes;
   NotesDisplay(
       {required this.pendingNotes,
       required this.doneNotes,

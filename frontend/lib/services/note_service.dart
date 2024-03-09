@@ -11,7 +11,7 @@ import '../model/note_model.dart';
 import 'api.dart';
 
 class NoteService {
-  Future<List<NoteModel>?> getMyNotes() async {
+  Future<List<Note>?> getMyNotes() async {
     try {
       Response? response;
       response = await Api.instance.getRequest(ApiConstants.baseUrl,
@@ -19,9 +19,9 @@ class NoteService {
       if (response.statusCode == 200) {
         dynamic body = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(body);
-        List<NoteModel> noteList = [];
+        List<Note> noteList = [];
         for (var note in responseModel.data) {
-          NoteModel noteModel = NoteModel.fromJson(note);
+          Note noteModel = Note.fromJson(note);
           noteList.add(noteModel);
         }
         return noteList;
