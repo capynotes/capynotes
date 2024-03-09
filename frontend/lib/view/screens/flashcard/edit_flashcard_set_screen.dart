@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_dialogs.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
@@ -33,7 +34,30 @@ class EditFlashcardSetScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is FlashcardDisplay) {
+        if (state is FlashcardSetEmpty) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(context.read<FlashcardCubit>().flashcards!.title ??
+                  'Error Loading Flashcards'),
+              centerTitle: true,
+              backgroundColor: ColorConstants.primaryColor,
+            ),
+            body: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("No Flashcards in this set"),
+                  CustomElevatedButton(
+                      child: Text("Add Flashcard"),
+                      onPressed: () {
+                        buildAddFlashcardDialog(context);
+                      })
+                ],
+              ),
+            ),
+          );
+        } else if (state is FlashcardDisplay) {
           return Scaffold(
             appBar: AppBar(
               title: Text(context.read<FlashcardCubit>().flashcards!.title ??
@@ -43,57 +67,7 @@ class EditFlashcardSetScreen extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                final formKey = GlobalKey<FormState>();
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                          title: const Text("Add Flashcard"),
-                          titlePadding:
-                              const EdgeInsets.fromLTRB(60, 24, 60, 0),
-                          content: Form(
-                              key: formKey,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CustomTextFormField(
-                                    label: "Front",
-                                    controller: context
-                                        .read<FlashcardCubit>()
-                                        .frontController,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  CustomTextFormField(
-                                      label: "Back",
-                                      controller: context
-                                          .read<FlashcardCubit>()
-                                          .backController)
-                                ],
-                              )),
-                          actions: [
-                            TextButton(
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                }),
-                            TextButton(
-                                child: const Text(
-                                  "Add Flashcard",
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    context
-                                        .read<FlashcardCubit>()
-                                        .addFlashcard(id: setID);
-                                    Navigator.pop(context);
-                                  }
-                                }),
-                          ]);
-                    });
+                buildAddFlashcardDialog(context);
               },
               backgroundColor: ColorConstants.primaryColor,
               child: const Icon(Icons.add),
@@ -134,6 +108,24 @@ class EditFlashcardSetScreen extends StatelessWidget {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
+                                            context
+                                                    .read<FlashcardCubit>()
+                                                    .editFrontController
+                                                    .text =
+                                                context
+                                                    .read<FlashcardCubit>()
+                                                    .flashcards!
+                                                    .cards![i]
+                                                    .front!;
+                                            context
+                                                    .read<FlashcardCubit>()
+                                                    .editBackController
+                                                    .text =
+                                                context
+                                                    .read<FlashcardCubit>()
+                                                    .flashcards!
+                                                    .cards![i]
+                                                    .back!;
                                             return AlertDialog(
                                               title:
                                                   const Text("Edit Flashcard"),
@@ -238,5 +230,54 @@ class EditFlashcardSetScreen extends StatelessWidget {
         }
       },
     );
+  }
+
+  void buildAddFlashcardDialog(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text("Add Flashcard"),
+              titlePadding: const EdgeInsets.fromLTRB(60, 24, 60, 0),
+              content: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomTextFormField(
+                        label: "Front",
+                        controller:
+                            context.read<FlashcardCubit>().frontController,
+                      ),
+                      const SizedBox(height: 16),
+                      CustomTextFormField(
+                          label: "Back",
+                          controller:
+                              context.read<FlashcardCubit>().backController)
+                    ],
+                  )),
+              actions: [
+                TextButton(
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+                TextButton(
+                    child: const Text(
+                      "Add Flashcard",
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        context.read<FlashcardCubit>().addFlashcard(id: setID);
+                        Navigator.pop(context);
+                      }
+                    }),
+              ]);
+        });
   }
 }

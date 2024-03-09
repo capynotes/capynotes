@@ -12,6 +12,7 @@ import '../../../constants/colors.dart';
 import '../../../utility/utils.dart';
 import '../../../viewmodel/note_cubit/note_cubit.dart';
 import '../../widgets/custom_widgets/custom_drawer.dart';
+import '../../widgets/flashcard_set_tile_widget.dart';
 import '../../widgets/play_audio/player_widget.dart';
 
 @RoutePage()
@@ -42,7 +43,7 @@ class NoteScreen extends StatelessWidget {
         if (state is NoteDisplay) {
           return Scaffold(
               appBar: AppBar(
-                  title: const Text("Note Screen"),
+                  title: Text(state.note.title ?? "No Title"),
                   centerTitle: true,
                   backgroundColor: ColorConstants.primaryColor,
                   leading: IconButton(
@@ -61,13 +62,12 @@ class NoteScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         PlayerWidget(
-                            path:
-                                "https://cs49x-transcribe.s3.eu-north-1.amazonaws.com/02f042a6-4f94-4e6e-a789-306dcce591d7_os1.mp3"
-                            // context
-                            //     .read<NoteCubit>()
-                            //     .path, //Change with selected note's path
-                            // player: context.read<NoteCubit>().player,
-                            ),
+                          path: state.note.audioName!,
+                          // context
+                          //     .read<NoteCubit>()
+                          //     .path, //Change with selected note's path
+                          // player: context.read<NoteCubit>().player,
+                        ),
                         const SizedBox(height: 16.0),
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -75,15 +75,16 @@ class NoteScreen extends StatelessWidget {
                             CustomElevatedButton(
                               child: const Text("View PDF"),
                               onPressed: () => kIsWeb
-                                  ? Utils.launchURL(
+                                  ? Utils.launchURL(state.note.pdfUrl ??
                                       'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
                                   : Navigator.push(
                                       context,
                                       MaterialPageRoute<dynamic>(
-                                        builder: (_) => const NotePDFScreen(
-                                          url:
+                                        builder: (_) => NotePDFScreen(
+                                          url: state.note.pdfUrl ??
                                               'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
-                                          noteName: "Peter J. Denning",
+                                          noteName:
+                                              state.note.title ?? "No Title",
                                         ),
                                       ),
                                     ),
@@ -153,8 +154,7 @@ class NoteScreen extends StatelessWidget {
                                 })
                           ],
                         ),
-                        //TODO: if flashcardset list not null
-                        false
+                        state.note.cardSets!.isEmpty
                             ? Column(
                                 children: [
                                   const Text("No Flashcard Sets Found"),
@@ -176,32 +176,11 @@ class NoteScreen extends StatelessWidget {
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ListTile(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          side: const BorderSide(
-                                              color: Colors.grey)),
-                                      title: const Text("Flashcard Set Title"),
-                                      subtitle: const Text("Card Count"),
-                                      dense: true,
-                                      trailing: IconButton(
-                                          icon: const Icon(Icons.edit),
-                                          onPressed: () {
-                                            context.router
-                                                .pushNamed("/edit-flashcard/1");
-                                          }),
-                                      onTap: () {
-                                        //TODO: Navigate to flashcard set screen
-                                        context.router
-                                            .navigateNamed("/flashcard/1");
-                                      },
-                                    ),
-                                  );
+                                  return FlashcardSetTile(
+                                      flashcardSet:
+                                          state.note.cardSets![index]);
                                 },
-                                itemCount: 14)
+                                itemCount: state.note.cardSets?.length ?? 0)
                       ],
                     ),
                   ),

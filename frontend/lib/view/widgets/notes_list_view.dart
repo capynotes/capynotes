@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/colors.dart';
+import '../../enums/note_status_enum.dart';
 import '../../model/note_model.dart';
 import '../../translations/locale_keys.g.dart';
 import '../../utility/utils.dart';
@@ -42,7 +43,7 @@ class NoteListView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${LocaleKeys.labels_uploaded_at.tr()} ${Utils.dateToString(noteList[index].uploadTime!)}",
+                    "${LocaleKeys.labels_uploaded_at.tr()} ${Utils.dateToString(DateTime.parse(noteList[index].audioUploadTime!))}",
                   ),
                   RichText(
                       text: TextSpan(
@@ -51,16 +52,18 @@ class NoteListView extends StatelessWidget {
                               color: ColorConstants.lightBlue,
                               fontWeight: FontWeight.bold),
                           children: [
-                        // TextSpan(
-                        //     text: noteList[index].status!.name,
-                        //     style: TextStyle(
-                        //         color: noteList[index].status ==
-                        //                 noteStatus.PENDING
-                        //             ? ColorConstants.lightBlue
-                        //             : noteList[index].status == noteStatus.DONE
-                        //                 ? const Color.fromARGB(255, 0, 255, 8)
-                        //                 : Colors.red,
-                        //         fontWeight: FontWeight.normal))
+                        TextSpan(
+                            text: noteList[index].status!.name,
+                            style: TextStyle(
+                                color: noteList[index].status ==
+                                            NoteStatus.TRANSCRIBING ||
+                                        noteList[index].status ==
+                                            NoteStatus.SUMMARIZING
+                                    ? ColorConstants.lightBlue
+                                    : noteList[index].status == NoteStatus.DONE
+                                        ? const Color.fromARGB(255, 0, 255, 8)
+                                        : Colors.red,
+                                fontWeight: FontWeight.normal))
                       ])),
                 ],
               ));

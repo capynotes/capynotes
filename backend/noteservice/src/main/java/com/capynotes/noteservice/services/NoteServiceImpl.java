@@ -133,6 +133,15 @@ public class NoteServiceImpl implements NoteService {
         return notes.get();
     }
 
+    @Override
+    public Note findNoteByNoteId(Long noteId) throws FileNotFoundException {
+        Optional<Note> note = noteRepository.findNoteById(noteId);
+        if(note.isEmpty()) {
+            throw new FileNotFoundException("Note with id " + noteId + " does not exist.");
+        }
+        return note.get();
+    }
+    
     // For download audio function
     private boolean bucketIsEmpty() {
         ListObjectsV2Result result = amazonS3.listObjectsV2(this.bucketName);
@@ -147,6 +156,7 @@ public class NoteServiceImpl implements NoteService {
     public void deleteNote(Long id){
         noteRepository.deleteById(id);
     }
+
 
     // should listen rabbit mq for creation of keywords
 }

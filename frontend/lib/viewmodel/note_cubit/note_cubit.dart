@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import '../../enums/note_status_enum.dart';
 import '../../model/flashcard/add_flashcard_set_model.dart';
 import '../../model/flashcard/flashcard_set_model.dart';
 import '../../model/note_model.dart';
@@ -18,22 +19,21 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
-    // List<NoteModel>? allNotes = await service.getMyNotes();
-    List<NoteModel>? allNotes = [
-      NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now()),
-      NoteModel(id: 2, title: "Note 2", uploadTime: DateTime.now()),
-    ];
+    List<NoteModel>? allNotes = await service.getMyNotes();
+
     if (allNotes == null) {
       emit(NoteError("Error", "Error"));
     } else if (allNotes.isEmpty) {
       emit(NoteNotFound());
     } else {
-      List<NoteModel>? pendingNotes = allNotes;
-      // .where((element) => element.status == NoteStatus.PENDING)
-      // .toList();
-      List<NoteModel>? doneNotes = allNotes;
-      // .where((element) => element.status == NoteStatus.DONE)
-      // .toList();
+      List<NoteModel>? pendingNotes = allNotes
+          .where((element) =>
+              element.status == NoteStatus.TRANSCRIBING ||
+              element.status == NoteStatus.SUMMARIZING)
+          .toList();
+      List<NoteModel>? doneNotes = allNotes
+          .where((element) => element.status == NoteStatus.DONE)
+          .toList();
       emit(NotesDisplay(
           pendingNotes: pendingNotes,
           doneNotes: doneNotes,
@@ -43,9 +43,7 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> getNote(int id) async {
     emit(NoteLoading());
-    // selectedNote = await service.getNote(id);
-    selectedNote =
-        NoteModel(id: 1, title: "Note 1", uploadTime: DateTime.now());
+    selectedNote = await service.getNote(id);
     if (selectedNote == null) {
       emit(NoteNotFound());
     } else {

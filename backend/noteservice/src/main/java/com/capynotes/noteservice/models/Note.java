@@ -3,6 +3,7 @@ package com.capynotes.noteservice.models;
 import com.capynotes.noteservice.enums.NoteStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "note")
+@NoArgsConstructor
 public class Note {
 
     public Note(String title, Long userId, String audioName, LocalDateTime audioUploadTime, NoteStatus status){

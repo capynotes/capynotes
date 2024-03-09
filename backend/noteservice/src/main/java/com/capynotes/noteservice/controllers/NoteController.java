@@ -106,12 +106,23 @@ public class NoteController {
         }
     }
 
-    @GetMapping("/{id}")
-    public Response getAudio(@PathVariable("id") Long id) throws FileNotFoundException {
+    @GetMapping("/user/{id}")
+    public Response getUserNotes(@PathVariable("id") Long id) throws FileNotFoundException {
         List<Note> notes;
         try {
             notes = noteService.findNotesByUserId(id);
             return new Response("Notes retrieved successfully.", 200, notes);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public Response getNote(@PathVariable("id") Long id) throws FileNotFoundException {
+        Note note;
+        try {
+            note = noteService.findNoteByNoteId(id);
+            return new Response("Note retrieved successfully.", 200, note);
         } catch (Exception e) {
             return new Response("An error occurred." + e.toString(), 500, null);
         }

@@ -16,8 +16,10 @@ class NoteGenerationService {
   Future<AudioModel?> generateNoteFromFile(File file, String fileName) async {
     try {
       Response? res;
-      var request = http.MultipartRequest('POST',
-          Uri.parse("${ApiConstants.baseUrl}${ApiConstants.generateNote}"));
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              "${ApiConstants.baseUrl}${ApiConstants.generateNoteFromFile}"));
       request.files.add(await http.MultipartFile.fromPath('file', file.path));
       request.fields['fileName'] = fileName;
       var response = await request.send();
@@ -35,7 +37,7 @@ class NoteGenerationService {
     try {
       Response? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
-          ApiConstants.fromVideo, jsonEncode(videoModel.toJson()));
+          ApiConstants.generateNoteFromVideo, jsonEncode(videoModel.toJson()));
       if (response.statusCode == 200) {
         dynamic body = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(body);
