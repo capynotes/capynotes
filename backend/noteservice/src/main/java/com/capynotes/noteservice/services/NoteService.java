@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.services;
 
+import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
 import com.capynotes.noteservice.exceptions.FileUploadException;
@@ -17,6 +18,6 @@ public interface NoteService {
     Note uploadAudio(MultipartFile multipartFile, Long userId, String fileName) throws IOException, FileUploadException;
     Note uploadAudioFromURL(String videoUrl, String fileName, Long userId);
     List<Note> findNotesByUserId(Long userId) throws FileNotFoundException;
-    Note findNoteByNoteId(Long noteId) throws FileNotFoundException;
+    NoteDto findNoteByNoteId(Long noteId) throws FileNotFoundException;
 
 }
