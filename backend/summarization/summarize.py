@@ -4,8 +4,8 @@ from transformers import pipeline
 
 def summarize_text(transcript):
     summarizer = pipeline("summarization", "pszemraj/long-t5-tglobal-base-16384-book-summary")
-    max = 150 
-    min = 60
+    max = 450 
+    min = 150
     summary = summarizer(transcript, max_length = max, min_length = min)
     return summary[0]["summary_text"]
 

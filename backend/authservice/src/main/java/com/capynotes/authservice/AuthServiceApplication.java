@@ -27,7 +27,7 @@ public class AuthServiceApplication {
 	private static void createDB(Logger logger, Connection connection, Statement statement) {
 		try {
 			logger.debug("Creating database if not exist...");
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", userName, password);
+			connection = DriverManager.getConnection("jdbc:postgresql://db:5432/", "postgres", "admin");
 			statement = connection.createStatement();
 			statement.executeQuery("SELECT count(*) FROM pg_database WHERE datname = 'authservicedb'");
 			ResultSet resultSet = statement.getResultSet();

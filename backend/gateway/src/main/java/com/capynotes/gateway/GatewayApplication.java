@@ -19,23 +19,15 @@ public class GatewayApplication {
 				.route(r -> r.path("/person/**")
 						.filters(f -> f
 								.prefixPath("/api"))
-						.uri("http://localhost:8082"))
-				.route(r -> r.path("/mail/**")
-						.filters(f -> f
-								.prefixPath("/api"))
-						.uri("http://localhost:8081"))
-				.route(r -> r.path("/audio/**")
-						.filters(f -> f
-								.prefixPath("/api"))
-						.uri("http://localhost:8083"))
+						.uri("http://auth-service-spring-app:8082"))
 				.route(r -> r.path("/note/**")
 						.filters(f -> f
 								.prefixPath("/api"))
-						.uri("http://localhost:8084"))
+						.uri("http://note-service-spring-app:8083"))
 				.route(r -> r.path("/flashcard/**")
 						.filters(f -> f
 								.prefixPath("/api"))
-						.uri("http://localhost:8084"))
+						.uri("http://note-service-spring-app:8083"))
 				.build();
 	}
 

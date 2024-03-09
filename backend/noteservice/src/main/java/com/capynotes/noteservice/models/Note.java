@@ -11,17 +11,28 @@ import java.util.List;
 @Entity
 @Table(name = "note")
 public class Note {
+
+    public Note(String title, Long userId, String audioName, LocalDateTime audioUploadTime, NoteStatus status){
+        this.title = title;
+        this.userId = userId;
+        this.audioName = audioName;
+        this.audioUploadTime = audioUploadTime;
+        this.status = status;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    private String title;
 
-    private String url;
+    private String pdfUrl;
 
     private Long userId;
+    
+    private String audioName;
 
-    private LocalDateTime uploadTime;
+    private LocalDateTime audioUploadTime;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FlashcardSet> cardSets;

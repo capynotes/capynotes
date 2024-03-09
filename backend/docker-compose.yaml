@@ -1,0 +1,100 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    container_name: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  db:
+    image: 'postgres'
+    container_name: db
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+
+  gateway-spring-app:
+    image: 'gateway-image'
+    build:
+      context: ./gateway
+    container_name: gateway-spring-app
+    ports:
+      - "8080:8080"
+
+  notification-service-spring-app:
+    image: 'notification-service-image'
+    build:
+      context: ./notificationservice
+    container_name: notification-service-spring-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+    ports:
+      - "8081:8081"
+
+  auth-service-spring-app:
+    image: 'auth-service-image'
+    build:
+      context: ./authservice
+    container_name: auth-service-spring-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/authservicedb'
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8082:8082"
+
+  note-service-spring-app:
+    image: 'note-service-image'
+    build:
+      context: ./noteservice
+    container_name: note-service-spring-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/noteservicedb'
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_RABBITMQ_HOST: rabbitmq
+    ports:
+      - "8083:8083"
+  speech_service:
+    image: 'speech-service-image'
+    build:
+      context: ./speech
+    container_name: speech-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - db
+
+  summarization_service:
+    image: 'summarization-service-image'
+    build:
+      context: ./summarization
+    container_name: summarization-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - db
+

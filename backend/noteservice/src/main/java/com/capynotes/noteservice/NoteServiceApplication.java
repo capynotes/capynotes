@@ -22,7 +22,7 @@ public class NoteServiceApplication {
 		Statement statement = null;
 		try {
 			logger.debug("Creating database if not exist...");
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "postgres", "123");
+			connection = DriverManager.getConnection("jdbc:postgresql://db:5432/", "postgres", "admin");
 			statement = connection.createStatement();
 			statement.executeQuery("SELECT count(*) FROM pg_database WHERE datname = 'noteservicedb'");
 			ResultSet resultSet = statement.getResultSet();
