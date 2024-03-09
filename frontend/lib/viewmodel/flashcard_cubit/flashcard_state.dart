@@ -15,6 +15,13 @@ final class FlashcardError extends FlashcardState {
   FlashcardError(this.title, this.description);
 }
 
+final class FlashcardSetEmpty extends FlashcardState {
+  final String title;
+  final String description;
+
+  FlashcardSetEmpty(this.title, this.description);
+}
+
 final class FlashcardSuccess extends FlashcardState {
   final String title;
   final String description;

@@ -1,14 +1,20 @@
 class ApiConstants {
-  static String baseUrl = "http://10.201.247.189:8080/";
+  static String baseUrl = "http://192.168.0.23:8080/";
+
+  // Authentication related endpoints
   static String register = "person/register";
   static String login = "person/login";
   static String changePw = "person/change-password";
   static String forgotPw = "person/forgot-password?email=";
-  static String generateNote = "note/upload-audio";
+
+  // Note related endpoints
+  static String generateNoteFromFile = "note/upload-audio";
+  static String generateNoteFromVideo = "note/from-video";
   static String getMyAudios = "audio/";
-  static String getMyNotes = "notes/";
+  static String getMyNotes = "note/user/";
   static String getNote = "note/";
-  static String fromVideo = "note/from-video";
+
+  // Flashcard related endpoints
   static String getFlashcardSets = "flashcard/set/note/";
   static String createFlashcardSet = "flashcard/add-set";
   static String getFlashcardSet = "flashcard/set/";

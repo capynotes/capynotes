@@ -74,6 +74,11 @@ class FlashcardCubit extends Cubit<FlashcardState> {
           "Get Failed", "Could not get flashcard set. Please try again."));
     } else {
       flashcards = result;
+      if (result.cards!.isEmpty) {
+        emit(FlashcardSetEmpty(
+            "Flashcard Set Is Empty", "Please add flashcards to this set."));
+        return;
+      }
       allFlashcardList = List.generate(
         flashcards!.cards!.length,
         (index) => FlipCard(
