@@ -47,7 +47,7 @@ def callback_recv(ch, method, properties, body):
     # summarize the transcription
     summary = summarize_text(transcription_data[2])
 
-    # insert currently created dummary to the summary table
+    # insert currently created summary to the summary table
     summary_id = insert_summary(note_id, summary)
 
     # push the summary id to keyword extraction queue

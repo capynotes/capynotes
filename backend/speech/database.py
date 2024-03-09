@@ -55,7 +55,7 @@ def insert_transcription(note_id, transcription):
     transcription_id = cursor.fetchone()[0]
 
     connection.commit()
-    update_query = f"UPDATE note SET status = 'SUMMARIZING' WHERE note_id = {note_id};"
+    update_query = f"UPDATE note SET status = 'SUMMARIZING' WHERE id = {note_id};"
     cursor.execute(update_query)
     connection.commit()
     cursor.close()

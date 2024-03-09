@@ -11,17 +11,13 @@ def whisper_transcribe_audio(audio_file_name):
     bucket_name = get_bucket_name()
     s3_client.download_file(bucket_name, audio_file_name, "downloads\\" + audio_file_name)
     file_path = "downloads\\" + audio_file_name
-    print("Downloaded file from S3")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device: ", device)
 
     model = whisper.load_model("medium.en").to(device)
     modify_model(model)
-    print("Transcription Started...")
     result = model.transcribe(file_path, language='en', verbose=False)
-    print("Transcription Completed")
-    print("Result: ", result)
     os.remove(file_path)
     return result
   
