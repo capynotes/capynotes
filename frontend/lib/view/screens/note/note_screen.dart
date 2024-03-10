@@ -158,7 +158,17 @@ class NoteScreen extends StatelessWidget {
                                                                               index]
                                                                           .start!
                                                                           .toInt() ??
-                                                                      1));
+                                                                      0,
+                                                                  milliseconds: int.parse(state
+                                                                          .note
+                                                                          .transcript
+                                                                          ?.timestamps![
+                                                                              index]
+                                                                          .start!
+                                                                          .toString()
+                                                                          .split(
+                                                                              ".")[1] ??
+                                                                      "0")));
                                                             },
                                                     ))))
                                     //     Text(
