@@ -98,3 +98,13 @@ services:
     depends_on:
       - db
 
+  youtube_service:
+    image: 'youtube-service-image'
+    build:
+      context: ./youtube
+    container_name: youtube-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - db
+

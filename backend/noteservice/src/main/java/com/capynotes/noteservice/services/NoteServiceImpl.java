@@ -84,37 +84,19 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public Note uploadAudioFromURL(String videoUrl, String fileName, Long userId) {
-        String newName = UUID.randomUUID().toString() + "_" + fileName;
-        // Send request to Flask, it uploads the file to S3, generates the transcript, returns S3 url and transcript
+        //String newName = UUID.randomUUID().toString() + "_" + fileName;
         LocalDateTime uploadTime = LocalDateTime.now();
-        String url = "http://localhost:5000/youtube";
 
-        // transcribe ederken s3'e mi yukluyoz tam anlamadim burayi sonra degiscem
+        /*newAudio = updateAudioTranscription(newAudio.getId(), body.getTranscription());
+        newAudio = updateAudioStatus(newAudio.getId(), AudioStatus.DONE);
+        newAudio = updateAudioURL(newAudio.getId(), fileUrl.toString());*/
 
-        VideoTranscribeRequest transcribeRequest = new VideoTranscribeRequest(videoUrl, newName);
-        HttpEntity<?> requestEntity = new HttpEntity<>(transcribeRequest);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<VideoTranscribeResponse> transcribeResponse = restTemplate.exchange(url, HttpMethod.POST,
-                requestEntity,
-                VideoTranscribeResponse.class);
+        Note note = new Note(fileName, userId, "file_url", uploadTime, NoteStatus.TRANSCRIBING);
+        noteRepository.save(note);
 
-        if (transcribeResponse.getStatusCode() == HttpStatus.OK) {
-            VideoTranscribeResponse body = transcribeResponse.getBody();
-            /*newAudio = updateAudioTranscription(newAudio.getId(), body.getTranscription());
-            newAudio = updateAudioStatus(newAudio.getId(), AudioStatus.DONE);
-            newAudio = updateAudioURL(newAudio.getId(), fileUrl.toString());*/
-            URL fileUrl = amazonS3.getUrl(bucketName, fileName);
-
-            Note note = new Note(fileName, userId, fileUrl.toString(), uploadTime, NoteStatus.TRANSCRIBING);
-            noteRepository.save(note);
-            Long note_id = note.getId();
-            // This method needs to send note_id, which is just created, over a rabbit mq queue
-            return note;
-        } else {
-            //TODO: Handle error
-            return null;
-        }
+        return note;
     }
+
     /*@Override
     public Object downloadAudio(String fileName) throws IOException, FileDownloadException {
         if (bucketIsEmpty()) {
