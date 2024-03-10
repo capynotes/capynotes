@@ -5,8 +5,10 @@ import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dar
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../constants/colors.dart';
 import '../../../utility/utils.dart';
@@ -41,6 +43,7 @@ class NoteScreen extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is NoteDisplay) {
+          AudioPlayer player = AudioPlayer();
           return Scaffold(
               appBar: AppBar(
                   title: Text(state.note.note!.title ?? "No Title"),
@@ -62,11 +65,13 @@ class NoteScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         PlayerWidget(
-                          path: state.note.note!.audioName!,
+                          //path: state.note.note!.audioName!,
+                          path:
+                              "https://cs49x-transcribe.s3.eu-north-1.amazonaws.com/02f042a6-4f94-4e6e-a789-306dcce591d7_os1.mp3",
                           // context
                           //     .read<NoteCubit>()
                           //     .path, //Change with selected note's path
-                          // player: context.read<NoteCubit>().player,
+                          player: player,
                         ),
                         const SizedBox(height: 16.0),
                         Row(
@@ -127,10 +132,50 @@ class NoteScreen extends StatelessWidget {
                               AccordionSection(
                                 header: const Text("Transcript"),
                                 content: SingleChildScrollView(
-                                    child: Text(
-                                  state.note.transcript?.transcription ??
-                                      "No Transcript",
-                                )),
+                                    child: RichText(
+                                        text: TextSpan(
+                                            children: List.generate(
+                                                state.note.transcript
+                                                        ?.timestamps!.length ??
+                                                    0,
+                                                (index) => TextSpan(
+                                                      text:
+                                                          "${state.note.transcript?.timestamps![index].phrase}",
+                                                      recognizer:
+                                                          TapGestureRecognizer()
+                                                            ..onTap = () {
+                                                              print(state
+                                                                  .note
+                                                                  .transcript
+                                                                  ?.timestamps![
+                                                                      index]
+                                                                  .start);
+                                                              player.seek(Duration(
+                                                                  seconds: state
+                                                                          .note
+                                                                          .transcript
+                                                                          ?.timestamps![
+                                                                              index]
+                                                                          .start!
+                                                                          .toInt() ??
+                                                                      0,
+                                                                  milliseconds: int.parse(state
+                                                                          .note
+                                                                          .transcript
+                                                                          ?.timestamps![
+                                                                              index]
+                                                                          .start!
+                                                                          .toString()
+                                                                          .split(
+                                                                              ".")[1] ??
+                                                                      "0")));
+                                                            },
+                                                    ))))
+                                    //     Text(
+                                    //   state.note.transcript?.transcription ??
+                                    //       "No Transcript",
+                                    // )
+                                    ),
                               ),
                             ]),
                         Row(
