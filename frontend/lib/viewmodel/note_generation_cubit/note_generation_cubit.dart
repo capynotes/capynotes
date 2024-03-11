@@ -67,8 +67,11 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   Future<void> generateNoteFromURL() async {
     emit(NoteGenerationLoading());
     // send generation request
+    // TODO: Change userId to dynamic
     VideoModel videoModel = VideoModel(
-        url: videoUrlController.text, noteName: noteNameController.text);
+        url: videoUrlController.text,
+        noteName: noteNameController.text,
+        userId: 1);
     var response = await service.generateNoteFromURL(videoModel);
 
     if (response != null) {

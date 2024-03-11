@@ -8,4 +8,5 @@ import lombok.Data;
 public class VideoTranscribeRequest {
     private String videoUrl;
     private String noteName;
+    private Long userId;
 }

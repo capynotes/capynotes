@@ -77,11 +77,11 @@ public class NoteController {
     }
 
     @PostMapping("/from-video")
-    public ResponseEntity<?> uploadFromVideo(@RequestBody VideoTranscribeRequest videoTranscribeRequest,
-            @RequestParam("userId") Long userId) {
+    public ResponseEntity<?> uploadFromVideo(@RequestBody VideoTranscribeRequest videoTranscribeRequest) {
         Response response;
         String videoUrl = videoTranscribeRequest.getVideoUrl();
         String fileName = videoTranscribeRequest.getNoteName();
+        Long userId = videoTranscribeRequest.getUserId();
         try {
             Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
             String jsonString = "{\"noteId\":" + note.getId().toString() + ", \"videoUrl\":\"" + videoUrl + "\", \"noteName\":\"" + fileName + "\"}";

@@ -5,6 +5,7 @@ import sys
 import pika
 import json
 from video_to_mp4 import video_to_mp4
+from database import update_s3_name
 
 connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
 channel_send = connection_send.channel()
@@ -41,8 +42,9 @@ def callback_recv(ch, method, properties, body):
         video_url = yt_json_data["videoUrl"]
         note_name = yt_json_data["noteName"]
 
-        object_name = video_to_mp4(video_url, note_name)
-        if object_name:
+        file_name = video_to_mp4(video_url, note_name)
+        if file_name:
+            update_s3_name(note_id, file_name)
             send_to_speech(int(note_id))
         else:
             print("An Error Occurred. Please Try Again Later.")

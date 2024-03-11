@@ -34,7 +34,7 @@ def video_to_mp4(video_url, note_name):
     os.rename(out_file, new_file_path) 
   
     # upload to s3
-    file_status = upload_mp4_to_s3(new_file_path, video_name)
+    file_status = upload_mp4_to_s3(new_file_path, note_name)
     
     # file uploaded to s3
     # now delete the file from local
