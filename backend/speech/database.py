@@ -8,20 +8,18 @@ def initialize_connection():
     connection = psycopg2.connect(**DB_CONFIG)
     cursor = connection.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS transcript(
-            id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-            note_id bigint NOT NULL,
-            transcription character varying COLLATE pg_catalog."default" NOT NULL,
-            CONSTRAINT transcript_pkey PRIMARY KEY (id)
-        ) '''
+            id SERIAL PRIMARY KEY,
+            note_id BIGINT NOT NULL,
+            transcript TEXT NOT NULL
+        )'''
     )
     connection.commit()
     cursor.execute('''CREATE TABLE IF NOT EXISTS timestamp(
-            id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-            transcription_id bigint NOT NULL,
+            id SERIAL PRIMARY KEY,
+            transcription_id BIGINT NOT NULL,
             start real NOT NULL,
             finish real NOT NULL,
-            phrase character varying COLLATE pg_catalog."default" NOT NULL,
-            CONSTRAINT timestamp_pkey PRIMARY KEY (id)
+            phrase TEXT NOT NULL
         )'''
     )
     connection.commit()
