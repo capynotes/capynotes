@@ -33,6 +33,7 @@ public class NoteController {
     Channel channel;
 
     String QUEUE_NAME = "transcription_queue";
+    String YOUTUBE_QUEUE_NAME = "youtube_queue";
 
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
@@ -49,6 +50,7 @@ public class NoteController {
             connection = factory.newConnection();
             channel = connection.createChannel();
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+            channel.queueDeclare(YOUTUBE_QUEUE_NAME, false, false, false, null);
             System.out.println(" [*] Waiting for messages.");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -75,15 +77,16 @@ public class NoteController {
     }
 
     @PostMapping("/from-video")
-    public ResponseEntity<?> uploadFromVideo(@RequestBody VideoTranscribeRequest videoTranscribeRequest,
-            @RequestParam("userId") Long userId) {
+    public ResponseEntity<?> uploadFromVideo(@RequestBody VideoTranscribeRequest videoTranscribeRequest) {
         Response response;
         String videoUrl = videoTranscribeRequest.getVideoUrl();
         String fileName = videoTranscribeRequest.getNoteName();
+        Long userId = videoTranscribeRequest.getUserId();
         try {
             Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
-            channel.basicPublish("", QUEUE_NAME, null, note.getId().toString().getBytes(StandardCharsets.UTF_8));
-            System.out.println(" [x] Sent '" + note.getId().toString() + "'");
+            String jsonString = "{\"noteId\":" + note.getId().toString() + ", \"videoUrl\":\"" + videoUrl + "\", \"noteName\":\"" + fileName + "\"}";
+            channel.basicPublish("", YOUTUBE_QUEUE_NAME, null, jsonString.getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Sent note with id '" + note.getId().toString() + "'");
             response = new Response("Note created.", 200, note);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
