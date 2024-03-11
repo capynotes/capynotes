@@ -7,11 +7,10 @@ def initialize_connection():
     global connection
     connection = psycopg2.connect(**DB_CONFIG)
     cursor = connection.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS summary(
-            id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
-            note_id bigint NOT NULL,
-            summary character varying COLLATE pg_catalog."default" NOT NULL,
-            CONSTRAINT summary_pkey PRIMARY KEY (id)) '''
+    cursor.execute('''CREATE TABLE IF NOT EXISTS summary (
+        id SERIAL PRIMARY KEY,
+        note_id BIGINT NOT NULL,
+        summary TEXT NOT NULL)'''
     )
 
 def get_trascription_from_database(transcription_id):
