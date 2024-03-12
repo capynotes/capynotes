@@ -7,9 +7,10 @@ import 'package:capynotes/viewmodel/note_generation_cubit/note_generation_cubit.
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../constants/asset_paths.dart';
 import '../../../translations/locale_keys.g.dart';
 import '../../widgets/custom_widgets/custom_drawer.dart';
-import '../../widgets/loading_lottie_widget.dart';
+import '../../widgets/lotties/default_lottie_widget.dart';
 
 @RoutePage()
 class NoteGenerationScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
         },
         builder: (context, state) {
           if (state is NoteGenerationLoading) {
-            return const LoadingLottie();
+            return DefaultLottie(path: AssetPaths.loadingLottie);
           } else {
             return Padding(
               padding: const EdgeInsets.all(20.0),

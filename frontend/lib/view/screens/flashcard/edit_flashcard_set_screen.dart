@@ -3,12 +3,13 @@ import 'package:capynotes/view/widgets/custom_widgets/custom_dialogs.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
-import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../constants/asset_paths.dart';
 import '../../../constants/colors.dart';
+import '../../widgets/lotties/default_lottie_widget.dart';
 
 @RoutePage()
 class EditFlashcardSetScreen extends StatelessWidget {
@@ -224,7 +225,7 @@ class EditFlashcardSetScreen extends StatelessWidget {
             ),
           );
         } else if (state is FlashcardLoading) {
-          return const LoadingLottie();
+          return DefaultLottie(path: AssetPaths.loadingLottie);
         } else {
           return const Center(child: Text(""));
         }

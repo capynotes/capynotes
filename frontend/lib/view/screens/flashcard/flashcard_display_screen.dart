@@ -1,9 +1,11 @@
 import 'package:auto_route/annotations.dart';
-import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+
+import '../../../constants/asset_paths.dart';
+import '../../widgets/lotties/default_lottie_widget.dart';
 
 @RoutePage()
 class FlashcardScreen extends StatelessWidget {
@@ -51,7 +53,7 @@ class FlashcardScreen extends StatelessWidget {
                     ],
                   )));
         } else if (state is FlashcardLoading) {
-          return const LoadingLottie();
+          return DefaultLottie(path: AssetPaths.loadingLottie);
         } else {
           return const Center(child: Text(""));
         }
