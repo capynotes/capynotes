@@ -26,9 +26,9 @@ class AssetPaths {
   static String microphoneLottie = kIsWeb
       ? "lotties/microphone_lottie.json"
       : "assets/lotties/microphone_lottie.json";
-  static String browseFilesLottie = kIsWeb
-      ? "lotties/browse_files_lottie.json"
-      : "assets/lotties/browse_files_lottie.json";
+  static String browseFolderLottie = kIsWeb
+      ? "lotties/browse_folder_lottie.json"
+      : "assets/lotties/browse_folder_lottie.json";
 
   // Translations
   static String translations = kIsWeb ? "translations" : "assets/translations";
