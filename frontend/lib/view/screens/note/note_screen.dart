@@ -140,17 +140,13 @@ class NoteScreen extends StatelessWidget {
                                                         ?.timestamps!.length ??
                                                     0,
                                                 (index) => TextSpan(
+                                                      style: const TextStyle(
+                                                          color: Colors.black),
                                                       text:
                                                           "${state.note.transcript?.timestamps![index].phrase}",
                                                       recognizer:
                                                           TapGestureRecognizer()
                                                             ..onTap = () {
-                                                              print(state
-                                                                  .note
-                                                                  .transcript
-                                                                  ?.timestamps![
-                                                                      index]
-                                                                  .start);
                                                               player.seek(Duration(
                                                                   seconds: state
                                                                           .note

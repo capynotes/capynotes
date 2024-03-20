@@ -82,6 +82,19 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MyNotesScreen(),
       );
     },
+    NoteGenerationDetailsRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<NoteGenerationDetailsRouteArgs>(
+          orElse: () => NoteGenerationDetailsRouteArgs(
+              source: pathParams.getString('src')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: NoteGenerationDetailsScreen(
+          key: args.key,
+          source: args.source,
+        ),
+      );
+    },
     NoteGenerationRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -295,6 +308,46 @@ class MyNotesRoute extends PageRouteInfo<void> {
   static const String name = 'MyNotesRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NoteGenerationDetailsScreen]
+class NoteGenerationDetailsRoute
+    extends PageRouteInfo<NoteGenerationDetailsRouteArgs> {
+  NoteGenerationDetailsRoute({
+    Key? key,
+    required String source,
+    List<PageRouteInfo>? children,
+  }) : super(
+          NoteGenerationDetailsRoute.name,
+          args: NoteGenerationDetailsRouteArgs(
+            key: key,
+            source: source,
+          ),
+          rawPathParams: {'src': source},
+          initialChildren: children,
+        );
+
+  static const String name = 'NoteGenerationDetailsRoute';
+
+  static const PageInfo<NoteGenerationDetailsRouteArgs> page =
+      PageInfo<NoteGenerationDetailsRouteArgs>(name);
+}
+
+class NoteGenerationDetailsRouteArgs {
+  const NoteGenerationDetailsRouteArgs({
+    this.key,
+    required this.source,
+  });
+
+  final Key? key;
+
+  final String source;
+
+  @override
+  String toString() {
+    return 'NoteGenerationDetailsRouteArgs{key: $key, source: $source}';
+  }
 }
 
 /// generated route for
