@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:capynotes/model/note_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   TextEditingController videoUrlController = TextEditingController();
   String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   File? audioFile;
-  AudioModel? uploadedAudio;
+  Note? generatedNote;
 
   Future<void> pickAudio() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -52,10 +53,10 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
         await service.generateNoteFromFile(audioFile!, selectedFileName);
 
     if (response != null) {
-      uploadedAudio = response;
+      generatedNote = response;
       emit(NoteGenerationSuccess(
           LocaleKeys.dialogs_success_dialogs_note_generation_success_title.tr(),
-          uploadedAudio!.name ?? ""));
+          generatedNote!.title ?? ""));
     } else {
       emit(NoteGenerationError(
           LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),
@@ -75,10 +76,10 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
     var response = await service.generateNoteFromURL(videoModel);
 
     if (response != null) {
-      uploadedAudio = response;
+      generatedNote = response;
       emit(NoteGenerationSuccess(
           LocaleKeys.dialogs_success_dialogs_note_generation_success_title.tr(),
-          uploadedAudio!.name ?? ""));
+          generatedNote!.title ?? ""));
     } else {
       emit(NoteGenerationError(
           LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),

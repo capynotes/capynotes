@@ -3,18 +3,19 @@ import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/screens/note/note_pdf_screen.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
-import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../constants/asset_paths.dart';
 import '../../../constants/colors.dart';
 import '../../../utility/utils.dart';
 import '../../../viewmodel/note_cubit/note_cubit.dart';
 import '../../widgets/custom_widgets/custom_drawer.dart';
 import '../../widgets/flashcard_set_tile_widget.dart';
+import '../../widgets/lotties/default_lottie_widget.dart';
 import '../../widgets/play_audio/player_widget.dart';
 
 @RoutePage()
@@ -139,17 +140,13 @@ class NoteScreen extends StatelessWidget {
                                                         ?.timestamps!.length ??
                                                     0,
                                                 (index) => TextSpan(
+                                                      style: const TextStyle(
+                                                          color: Colors.black),
                                                       text:
                                                           "${state.note.transcript?.timestamps![index].phrase}",
                                                       recognizer:
                                                           TapGestureRecognizer()
                                                             ..onTap = () {
-                                                              print(state
-                                                                  .note
-                                                                  .transcript
-                                                                  ?.timestamps![
-                                                                      index]
-                                                                  .start);
                                                               player.seek(Duration(
                                                                   seconds: state
                                                                           .note
@@ -234,7 +231,7 @@ class NoteScreen extends StatelessWidget {
                 ),
               ));
         } else if (state is NoteLoading) {
-          return const LoadingLottie();
+          return DefaultLottie(path: AssetPaths.loadingLottie);
         } else if (state is NoteNotFound) {
           return const Center(child: Text("Note not found"));
         } else {

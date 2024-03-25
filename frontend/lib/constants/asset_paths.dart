@@ -20,6 +20,16 @@ class AssetPaths {
   static String loadingLottie = kIsWeb
       ? "lotties/loading_lottie.json"
       : "assets/lotties/loading_lottie.json";
+  static String youtubeLottie = kIsWeb
+      ? "lotties/youtube_lottie.json"
+      : "assets/lotties/youtube_lottie.json";
+  static String microphoneLottie = kIsWeb
+      ? "lotties/microphone_lottie.json"
+      : "assets/lotties/microphone_lottie.json";
+  static String browseFolderLottie = kIsWeb
+      ? "lotties/browse_folder_lottie.json"
+      : "assets/lotties/browse_folder_lottie.json";
+
   // Translations
   static String translations = kIsWeb ? "translations" : "assets/translations";
 }

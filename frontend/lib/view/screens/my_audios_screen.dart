@@ -1,15 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
-import 'package:capynotes/view/widgets/loading_lottie_widget.dart';
 import 'package:capynotes/viewmodel/audio_cubit/audio_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../constants/asset_paths.dart';
 import '../../translations/locale_keys.g.dart';
 import '../widgets/audio_list_view.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
+import '../widgets/lotties/default_lottie_widget.dart';
 
 @RoutePage()
 class MyAudiosScreen extends StatelessWidget {
@@ -69,7 +70,7 @@ class MyAudiosScreen extends StatelessWidget {
                           : Text(LocaleKeys.labels_no_audios_found.tr()),
                     ]));
               } else if (state is AudioLoading) {
-                return const LoadingLottie();
+                return DefaultLottie(path: AssetPaths.loadingLottie);
               } else if (state is AudioNotFound) {
                 return Center(
                     child: Text(LocaleKeys.labels_no_audios_found.tr()));
