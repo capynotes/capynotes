@@ -58,7 +58,7 @@ class NoteGenerationDetailsScreen extends StatelessWidget {
                       : source == "audio"
                           ? FromAudioFileWidget()
                           : source == "recording"
-                              ? const FromRecordingWidget()
+                              ? FromRecordingWidget()
                               : // Error widget
                               Center(
                                   child: Container(
@@ -107,7 +107,7 @@ class FromYoutubeWidget extends StatelessWidget {
           CustomElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  context.read<NoteGenerationCubit>().generateNoteFromFile();
+                  context.read<NoteGenerationCubit>().generateNoteFromURL();
                 }
               },
               child: Text(LocaleKeys.buttons_generate_note.tr())),
@@ -179,41 +179,48 @@ class FromAudioFileWidget extends StatelessWidget {
 }
 
 class FromRecordingWidget extends StatelessWidget {
-  const FromRecordingWidget({super.key});
+  FromRecordingWidget({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: DefaultLottie(path: AssetPaths.microphoneLottie)),
-        const SizedBox(
-          height: 20,
-        ),
-        CustomElevatedButton(
-          child: Text(LocaleKeys.buttons_record_audio.tr()),
-          onPressed: () {
-            context.read<NoteGenerationCubit>().recordAudio();
-          },
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        CustomTextFormField(
-          label: LocaleKeys.text_fields_labels_note_name.tr(),
-          hint: LocaleKeys.text_fields_hints_note_name.tr(),
-          controller: context.read<NoteGenerationCubit>().noteNameController,
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        CustomElevatedButton(
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: DefaultLottie(path: AssetPaths.microphoneLottie)),
+          const SizedBox(
+            height: 20,
+          ),
+          CustomElevatedButton(
+            child: Text(LocaleKeys.buttons_record_audio.tr()),
             onPressed: () {
-              context.read<NoteGenerationCubit>().generateNoteFromFile();
+              context.read<NoteGenerationCubit>().recordAudio();
             },
-            child: Text(LocaleKeys.buttons_generate_note.tr())),
-      ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          CustomTextFormField(
+            label: LocaleKeys.text_fields_labels_note_name.tr(),
+            hint: LocaleKeys.text_fields_hints_note_name.tr(),
+            controller: context.read<NoteGenerationCubit>().noteNameController,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          CustomElevatedButton(
+              onPressed: () {
+                if (formKey.currentState!.validate() &&
+                    context.read<NoteGenerationCubit>().audioFile != null) {
+                  context.read<NoteGenerationCubit>().generateNoteFromFile();
+                }
+              },
+              child: Text(LocaleKeys.buttons_generate_note.tr())),
+        ],
+      ),
     );
   }
 }
