@@ -30,7 +30,7 @@ public class AuthGlobalFilter implements GlobalFilter {
                     .header("X-USER-ID", userId.toString())
                     .build();
             return chain.filter(exchange.mutate().request(modifiedRequest).build());
-        } else if (exchange.getRequest().getURI().getPath().equals("/api/auth/id") || exchange.getRequest().getURI().getPath().equals("/api/auth/email")) {
+        } else if (isPathAllowedWithoutToken(exchange.getRequest().getURI().getPath())) {
             return chain.filter(exchange);
         } else if (jwtUtils.isTokenExpired(token)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -41,5 +41,9 @@ public class AuthGlobalFilter implements GlobalFilter {
             DataBuffer buffer = exchange.getResponse().bufferFactory().wrap("Unauthorized".getBytes());
             return exchange.getResponse().writeWith(Mono.just(buffer));
         }
+    }
+
+    private boolean isPathAllowedWithoutToken(String path) {
+        return path.equals("/api/auth/id") || path.equals("/api/auth/email") || path.equals("/api/person/login") || path.equals("/api/person/register");
     }
 }
