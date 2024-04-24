@@ -1,10 +1,8 @@
 package com.capynotes.noteservice.controllers;
 
-import com.capynotes.noteservice.dtos.NoteDto;
-import com.capynotes.noteservice.dtos.NoteRequest;
-import com.capynotes.noteservice.dtos.Response;
-import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
+import com.capynotes.noteservice.dtos.*;
 import com.capynotes.noteservice.models.Note;
+import com.capynotes.noteservice.models.Tag;
 import com.capynotes.noteservice.services.NoteService;
 
 import java.io.FileNotFoundException;
@@ -127,6 +125,37 @@ public class NoteController {
         try {
             note = noteService.findNoteByNoteId(id);
             return new Response("Note retrieved successfully.", 200, note);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @GetMapping("/user/grid/{id}")
+    public Response getUserNotesInGrid(@PathVariable("id") Long id) throws FileNotFoundException {
+        List<NoteGrid> notes;
+        try {
+            notes = noteService.getNotesInGrid(id);
+            return new Response("Notes retrieved successfully.", 200, notes);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @PostMapping("/add-tag")
+    public Response addTagToNote(@RequestBody Tag tag) {
+        try {
+            noteService.addTag(tag);
+            return new Response("Tag added successfully.", 200, tag);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @DeleteMapping("/delete-tag")
+    public Response deleteTagFromNote(@RequestBody Tag tag) {
+        try {
+            noteService.deleteTag(tag);
+            return new Response("Tag deleted.", 200, tag);
         } catch (Exception e) {
             return new Response("An error occurred." + e.toString(), 500, null);
         }

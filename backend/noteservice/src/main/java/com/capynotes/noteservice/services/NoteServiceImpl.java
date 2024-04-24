@@ -8,15 +8,13 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.capynotes.noteservice.dtos.NoteDto;
+import com.capynotes.noteservice.dtos.NoteGrid;
 import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
 import com.capynotes.noteservice.dtos.VideoTranscribeResponse;
 import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
 import com.capynotes.noteservice.exceptions.FileUploadException;
-import com.capynotes.noteservice.models.Note;
-import com.capynotes.noteservice.models.Summary;
-import com.capynotes.noteservice.models.Timestamp;
-import com.capynotes.noteservice.models.Transcript;
+import com.capynotes.noteservice.models.*;
 import com.capynotes.noteservice.repositories.NoteRepository;
 
 import com.capynotes.noteservice.repositories.SummaryRepository;
@@ -38,6 +36,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -168,6 +167,30 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void deleteNote(Long id){
         noteRepository.deleteById(id);
+    }
+    @Override
+    public List<NoteGrid> getNotesInGrid(Long userId) throws FileNotFoundException {
+        List<NoteGrid> noteGrids = new ArrayList<>();
+        List<Note> notes = findNotesByUserId(userId);
+        for (Note note: notes) {
+            NoteGrid noteGrid = new NoteGrid(note);
+            noteGrids.add(noteGrid);
+        }
+        return noteGrids;
+    }
+
+    @Override
+    public void addTag(Tag tag) {
+        Note note = tag.getNote();
+        note.getTags().add(tag);
+        noteRepository.save(note);
+    }
+
+    @Override
+    public void deleteTag(Tag tag) {
+        Note note = tag.getNote();
+        note.getTags().remove(tag);
+        noteRepository.save(note);
     }
 
 

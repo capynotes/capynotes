@@ -42,4 +42,7 @@ public class Note {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private NoteStatus status;
+
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags;
 }
