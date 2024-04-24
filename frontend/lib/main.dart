@@ -14,15 +14,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 
+import 'amplifyconfiguration.dart';
 import 'constants/asset_paths.dart';
 import 'services/audio_service.dart';
 import 'services/note_service.dart';
 import 'viewmodel/note_cubit/note_cubit.dart';
 
+Future<void> _configureAmplify() async {
+  try {
+    final auth = AmplifyAuthCognito();
+    final storage = AmplifyStorageS3();
+    await Amplify.addPlugins([auth, storage]);
+
+    await Amplify.configure(amplifyconfig);
+  } on Exception catch (e) {
+    safePrint('An error occurred configuring Amplify: $e');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await _configureAmplify();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   runApp(
     EasyLocalization(
