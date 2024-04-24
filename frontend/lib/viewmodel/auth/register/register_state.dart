@@ -25,3 +25,9 @@ class RegisterSuccess extends RegisterState {
 
   RegisterSuccess(this.title, this.description);
 }
+
+class RegisterConfirm extends RegisterState {
+  final AuthCodeDeliveryDetails codeDeliveryDetails;
+
+  RegisterConfirm(this.codeDeliveryDetails);
+}

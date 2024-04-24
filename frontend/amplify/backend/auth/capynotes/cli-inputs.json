@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "capynotese9fc1b9f_identitypool_e9fc1b9f",
-    "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "capynoe9fc1b9f",
-    "userPoolName": "capynotese9fc1b9f_userpool_e9fc1b9f",
+    "identityPoolName": "capynotes",
+    "allowUnauthenticatedIdentities": true,
+    "resourceNameTruncated": "capynoc4e17142",
+    "userPoolName": "capynotes",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -14,7 +14,7 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "Your verification code",
+    "emailVerificationSubject": "Your verification code:",
     "emailVerificationMessage": "Your verification code is {####}",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
@@ -31,15 +31,20 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "capynoe9fc1b9f_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "capynoc4e17142_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "e9fc1b9f",
-    "resourceName": "capynotese9fc1b9f",
+    "sharedId": "c4e17142",
+    "resourceName": "capynotes",
     "authSelections": "identityPoolAndUserPool",
-    "useDefault": "default",
+    "useDefault": "manual",
+    "thirdPartyAuth": false,
     "usernameAttributes": [
       "email"
     ],
+    "userPoolGroups": false,
+    "adminQueries": false,
+    "triggers": {},
+    "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,

@@ -8,8 +8,9 @@ class NoteModel {
   Note? note;
   Transcript? transcript;
   Summary? summary;
+  String? audioUrl;
 
-  NoteModel({this.note, this.transcript, this.summary});
+  NoteModel({this.note, this.transcript, this.summary, this.audioUrl});
 
   NoteModel.fromJson(Map<String, dynamic> json) {
     note = json['note'] != null ? Note.fromJson(json['note']) : null;

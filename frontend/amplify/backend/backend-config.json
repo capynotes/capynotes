@@ -1,6 +1,6 @@
 {
   "auth": {
-    "capynotese9fc1b9f": {
+    "capynotes": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -27,30 +27,11 @@
       "service": "Cognito"
     }
   },
-  "parameters": {
-    "AMPLIFY_storage_capynotes118e98fe_bucketName": {
-      "usedBy": [
-        {
-          "category": "storage",
-          "resourceName": "capynotes118e98fe"
-        }
-      ]
-    },
-    "AMPLIFY_storage_capynotes118e98fe_region": {
-      "usedBy": [
-        {
-          "category": "storage",
-          "resourceName": "capynotes118e98fe"
-        }
-      ]
-    }
-  },
   "storage": {
-    "capynotes118e98fe": {
+    "capynotes": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "S3",
-      "serviceType": "imported"
+      "service": "S3"
     }
   }
 }

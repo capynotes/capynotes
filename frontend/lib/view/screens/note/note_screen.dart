@@ -66,12 +66,7 @@ class NoteScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         PlayerWidget(
-                          //path: state.note.note!.audioName!,
-                          path:
-                              "https://cs49x-transcribe.s3.eu-north-1.amazonaws.com/02f042a6-4f94-4e6e-a789-306dcce591d7_os1.mp3",
-                          // context
-                          //     .read<NoteCubit>()
-                          //     .path, //Change with selected note's path
+                          path: state.note.audioUrl!,
                           player: player,
                         ),
                         const SizedBox(height: 16.0),
