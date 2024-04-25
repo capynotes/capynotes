@@ -1,10 +1,7 @@
 package com.capynotes.noteservice.dtos;
 
 import com.capynotes.noteservice.enums.NoteStatus;
-import com.capynotes.noteservice.models.Flashcard;
-import com.capynotes.noteservice.models.FlashcardSet;
-import com.capynotes.noteservice.models.Note;
-import com.capynotes.noteservice.models.Tag;
+import com.capynotes.noteservice.models.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

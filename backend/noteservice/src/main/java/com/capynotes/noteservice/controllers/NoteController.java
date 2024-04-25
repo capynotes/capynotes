@@ -1,8 +1,10 @@
 package com.capynotes.noteservice.controllers;
 
 import com.capynotes.noteservice.dtos.*;
+import com.capynotes.noteservice.models.FolderItem;
 import com.capynotes.noteservice.models.Note;
 import com.capynotes.noteservice.models.Tag;
+import com.capynotes.noteservice.services.FolderItemService;
 import com.capynotes.noteservice.services.NoteService;
 
 import java.io.FileNotFoundException;
@@ -26,6 +28,7 @@ import jakarta.annotation.PostConstruct;
 @RequestMapping("api/note")
 public class NoteController {
     NoteService noteService;
+    FolderItemService folderItemService;
     ConnectionFactory factory;
     Connection connection;
     Channel channel;
@@ -33,8 +36,9 @@ public class NoteController {
     String QUEUE_NAME = "transcription_queue";
     String YOUTUBE_QUEUE_NAME = "youtube_queue";
 
-    public NoteController(NoteService noteService) {
+    public NoteController(NoteService noteService, FolderItemService folderItemService) {
         this.noteService = noteService;
+        this.folderItemService = folderItemService;
     }
 
     @PostConstruct
@@ -158,6 +162,50 @@ public class NoteController {
             return new Response("Tag deleted.", 200, tag);
         } catch (Exception e) {
             return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @PostMapping("/folder-item/add")
+    public Response addFolderItem(@RequestBody FolderItem folderItem) {
+        try {
+            FolderItem createdItem = folderItemService.addFolderItem(folderItem);
+            return new Response("Success", 200, createdItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @GetMapping("/folder-item/all/{id}")
+    public Response getAllFolderItemsOfUser(@PathVariable("id") long id) {
+        try {
+            List<Object> items = folderItemService.getFolderItemsOfUser(id);
+            return new Response("Success", 200, items);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @GetMapping("/folder-item/{id}")
+    public Response getFolderItemById(@PathVariable("id") long id) {
+        try {
+            FolderItem foundItem = folderItemService.getFolderItem(id);
+            return new Response("Success", 200, foundItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @DeleteMapping("/folder-item/{id}")
+    public Response deleteFolderItemById(@PathVariable("id") long id) {
+        try {
+            folderItemService.deleteFolderItem(id);
+            return new Response("Success", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
         }
     }
 }
