@@ -11,11 +11,13 @@ import '../view/screens/auth/register_screen.dart';
 import '../view/screens/contact_us_screen.dart';
 import '../view/screens/flashcard/edit_flashcard_set_screen.dart';
 import '../view/screens/flashcard/flashcard_display_screen.dart';
+import '../view/screens/home_screen.dart';
 import '../view/screens/note/my_notes_screen.dart';
 import '../view/screens/note/note_generation_details_screen.dart';
 import '../view/screens/note/note_screen.dart';
 import '../view/screens/onboarding_screen.dart';
 import '../view/screens/profile_screen.dart';
+import '../view/screens/folder_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -48,7 +50,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
               if (isFirstTime) {
                 resolver.next();
               } else {
-                navigateNamed("/note-generation");
+                navigateNamed("/home");
               }
             })
           ],
@@ -56,7 +58,9 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(page: NoteGenerationRoute.page, path: "/note-generation"),
         AutoRoute(page: AboutUsRoute.page, path: "/about-us"),
         AutoRoute(page: ContactUsRoute.page, path: "/contact-us"),
-        AutoRoute(page: MyAudiosRoute.page, path: "/my-audios")
+        AutoRoute(page: MyAudiosRoute.page, path: "/my-audios"),
+        AutoRoute(page: HomeRoute.page, path: "/home"),
+        AutoRoute(page: FolderRoute.page, path: "/folder"),
       ];
 
   @override
