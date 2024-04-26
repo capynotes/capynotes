@@ -59,9 +59,15 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     FolderRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<FolderRouteArgs>(
+          orElse: () => FolderRouteArgs(folderID: pathParams.getInt('id')));
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const FolderScreen(),
+        child: FolderScreen(
+          key: args.key,
+          folderID: args.folderID,
+        ),
       );
     },
     ForgotPasswordRoute.name: (routeData) {
@@ -268,16 +274,40 @@ class FlashcardRouteArgs {
 
 /// generated route for
 /// [FolderScreen]
-class FolderRoute extends PageRouteInfo<void> {
-  const FolderRoute({List<PageRouteInfo>? children})
-      : super(
+class FolderRoute extends PageRouteInfo<FolderRouteArgs> {
+  FolderRoute({
+    Key? key,
+    required int folderID,
+    List<PageRouteInfo>? children,
+  }) : super(
           FolderRoute.name,
+          args: FolderRouteArgs(
+            key: key,
+            folderID: folderID,
+          ),
+          rawPathParams: {'id': folderID},
           initialChildren: children,
         );
 
   static const String name = 'FolderRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<FolderRouteArgs> page = PageInfo<FolderRouteArgs>(name);
+}
+
+class FolderRouteArgs {
+  const FolderRouteArgs({
+    this.key,
+    required this.folderID,
+  });
+
+  final Key? key;
+
+  final int folderID;
+
+  @override
+  String toString() {
+    return 'FolderRouteArgs{key: $key, folderID: $folderID}';
+  }
 }
 
 /// generated route for

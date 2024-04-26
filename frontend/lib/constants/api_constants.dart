@@ -21,4 +21,11 @@ class ApiConstants {
   static String addFlashcard = "flashcard/add";
   static String flashcard = "flashcard/";
   static String editFlashcard = "flashcard/edit";
+
+  // Folder related endpoints
+  static String createFolder = "folder/add";
+  static String getUserFolders = "folder/main/";
+  static String getFolder = "folder/";
+  static String addFolderToFolder = "folder/add-to-folder/";
+  static String addTag = "note/add-tag";
 }
