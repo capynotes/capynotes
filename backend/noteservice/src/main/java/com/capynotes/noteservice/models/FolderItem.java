@@ -1,6 +1,5 @@
 package com.capynotes.noteservice.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "item_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "item_type", discriminatorType = DiscriminatorType.STRING, columnDefinition = "varchar default 'N'" , length = 20)
 public class FolderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,8 +20,6 @@ public class FolderItem {
     private String title;
 
     private Long userId;
-
-    private String type;
 
     public FolderItem(String title, Long userId) {
         this.title = title;

@@ -14,15 +14,15 @@ import java.util.List;
 //@Table(name = "note")
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorValue("N")
+@DiscriminatorValue(value = "N")
 public class Note extends FolderItem {
 
-    public Note(String title, Long userId, String audioName, LocalDateTime audioUploadTime, NoteStatus status){
+    public Note(String title, Long userId, String audioKey, LocalDateTime creationTime, NoteStatus status){
         //this.title = title;
         //this.userId = userId;
         super(title, userId);
-        this.audioName = audioName;
-        this.audioUploadTime = audioUploadTime;
+        this.audioKey = audioKey;
+        this.creationTime = creationTime;
         this.status = status;
     }
 
@@ -32,13 +32,13 @@ public class Note extends FolderItem {
 
     private String title;*/
 
-    private String pdfUrl;
+    private String pdfKey;
 
     //private Long userId;
     
-    private String audioName;
+    private String audioKey;
 
-    private LocalDateTime audioUploadTime;
+    private LocalDateTime creationTime;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FlashcardSet> cardSets;

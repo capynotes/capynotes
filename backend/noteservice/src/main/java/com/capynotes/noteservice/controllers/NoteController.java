@@ -155,11 +155,11 @@ public class NoteController {
         }
     }
 
-    @DeleteMapping("/delete-tag")
-    public Response deleteTagFromNote(@RequestBody Tag tag) {
+    @DeleteMapping("/delete-tag/{id}")
+    public Response deleteTagFromNote(@PathVariable("id") Long id) {
         try {
-            noteService.deleteTag(tag);
-            return new Response("Tag deleted.", 200, tag);
+            noteService.deleteTag(id);
+            return new Response("Tag deleted.", 200, null);
         } catch (Exception e) {
             return new Response("An error occurred." + e.toString(), 500, null);
         }
@@ -203,6 +203,19 @@ public class NoteController {
         try {
             folderItemService.deleteFolderItem(id);
             return new Response("Success", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @PostMapping("/add/{id}")
+    public Response addNote(@RequestBody Note note, @PathVariable("id") long folderId) {
+        try {
+            if(noteService.addNote(note, folderId)) {
+                return new Response("Success", 200, note);
+            }
+            return new Response("Could not add note to folder", 200, null);
         } catch (Exception e) {
             e.printStackTrace();
             return new Response("Exception", 500, null);

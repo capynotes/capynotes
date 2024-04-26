@@ -22,6 +22,7 @@ public interface NoteService {
     List<Note> findNotesByUserId(Long userId) throws FileNotFoundException;
     NoteDto findNoteByNoteId(Long noteId) throws FileNotFoundException;
     List<NoteGrid> getNotesInGrid(Long userId) throws FileNotFoundException;
-    void addTag(Tag tag);
-    void deleteTag(Tag tag);
+    void addTag(Tag tag) throws FileNotFoundException;
+    void deleteTag(Long id) throws FileNotFoundException;
+    boolean addNote(Note note, Long folderId);
 }

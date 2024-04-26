@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,9 +19,11 @@ public class NoteGrid {
     private List<String> searchFilters;
 
     public NoteGrid(Note note) {
+        searchFilters = new ArrayList<>();
+
         this.id = note.getId();
         this.title = note.getTitle();
-        this.creationTime = note.getAudioUploadTime();
+        this.creationTime = note.getCreationTime();
         this.status = note.getStatus();
 
         for (Tag tag: note.getTags()) {

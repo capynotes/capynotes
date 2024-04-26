@@ -15,11 +15,8 @@ import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
 import com.capynotes.noteservice.exceptions.FileUploadException;
 import com.capynotes.noteservice.models.*;
-import com.capynotes.noteservice.repositories.NoteRepository;
+import com.capynotes.noteservice.repositories.*;
 
-import com.capynotes.noteservice.repositories.SummaryRepository;
-import com.capynotes.noteservice.repositories.TimestampRepository;
-import com.capynotes.noteservice.repositories.TranscriptRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
@@ -44,6 +41,8 @@ import java.util.UUID;
 @Service
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
+    private final FolderService folderService;
+    private final TagRepository tagRepository;
     private final TranscriptRepository transcriptRepository;
     private final SummaryRepository summaryRepository;
     private final TimestampRepository timestampRepository;
@@ -55,12 +54,14 @@ public class NoteServiceImpl implements NoteService {
 
     public NoteServiceImpl(AmazonS3 amazonS3, NoteRepository noteRepository,
                            TranscriptRepository transcriptRepository, SummaryRepository summaryRepository,
-                           TimestampRepository timestampRepository) {
+                           TimestampRepository timestampRepository, FolderService folderService, TagRepository tagRepository) {
         this.amazonS3 = amazonS3;
         this.noteRepository = noteRepository;
         this.transcriptRepository = transcriptRepository;
         this.summaryRepository = summaryRepository;
         this.timestampRepository = timestampRepository;
+        this.folderService = folderService;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -180,19 +181,35 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void addTag(Tag tag) {
-        Note note = tag.getNote();
+    public void addTag(Tag tag) throws FileNotFoundException {
+        Note note = getNote(tag.getNote().getId());
         note.getTags().add(tag);
         noteRepository.save(note);
     }
 
     @Override
-    public void deleteTag(Tag tag) {
-        Note note = tag.getNote();
-        note.getTags().remove(tag);
-        noteRepository.save(note);
+    public void deleteTag(Long id) throws FileNotFoundException {
+        tagRepository.deleteById(id);
     }
 
+    @Override
+    public boolean addNote(Note note, Long folderId) {
+        if(folderService.addFolderItemToFolder(note, folderId)) {
+            LocalDateTime dateTime = LocalDateTime.now();
+            note.setCreationTime(dateTime);
+            note.setStatus(NoteStatus.TRANSCRIBING);
+            noteRepository.save(note);
+            return true;
+        }
+        return false;
+    }
 
+    private Note getNote(Long id) throws FileNotFoundException {
+        Optional<Note> note = noteRepository.findNoteById(id);
+        if(note.isEmpty()) {
+            throw new FileNotFoundException("Note with id " + id + " does not exist.");
+        }
+        return note.get();
+    }
     // should listen rabbit mq for creation of keywords
 }
