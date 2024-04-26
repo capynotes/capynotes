@@ -8,20 +8,15 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.capynotes.noteservice.dtos.NoteDto;
+import com.capynotes.noteservice.dtos.NoteGrid;
 import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
 import com.capynotes.noteservice.dtos.VideoTranscribeResponse;
 import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
 import com.capynotes.noteservice.exceptions.FileUploadException;
-import com.capynotes.noteservice.models.Note;
-import com.capynotes.noteservice.models.Summary;
-import com.capynotes.noteservice.models.Timestamp;
-import com.capynotes.noteservice.models.Transcript;
-import com.capynotes.noteservice.repositories.NoteRepository;
+import com.capynotes.noteservice.models.*;
+import com.capynotes.noteservice.repositories.*;
 
-import com.capynotes.noteservice.repositories.SummaryRepository;
-import com.capynotes.noteservice.repositories.TimestampRepository;
-import com.capynotes.noteservice.repositories.TranscriptRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
@@ -38,6 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +41,8 @@ import java.util.UUID;
 @Service
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
+    private final FolderService folderService;
+    private final TagRepository tagRepository;
     private final TranscriptRepository transcriptRepository;
     private final SummaryRepository summaryRepository;
     private final TimestampRepository timestampRepository;
@@ -56,12 +54,14 @@ public class NoteServiceImpl implements NoteService {
 
     public NoteServiceImpl(AmazonS3 amazonS3, NoteRepository noteRepository,
                            TranscriptRepository transcriptRepository, SummaryRepository summaryRepository,
-                           TimestampRepository timestampRepository) {
+                           TimestampRepository timestampRepository, FolderService folderService, TagRepository tagRepository) {
         this.amazonS3 = amazonS3;
         this.noteRepository = noteRepository;
         this.transcriptRepository = transcriptRepository;
         this.summaryRepository = summaryRepository;
         this.timestampRepository = timestampRepository;
+        this.folderService = folderService;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -169,7 +169,47 @@ public class NoteServiceImpl implements NoteService {
     public void deleteNote(Long id){
         noteRepository.deleteById(id);
     }
+    @Override
+    public List<NoteGrid> getNotesInGrid(Long userId) throws FileNotFoundException {
+        List<NoteGrid> noteGrids = new ArrayList<>();
+        List<Note> notes = findNotesByUserId(userId);
+        for (Note note: notes) {
+            NoteGrid noteGrid = new NoteGrid(note);
+            noteGrids.add(noteGrid);
+        }
+        return noteGrids;
+    }
 
+    @Override
+    public void addTag(Tag tag) throws FileNotFoundException {
+        Note note = getNote(tag.getNote().getId());
+        note.getTags().add(tag);
+        noteRepository.save(note);
+    }
 
+    @Override
+    public void deleteTag(Long id) throws FileNotFoundException {
+        tagRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean addNote(Note note, Long folderId) {
+        if(folderService.addFolderItemToFolder(note, folderId)) {
+            LocalDateTime dateTime = LocalDateTime.now();
+            note.setCreationTime(dateTime);
+            note.setStatus(NoteStatus.TRANSCRIBING);
+            noteRepository.save(note);
+            return true;
+        }
+        return false;
+    }
+
+    private Note getNote(Long id) throws FileNotFoundException {
+        Optional<Note> note = noteRepository.findNoteById(id);
+        if(note.isEmpty()) {
+            throw new FileNotFoundException("Note with id " + id + " does not exist.");
+        }
+        return note.get();
+    }
     // should listen rabbit mq for creation of keywords
 }

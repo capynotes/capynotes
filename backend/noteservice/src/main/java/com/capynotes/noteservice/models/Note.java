@@ -2,6 +2,7 @@ package com.capynotes.noteservice.models;
 
 import com.capynotes.noteservice.enums.NoteStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,31 +11,34 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "note")
+//@Table(name = "note")
 @NoArgsConstructor
-public class Note {
+@AllArgsConstructor
+@DiscriminatorValue(value = "N")
+public class Note extends FolderItem {
 
-    public Note(String title, Long userId, String audioName, LocalDateTime audioUploadTime, NoteStatus status){
-        this.title = title;
-        this.userId = userId;
-        this.audioName = audioName;
-        this.audioUploadTime = audioUploadTime;
+    public Note(String title, Long userId, String audioKey, LocalDateTime creationTime, NoteStatus status){
+        //this.title = title;
+        //this.userId = userId;
+        super(title, userId);
+        this.audioKey = audioKey;
+        this.creationTime = creationTime;
         this.status = status;
     }
 
-    @Id
+    /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String title;
+    private String title;*/
 
-    private String pdfUrl;
+    private String pdfKey;
 
-    private Long userId;
+    //private Long userId;
     
-    private String audioName;
+    private String audioKey;
 
-    private LocalDateTime audioUploadTime;
+    private LocalDateTime creationTime;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FlashcardSet> cardSets;
@@ -42,4 +46,7 @@ public class Note {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private NoteStatus status;
+
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags;
 }
