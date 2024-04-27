@@ -1,7 +1,7 @@
 DB_CONFIG = {
     'user': 'postgres',
     'password': 'admin',
-    'host': 'db',
+    'host': 'localhost',
     'port': '5432',
-    'database': 'noteservicedb'
+    'database': 'capynotesDB'
 }
