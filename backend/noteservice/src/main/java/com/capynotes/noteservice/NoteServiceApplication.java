@@ -10,11 +10,11 @@ import java.sql.*;
 
 @SpringBootApplication
 public class NoteServiceApplication {
-	@Value("${spring.datasource.username}")
-	private static String userName;
+	// @Value("${spring.datasource.username}")
+	// private static String userName;
 
-	@Value("${spring.datasource.password}")
-	private static String password;
+	// @Value("${spring.datasource.password}")
+	// private static String password;
 
 	public static void main(String[] args) {
 		Logger logger = LoggerFactory.getLogger(NoteServiceApplication.class);
@@ -22,7 +22,7 @@ public class NoteServiceApplication {
 		Statement statement = null;
 		try {
 			logger.debug("Creating database if not exist...");
-			connection = DriverManager.getConnection("jdbc:postgresql://db:5432/", "postgres", "admin");
+			connection = DriverManager.getConnection("jdbc:postgresql://database-1.c7622sk6ydvl.eu-west-2.rds.amazonaws.com:5432/noteservicedb", "postgres", "postgres");
 			statement = connection.createStatement();
 			statement.executeQuery("SELECT count(*) FROM pg_database WHERE datname = 'noteservicedb'");
 			ResultSet resultSet = statement.getResultSet();
