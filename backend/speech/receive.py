@@ -10,8 +10,8 @@ from transcribe import whisper_transcribe_audio
 
 # Setup SQS client
 sqs = aws_utils.create_sqs_client()
-summarization_queue_url = 'https://sqs.eu-west-2.amazonaws.com/101807873666/summarization'
-transcription_queue_url = 'https://sqs.eu-west-2.amazonaws.com/101807873666/transcription'
+summarization_queue_url = 'https://sqs.eu-north-1.amazonaws.com/101807873666/summarization'
+transcription_queue_url = 'https://sqs.eu-north-1.amazonaws.com/101807873666/transcript'
 
 def send_to_summarize(transcription_id):
     while True:
