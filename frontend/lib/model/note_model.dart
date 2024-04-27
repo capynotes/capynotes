@@ -39,30 +39,30 @@ class NoteModel {
 class Note {
   int? id;
   String? title;
-  String? pdfUrl;
+  String? pdfName;
   int? userId;
-  String? audioName;
-  String? audioUploadTime;
+  String? audioKey;
+  String? creationTime;
   List<FlashcardSetModel>? cardSets;
   NoteStatus? status;
 
   Note(
       {this.id,
       this.title,
-      this.pdfUrl,
+      this.pdfName,
       this.userId,
-      this.audioName,
-      this.audioUploadTime,
+      this.audioKey,
+      this.creationTime,
       this.cardSets,
       this.status});
 
   Note.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    pdfUrl = json['pdfUrl'];
+    pdfName = json['pdfUrl'];
     userId = json['userId'];
-    audioName = json['audioName'];
-    audioUploadTime = json['audioUploadTime'];
+    audioKey = json['audioName'];
+    creationTime = json['audioUploadTime'];
     if (json['cardSets'] != null) {
       cardSets = <FlashcardSetModel>[];
       json['cardSets'].forEach((v) {
@@ -76,10 +76,10 @@ class Note {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['title'] = title;
-    data['pdfUrl'] = pdfUrl;
+    data['pdfUrl'] = pdfName;
     data['userId'] = userId;
-    data['audioName'] = audioName;
-    data['audioUploadTime'] = audioUploadTime;
+    data['audioName'] = audioKey;
+    data['audioUploadTime'] = creationTime;
     if (cardSets != null) {
       data['cardSets'] = cardSets!.map((v) => v.toJson()).toList();
     }

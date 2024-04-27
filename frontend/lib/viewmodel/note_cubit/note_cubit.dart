@@ -47,7 +47,7 @@ class NoteCubit extends Cubit<NoteState> {
       emit(NoteNotFound());
     } else {
       final audioUrl = await getDownloadUrl(
-          key: selectedNote!.note!.audioName!,
+          key: selectedNote!.note!.audioKey!,
           accessLevel: StorageAccessLevel.guest);
       selectedNote!.audioUrl = audioUrl;
       emit(NoteDisplay(note: selectedNote!));

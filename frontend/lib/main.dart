@@ -2,6 +2,7 @@ import 'package:capynotes/constants/colors.dart';
 import 'package:capynotes/navigation/app_router.dart';
 import 'package:capynotes/services/auth_service.dart';
 import 'package:capynotes/services/flashcard_service.dart';
+import 'package:capynotes/services/folder_service.dart';
 import 'package:capynotes/services/note_generation_service.dart';
 import 'package:capynotes/viewmodel/audio_cubit/audio_cubit.dart';
 import 'package:capynotes/viewmodel/auth/login/login_cubit.dart';
@@ -22,6 +23,7 @@ import 'amplifyconfiguration.dart';
 import 'constants/asset_paths.dart';
 import 'services/audio_service.dart';
 import 'services/note_service.dart';
+import 'viewmodel/folder_cubit/folder_cubit.dart';
 import 'viewmodel/note_cubit/note_cubit.dart';
 
 Future<void> _configureAmplify() async {
@@ -60,6 +62,7 @@ class MyApp extends StatefulWidget {
   static final AudioService audioService = AudioService();
   static final NoteService noteService = NoteService();
   static final FlashcardService flashcardService = FlashcardService();
+  static final FolderService folderService = FolderService();
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -96,6 +99,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => NoteCubit(MyApp.noteService),
+        ),
+        BlocProvider(
+          create: (context) => FolderCubit(MyApp.folderService),
         ),
       ],
       child: MaterialApp.router(

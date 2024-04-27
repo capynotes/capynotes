@@ -1,16 +1,18 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/model/folder/note_grid_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/asset_paths.dart';
+import '../../utility/utils.dart';
 
 class NoteWidget extends StatelessWidget {
   const NoteWidget({super.key, required this.noteItemModel});
-  final noteItemModel;
+  final NoteGridModel noteItemModel;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.replaceNamed("/note/${noteItemModel["noteID"]}");
+        context.router.replaceNamed("/note/${noteItemModel.id}");
       },
       child: Container(
         decoration: BoxDecoration(
@@ -23,9 +25,11 @@ class NoteWidget extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Text("Note Name"),
-              Text("Status"),
-              Text("Creation Date"),
+              Text(noteItemModel.title ?? "No Title"),
+              Text(noteItemModel.status ?? "No Status"),
+              Text(Utils.dateToString(
+                      DateTime.parse(noteItemModel.creationTime!)) ??
+                  "No Creation Time"),
             ],
           ),
         ),

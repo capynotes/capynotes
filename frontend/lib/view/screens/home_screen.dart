@@ -29,12 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       endDrawer: CustomDrawer(),
       body: Center(
         child: Row(
-          children: [
-            FolderWidget(folderItemModel: {"folderID": 2}),
-            NoteWidget(
-              noteItemModel: {"noteID": 1},
-            )
-          ],
+          children: [],
         ),
       ),
     );

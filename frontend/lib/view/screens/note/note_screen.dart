@@ -76,13 +76,13 @@ class NoteScreen extends StatelessWidget {
                             CustomElevatedButton(
                               child: const Text("View PDF"),
                               onPressed: () => kIsWeb
-                                  ? Utils.launchURL(state.note.note!.pdfUrl ??
+                                  ? Utils.launchURL(state.note.note!.pdfName ??
                                       'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
                                   : Navigator.push(
                                       context,
                                       MaterialPageRoute<dynamic>(
                                         builder: (_) => NotePDFScreen(
-                                          url: state.note.note!.pdfUrl ??
+                                          url: state.note.note!.pdfName ??
                                               'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
                                           noteName: state.note.note!.title ??
                                               "No Title",

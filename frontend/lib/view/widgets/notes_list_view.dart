@@ -43,7 +43,7 @@ class NoteListView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${LocaleKeys.labels_uploaded_at.tr()} ${Utils.dateToString(DateTime.parse(noteList[index].audioUploadTime!))}",
+                    "${LocaleKeys.labels_uploaded_at.tr()} ${Utils.dateToString(DateTime.parse(noteList[index].creationTime!))}",
                   ),
                   RichText(
                       text: TextSpan(

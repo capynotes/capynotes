@@ -1,15 +1,16 @@
+import 'package:capynotes/model/folder/folder_with_count_model.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import '../../constants/asset_paths.dart';
 
 class FolderWidget extends StatelessWidget {
-  const FolderWidget({super.key, required this.folderItemModel});
-  final folderItemModel;
+  const FolderWidget({super.key, required this.folderWithCount});
+  final FolderWithCountModel folderWithCount;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.replaceNamed("/folder/${folderItemModel["folderID"]}");
+        context.router.replaceNamed("/folder/${folderWithCount.id}");
       },
       child: Container(
         decoration: BoxDecoration(
@@ -20,8 +21,9 @@ class FolderWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Folder Name"),
-                Text("5 notes"),
+                Text(folderWithCount.title ?? "No Title"),
+                Text("${folderWithCount.noteCount} notes"),
+                Text("${folderWithCount.folderCount} folders"),
               ],
             ),
           ),

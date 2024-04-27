@@ -2,33 +2,20 @@ import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/widgets/note_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:star_menu/star_menu.dart';
 
 import '../../constants/colors.dart';
+import '../../model/folder/folder_with_count_model.dart';
+import '../../viewmodel/folder_cubit/folder_cubit.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
 import '../widgets/folder_widget.dart';
 
 @RoutePage()
-class FolderScreen extends StatefulWidget {
+class FolderScreen extends StatelessWidget {
   const FolderScreen({super.key, @PathParam('id') required this.folderID});
   final int folderID;
-  @override
-  State<FolderScreen> createState() => _FolderScreenState();
-}
 
-class _FolderScreenState extends State<FolderScreen> {
-  final List<FolderWidget> folderItemList = [
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1}),
-    FolderWidget(folderItemModel: {"folderID": 1})
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,62 +25,66 @@ class _FolderScreenState extends State<FolderScreen> {
         centerTitle: true,
       ),
       endDrawer: CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 50,
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: "Search Note",
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {},
+      body: BlocConsumer<FolderCubit, FolderState>(
+        bloc: context.read<FolderCubit>()..getFolderContents(folderID),
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+          if (state is FolderDisplay) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: "Search Note",
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {},
+                          ),
+                        ),
+                        onChanged: (value) {},
+                      ),
                     ),
-                  ),
-                  onChanged: (value) {},
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GridView.extent(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      maxCrossAxisExtent: 200,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      children: state.tempFolderContents.isNotEmpty
+                          ? state.tempFolderContents.map((item) {
+                              if (item is FolderWithCountModel) {
+                                return FolderWidget(
+                                  folderWithCount: item,
+                                );
+                              } else {
+                                return NoteWidget(noteItemModel: item);
+                              }
+                            }).toList()
+                          : [],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              GridView.extent(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  maxCrossAxisExtent: 200,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  children: [
-                    for (int i = 0; i < 10; i++) folderItemList[i],
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                    NoteWidget(
-                      noteItemModel: {"NoteID": 1},
-                    ),
-                  ]),
-            ],
-          ),
-        ),
+            );
+          } else if (state is FolderLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return Container();
+          }
+        },
       ),
       floatingActionButton: StarMenu(
         onItemTapped: (index, controller) {
