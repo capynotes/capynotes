@@ -11,4 +11,5 @@ public class FolderWithCount {
     private String title;
     private int folderCount;
     private int noteCount;
+    private final String type = "F";
 }

@@ -209,13 +209,24 @@ public class NoteController {
         }
     }
 
-    @PostMapping("/add/{id}")
-    public Response addNote(@RequestBody Note note, @PathVariable("id") long folderId) {
+    @PostMapping("/add-to-folder/{id}")
+    public Response addNoteToFolder(@RequestBody Note note, @PathVariable("id") long folderId) {
         try {
-            if(noteService.addNote(note, folderId)) {
+            if(noteService.addNoteToFolder(note, folderId)) {
                 return new Response("Success", 200, note);
             }
             return new Response("Could not add note to folder", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @PostMapping("/add")
+    public Response addNote(@RequestBody Note note) {
+        try {
+            noteService.addNote(note);
+            return new Response("Success", 200, note);
         } catch (Exception e) {
             e.printStackTrace();
             return new Response("Exception", 500, null);
