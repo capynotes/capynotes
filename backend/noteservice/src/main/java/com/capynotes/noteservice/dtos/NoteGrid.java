@@ -17,6 +17,7 @@ public class NoteGrid {
     private LocalDateTime creationTime;
     private NoteStatus status;
     private List<String> searchFilters;
+    private final String type = "N";
 
     public NoteGrid(Note note) {
         searchFilters = new ArrayList<>();

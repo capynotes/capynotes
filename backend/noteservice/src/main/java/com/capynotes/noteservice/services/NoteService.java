@@ -24,5 +24,6 @@ public interface NoteService {
     List<NoteGrid> getNotesInGrid(Long userId) throws FileNotFoundException;
     void addTag(Tag tag) throws FileNotFoundException;
     void deleteTag(Long id) throws FileNotFoundException;
-    boolean addNote(Note note, Long folderId);
+    boolean addNoteToFolder(Note note, Long folderId);
+    Note addNote(Note note);
 }

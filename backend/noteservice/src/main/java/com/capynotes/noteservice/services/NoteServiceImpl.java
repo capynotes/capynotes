@@ -193,7 +193,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public boolean addNote(Note note, Long folderId) {
+    public boolean addNoteToFolder(Note note, Long folderId) {
         if(folderService.addFolderItemToFolder(note, folderId)) {
             LocalDateTime dateTime = LocalDateTime.now();
             note.setCreationTime(dateTime);
@@ -204,6 +204,13 @@ public class NoteServiceImpl implements NoteService {
         return false;
     }
 
+    @Override
+    public Note addNote(Note note) {
+        LocalDateTime dateTime = LocalDateTime.now();
+        note.setCreationTime(dateTime);
+        note.setStatus(NoteStatus.TRANSCRIBING);
+        return noteRepository.save(note);
+    }
     private Note getNote(Long id) throws FileNotFoundException {
         Optional<Note> note = noteRepository.findNoteById(id);
         if(note.isEmpty()) {

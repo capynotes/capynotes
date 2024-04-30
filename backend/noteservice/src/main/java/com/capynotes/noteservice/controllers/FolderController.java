@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.controllers;
 
+import com.capynotes.noteservice.dtos.FolderWithContent;
 import com.capynotes.noteservice.dtos.FolderWithCount;
 import com.capynotes.noteservice.dtos.Response;
 import com.capynotes.noteservice.models.Folder;
@@ -30,7 +31,7 @@ public class FolderController {
     @GetMapping("/main/{id}")
     public Response getMainFoldersOfUser(@PathVariable("id") long id) {
         try {
-            List<FolderWithCount> items = folderService.getMainFoldersOfUser(id);
+            List<Object> items = folderService.getMainFoldersAndNotesOfUser(id);
             return new Response("Success", 200, items);
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +42,7 @@ public class FolderController {
     @GetMapping("/{id}")
     public Response getFolderContentById(@PathVariable("id") long id) {
         try {
-            List<Object> content = folderService.getFolder(id);
+            FolderWithContent content = folderService.getFolderContent(id);
             return new Response("Success", 200, content);
         } catch (Exception e) {
             e.printStackTrace();
