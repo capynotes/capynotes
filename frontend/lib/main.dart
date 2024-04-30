@@ -10,6 +10,7 @@ import 'package:capynotes/viewmodel/auth/password/change_password/change_passwor
 import 'package:capynotes/viewmodel/auth/password/forgot_password/forgot_password_cubit.dart';
 import 'package:capynotes/viewmodel/auth/register/register_cubit.dart';
 import 'package:capynotes/viewmodel/flashcard_cubit/flashcard_cubit.dart';
+import 'package:capynotes/viewmodel/home_cubit/home_cubit.dart';
 import 'package:capynotes/viewmodel/note_generation_cubit/note_generation_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -103,6 +104,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => FolderCubit(MyApp.folderService),
         ),
+        BlocProvider(
+          create: (context) => HomeCubit(MyApp.folderService),
+        ),
       ],
       child: MaterialApp.router(
         routerConfig: _appRouter.config(),
@@ -114,6 +118,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           colorScheme:
               ColorScheme.fromSeed(seedColor: ColorConstants.primaryColor),
+          // scaffoldBackgroundColor: ColorConstants.background,
         ),
       ),
     );

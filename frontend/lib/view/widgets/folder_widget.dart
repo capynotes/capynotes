@@ -19,6 +19,7 @@ class FolderWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 25.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(folderWithCount.title ?? "No Title"),

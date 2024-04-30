@@ -2,7 +2,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
 import '../../enums/note_status_enum.dart';
 import '../../model/flashcard/add_flashcard_set_model.dart';
 import '../../model/flashcard/flashcard_set_model.dart';
@@ -87,7 +86,7 @@ class NoteCubit extends Cubit<NoteState> {
       emit(NoteError("Creation Failed", "Could not create flashcard set"));
     } else {
       print(result);
-      emit(NoteSuccess("Set Created Successfully",
+      emit(NoteSuccess("Note Created Successfully",
           "Flashcard Set \"${result.title}\" Created Successfully"));
     }
   }

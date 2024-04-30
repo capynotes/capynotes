@@ -32,7 +32,7 @@ class FolderService {
     }
   }
 
-  Future<List<FolderWithCountModel>?> getMainFolders() async {
+  Future<List<dynamic>?> getHomeContents() async {
     try {
       Response? response;
       response = await Api.instance.getRequest(ApiConstants.baseUrl,
@@ -40,13 +40,18 @@ class FolderService {
       if (response.statusCode == 200) {
         dynamic body = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(body);
-        List<FolderWithCountModel> folderList = [];
-        for (var folder in responseModel.data) {
-          FolderWithCountModel folderWithCountModel =
-              FolderWithCountModel.fromJson(folder);
-          folderList.add(folderWithCountModel);
+        List<dynamic> itemList = [];
+        for (var item in responseModel.data) {
+          if (item["status"] == null) {
+            FolderWithCountModel folderWithCountModel =
+                FolderWithCountModel.fromJson(item);
+            itemList.add(folderWithCountModel);
+          } else {
+            NoteGridModel noteGridModel = NoteGridModel.fromJson(item);
+            itemList.add(noteGridModel);
+          }
         }
-        return folderList;
+        return itemList;
       } else {
         return null;
       }
