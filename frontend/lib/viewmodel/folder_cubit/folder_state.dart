@@ -7,8 +7,8 @@ final class FolderInitial extends FolderState {}
 final class FolderLoading extends FolderState {}
 
 final class FolderDisplay extends FolderState {
-  List<dynamic> allFolderContents;
-  List<dynamic> tempFolderContents;
+  FolderContentsModel allFolderContents;
+  FolderContentsModel tempFolderContents;
 
   FolderDisplay(
       {required this.allFolderContents, required this.tempFolderContents});

@@ -1,3 +1,4 @@
+import 'package:capynotes/model/folder/folder_contents_model.dart';
 import 'package:capynotes/model/folder/folder_model.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,8 @@ class FolderCubit extends Cubit<FolderState> {
   TextEditingController createFolderController = TextEditingController();
 
   Future<void> getFolderContents(int id) async {
-    List<dynamic>? allFolderContents;
-    List<dynamic>? tempFolderContents;
+    FolderContentsModel? allFolderContents;
+    FolderContentsModel? tempFolderContents;
     emit(FolderLoading());
     allFolderContents = await service.getFolderContents(id);
     if (allFolderContents == null) {

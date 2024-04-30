@@ -3,6 +3,7 @@ import 'package:capynotes/model/folder/note_grid_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants/asset_paths.dart';
+import '../../enums/note_status_enum.dart';
 import '../../utility/utils.dart';
 
 class NoteWidget extends StatelessWidget {
@@ -12,7 +13,9 @@ class NoteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.replaceNamed("/note/${noteItemModel.id}");
+        if (noteItemModel.status == NoteStatus.DONE) {
+          context.router.replaceNamed("/note/${noteItemModel.id}");
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -26,10 +29,9 @@ class NoteWidget extends StatelessWidget {
                 height: 20,
               ),
               Text(noteItemModel.title ?? "No Title"),
-              Text(noteItemModel.status ?? "No Status"),
+              Text(noteItemModel.status!.name),
               Text(Utils.dateToString(
-                      DateTime.parse(noteItemModel.creationTime!)) ??
-                  "No Creation Time"),
+                  DateTime.parse(noteItemModel.creationTime!))),
             ],
           ),
         ),

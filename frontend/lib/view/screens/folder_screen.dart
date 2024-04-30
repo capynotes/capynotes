@@ -45,7 +45,7 @@ class _FolderScreenState extends State<FolderScreen> {
         if (state is FolderDisplay) {
           return Scaffold(
             appBar: AppBar(
-              title: Text("${widget.folderID}"),
+              title: Text("${state.allFolderContents.title}"),
               backgroundColor: ColorConstants.primaryColor,
               centerTitle: true,
             ),
@@ -79,8 +79,8 @@ class _FolderScreenState extends State<FolderScreen> {
                       maxCrossAxisExtent: 200,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
-                      children: state.tempFolderContents.isNotEmpty
-                          ? state.tempFolderContents.map((item) {
+                      children: state.tempFolderContents.items!.isNotEmpty
+                          ? state.tempFolderContents.items!.map((item) {
                               if (item is FolderWithCountModel) {
                                 return FolderWidget(
                                   folderWithCount: item,

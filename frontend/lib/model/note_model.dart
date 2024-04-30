@@ -2,6 +2,7 @@ import 'package:capynotes/model/flashcard/flashcard_set_model.dart';
 import 'package:capynotes/model/summary_model.dart';
 
 import '../enums/note_status_enum.dart';
+import 'tag_model.dart';
 import 'transcript_model.dart';
 
 class NoteModel {
@@ -39,30 +40,32 @@ class NoteModel {
 class Note {
   int? id;
   String? title;
-  String? pdfName;
+  String? pdfKey;
   int? userId;
   String? audioKey;
   String? creationTime;
   List<FlashcardSetModel>? cardSets;
   NoteStatus? status;
+  List<TagResponseModel>? tags;
 
   Note(
       {this.id,
       this.title,
-      this.pdfName,
+      this.pdfKey,
       this.userId,
       this.audioKey,
       this.creationTime,
       this.cardSets,
-      this.status});
+      this.status,
+      this.tags});
 
   Note.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    pdfName = json['pdfUrl'];
+    pdfKey = json['pdfUrl'];
     userId = json['userId'];
-    audioKey = json['audioName'];
-    creationTime = json['audioUploadTime'];
+    audioKey = json['audioKey'];
+    creationTime = json['creationTime'];
     if (json['cardSets'] != null) {
       cardSets = <FlashcardSetModel>[];
       json['cardSets'].forEach((v) {
@@ -70,20 +73,29 @@ class Note {
       });
     }
     status = getNoteStatusFromString(json['status']);
+    if (json['tags'] != null) {
+      tags = <TagResponseModel>[];
+      json['tags'].forEach((v) {
+        tags!.add(TagResponseModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['title'] = title;
-    data['pdfUrl'] = pdfName;
+    data['pdfUrl'] = pdfKey;
     data['userId'] = userId;
-    data['audioName'] = audioKey;
-    data['audioUploadTime'] = creationTime;
+    data['audioKey'] = audioKey;
+    data['creationTime'] = creationTime;
     if (cardSets != null) {
       data['cardSets'] = cardSets!.map((v) => v.toJson()).toList();
     }
     data['status'] = status.toString();
+    if (tags != null) {
+      data['tags'] = tags!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

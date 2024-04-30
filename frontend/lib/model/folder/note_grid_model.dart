@@ -1,8 +1,10 @@
+import '../../enums/note_status_enum.dart';
+
 class NoteGridModel {
   int? id;
   String? title;
   String? creationTime;
-  String? status;
+  NoteStatus? status;
   List<String>? searchFilters;
 
   NoteGridModel(
@@ -16,7 +18,7 @@ class NoteGridModel {
     id = json['id'];
     title = json['title'];
     creationTime = json['creationTime'];
-    status = json['status'];
+    status = getNoteStatusFromString(json['status']);
     searchFilters = json['searchFilters'].cast<String>();
   }
 

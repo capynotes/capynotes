@@ -21,8 +21,10 @@ class NoteListView extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
               onTap: () {
-                // TODO: Navigate to that note's screen
-                context.router.navigateNamed("/note/${noteList[index].id}");
+                if (noteList[index].status == NoteStatus.DONE) {
+                  context.router.navigateNamed("/note/${noteList[index].id}");
+                }
+                // TODO: show message that the note is not ready yet
               },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0)),

@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:capynotes/model/folder/add_folder_main_model.dart';
+import 'package:capynotes/model/folder/folder_contents_model.dart';
 import 'package:capynotes/model/folder/folder_model.dart';
 import 'package:capynotes/model/folder/folder_with_count_model.dart';
 import 'package:capynotes/model/folder/note_grid_model.dart';
@@ -81,7 +82,7 @@ class FolderService {
     }
   }
 
-  Future<List<dynamic>?> getFolderContents(int folderID) async {
+  Future<FolderContentsModel?> getFolderContents(int folderID) async {
     try {
       Response? response;
       response = await Api.instance.getRequest(
@@ -89,18 +90,9 @@ class FolderService {
       if (response.statusCode == 200) {
         dynamic body = jsonDecode(response.body);
         ResponseModel responseModel = ResponseModel.fromJson(body);
-        List<dynamic> itemList = [];
-        for (var item in responseModel.data) {
-          if (item["status"] == null) {
-            FolderWithCountModel folderWithCountModel =
-                FolderWithCountModel.fromJson(item);
-            itemList.add(folderWithCountModel);
-          } else {
-            NoteGridModel noteGridModel = NoteGridModel.fromJson(item);
-            itemList.add(noteGridModel);
-          }
-        }
-        return itemList;
+        FolderContentsModel folderContentsModel =
+            FolderContentsModel.fromJson(responseModel.data);
+        return folderContentsModel;
       } else {
         return null;
       }
