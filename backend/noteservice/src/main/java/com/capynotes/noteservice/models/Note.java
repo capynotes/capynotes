@@ -26,6 +26,12 @@ public class Note extends FolderItem {
         this.status = status;
     }
 
+    public Note(String title, Long userId, LocalDateTime creationTime, NoteStatus status) {
+        super(title, userId);
+        this.creationTime = creationTime;
+        this.status = status;
+    }
+
     /*@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

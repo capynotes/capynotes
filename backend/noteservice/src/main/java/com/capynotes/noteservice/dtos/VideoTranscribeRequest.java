@@ -9,4 +9,5 @@ public class VideoTranscribeRequest {
     private String videoUrl;
     private String noteName;
     private Long userId;
+    private Long folderId;
 }

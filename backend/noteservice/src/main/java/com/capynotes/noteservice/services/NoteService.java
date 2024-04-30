@@ -18,7 +18,7 @@ import java.util.List;
 public interface NoteService {
     void deleteNote(Long id);
     Note uploadAudio(MultipartFile multipartFile, Long userId, String fileName) throws IOException, FileUploadException;
-    Note uploadAudioFromURL(String videoUrl, String fileName, Long userId);
+    Note uploadAudioFromURL(String videoUrl, String fileName, Long userId, Long folderId);
     List<Note> findNotesByUserId(Long userId) throws FileNotFoundException;
     NoteDto findNoteByNoteId(Long noteId) throws FileNotFoundException;
     List<NoteGrid> getNotesInGrid(Long userId) throws FileNotFoundException;

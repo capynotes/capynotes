@@ -84,8 +84,9 @@ public class NoteController {
         String videoUrl = videoTranscribeRequest.getVideoUrl();
         String fileName = videoTranscribeRequest.getNoteName();
         Long userId = videoTranscribeRequest.getUserId();
+        Long folderId = videoTranscribeRequest.getFolderId();
         try {
-            Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
+            Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId, folderId);
             String jsonString = "{\"noteId\":" + note.getId().toString() + ", \"videoUrl\":\"" + videoUrl + "\", \"noteName\":\"" + fileName + "\"}";
             channel.basicPublish("", YOUTUBE_QUEUE_NAME, null, jsonString.getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Sent note with id '" + note.getId().toString() + "'");
