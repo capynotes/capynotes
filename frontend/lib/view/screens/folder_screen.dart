@@ -4,6 +4,7 @@ import 'package:capynotes/view/widgets/lotties/default_lottie_widget.dart';
 import 'package:capynotes/view/widgets/note_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:searchbar_animation/searchbar_animation.dart';
 import 'package:star_menu/star_menu.dart';
 
 import '../../constants/asset_paths.dart';
@@ -44,11 +45,53 @@ class _FolderScreenState extends State<FolderScreen> {
       },
       builder: (context, state) {
         if (state is FolderDisplay) {
+          final GlobalKey<ScaffoldState> _key = GlobalKey();
           return Scaffold(
+            key: _key,
             appBar: AppBar(
               title: Text("${state.allFolderContents.title}"),
               backgroundColor: ColorConstants.primaryColor,
               centerTitle: true,
+              actions: [
+                SearchBarAnimation(
+                  durationInMilliSeconds: 500,
+                  searchBoxWidth: MediaQuery.of(context).size.width * 0.2,
+                  textEditingController: TextEditingController(),
+                  isOriginalAnimation: true,
+                  enableKeyboardFocus: true,
+                  onExpansionComplete: () {
+                    debugPrint('do something just after searchbox is opened.');
+                  },
+                  onCollapseComplete: () {
+                    debugPrint('do something just after searchbox is closed.');
+                  },
+                  onPressButton: (isSearchBarOpens) {
+                    debugPrint(
+                        'do something before animation started. It\'s the ${isSearchBarOpens ? 'opening' : 'closing'} animation');
+                  },
+                  trailingWidget: const Icon(
+                    Icons.search,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                  secondaryButtonWidget: const Icon(
+                    Icons.close,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                  buttonWidget: const Icon(
+                    Icons.search,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.menu),
+                  onPressed: () {
+                    _key.currentState?.openEndDrawer();
+                  },
+                )
+              ],
             ),
             endDrawer: CustomDrawer(),
             body: Padding(
@@ -57,23 +100,6 @@ class _FolderScreenState extends State<FolderScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
-                      height: 50,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          labelText: "Search Note",
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {},
-                          ),
-                        ),
-                        onChanged: (value) {},
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     GridView.extent(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
