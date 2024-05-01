@@ -51,7 +51,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
 
   Future<void> recordAudio() async {}
 
-  Future<void> generateNoteFromFile() async {
+  Future<void> generateNoteFromFile(int folderID) async {
     emit(NoteGenerationLoading());
     try {
       final result = await Amplify.Storage.uploadFile(
@@ -65,35 +65,49 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
+      Note? response;
+      if (folderID == 0) {
+        response = await service.addNoteToHome(
+            noteModel: GenerateNoteFromFileModel(
+          title: noteNameController.text,
+          audioKey: result.uploadedItem.key,
+          userId: UserInfo.loggedUser!.id,
+        ));
+      } else {
+        response = await service.addNoteToFolder(
+            noteModel: GenerateNoteFromFileModel(
+              title: noteNameController.text,
+              audioKey: result.uploadedItem.key,
+              userId: UserInfo.loggedUser!.id,
+            ),
+            folderID: folderID);
+      }
+      if (response != null) {
+        generatedNote = response;
+        emit(NoteGenerationSuccess(
+            LocaleKeys.dialogs_success_dialogs_note_generation_success_title
+                .tr(),
+            generatedNote!.title ?? ""));
+      } else {
+        emit(NoteGenerationError(
+            LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),
+            LocaleKeys.dialogs_error_dialogs_note_generation_error_description
+                .tr()));
+      }
     } on StorageException catch (e) {
       safePrint('Error uploading file: $e');
       rethrow;
     }
-    // send generation request
-    // var response =
-    //     await service.generateNoteFromFile(audioFile!, selectedFileName);
-
-    // if (response != null) {
-    //   generatedNote = response;
-    //   emit(NoteGenerationSuccess(
-    //       LocaleKeys.dialogs_success_dialogs_note_generation_success_title.tr(),
-    //       generatedNote!.title ?? ""));
-    // } else {
-    //   emit(NoteGenerationError(
-    //       LocaleKeys.dialogs_error_dialogs_note_generation_error_title.tr(),
-    //       LocaleKeys.dialogs_error_dialogs_note_generation_error_description
-    //           .tr()));
-    // }
   }
 
-  Future<void> generateNoteFromURL() async {
+  Future<void> generateNoteFromURL({required int folderID}) async {
     emit(NoteGenerationLoading());
-    // send generation request
-    // TODO: Change userId to dynamic
     VideoModel videoModel = VideoModel(
         url: videoUrlController.text,
         noteName: noteNameController.text,
-        userId: UserInfo.loggedUser!.id);
+        userId: UserInfo.loggedUser!.id,
+        folderID: folderID);
+
     var response = await service.generateNoteFromURL(videoModel);
 
     if (response != null) {

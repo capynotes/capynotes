@@ -13,7 +13,8 @@ class ApiConstants {
   static String getMyAudios = "audio/";
   static String getMyNotes = "note/user/";
   static String getNote = "note/";
-  static String addNote = "note/add/";
+  static String addNoteToHome = "note/add";
+  static String addNoteToFolder = "note/add-to-folder/";
 
   // Flashcard related endpoints
   static String getFlashcardSets = "flashcard/set/note/";

@@ -12,6 +12,47 @@ import 'package:http/http.dart';
 import '../model/video_model.dart';
 
 class NoteGenerationService {
+  Future<Note?> addNoteToHome(
+      {required GenerateNoteFromFileModel noteModel}) async {
+    try {
+      Response? response;
+      response = await Api.instance.postRequest(ApiConstants.baseUrl,
+          ApiConstants.addNoteToHome, jsonEncode(noteModel.toJson()));
+      if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(body);
+        Note? noteModel = Note.fromJson(responseModel.data);
+        return noteModel;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Note?> addNoteToFolder(
+      {required GenerateNoteFromFileModel noteModel,
+      required int folderID}) async {
+    try {
+      Response? response;
+      response = await Api.instance.postRequest(
+          ApiConstants.baseUrl,
+          "${ApiConstants.addNoteToFolder}$folderID",
+          jsonEncode(noteModel.toJson()));
+      if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(body);
+        Note? noteModel = Note.fromJson(responseModel.data);
+        return noteModel;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   //TODO: refactor
   Future<Note?> generateNoteFromFile(File file, String fileName) async {
     try {

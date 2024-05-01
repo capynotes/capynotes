@@ -16,8 +16,11 @@ import '../../widgets/lotties/default_lottie_widget.dart';
 @RoutePage()
 class NoteGenerationDetailsScreen extends StatelessWidget {
   NoteGenerationDetailsScreen(
-      {super.key, @PathParam('src') required this.source});
+      {super.key,
+      @PathParam('src') required this.source,
+      required this.folderID});
   final String source;
+  final int folderID;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -54,11 +57,17 @@ class NoteGenerationDetailsScreen extends StatelessWidget {
               child: Center(
                 child: SingleChildScrollView(
                   child: source == "youtube"
-                      ? FromYoutubeWidget()
+                      ? FromYoutubeWidget(
+                          folderID: folderID,
+                        )
                       : source == "audio"
-                          ? FromAudioFileWidget()
+                          ? FromAudioFileWidget(
+                              folderID: folderID,
+                            )
                           : source == "recording"
-                              ? FromRecordingWidget()
+                              ? FromRecordingWidget(
+                                  folderID: folderID,
+                                )
                               : // Error widget
                               Center(
                                   child: Container(
@@ -76,8 +85,9 @@ class NoteGenerationDetailsScreen extends StatelessWidget {
 }
 
 class FromYoutubeWidget extends StatelessWidget {
-  FromYoutubeWidget({super.key});
+  FromYoutubeWidget({super.key, required this.folderID});
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final int folderID;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -107,7 +117,9 @@ class FromYoutubeWidget extends StatelessWidget {
           CustomElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  context.read<NoteGenerationCubit>().generateNoteFromURL();
+                  context
+                      .read<NoteGenerationCubit>()
+                      .generateNoteFromURL(folderID: folderID);
                 }
               },
               child: Text(LocaleKeys.buttons_generate_note.tr())),
@@ -118,8 +130,9 @@ class FromYoutubeWidget extends StatelessWidget {
 }
 
 class FromAudioFileWidget extends StatelessWidget {
-  FromAudioFileWidget({super.key});
+  FromAudioFileWidget({super.key, required this.folderID});
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final int folderID;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -168,7 +181,9 @@ class FromAudioFileWidget extends StatelessWidget {
               onPressed: () {
                 if (formKey.currentState!.validate() &&
                     context.read<NoteGenerationCubit>().audioFile != null) {
-                  context.read<NoteGenerationCubit>().generateNoteFromFile();
+                  context
+                      .read<NoteGenerationCubit>()
+                      .generateNoteFromFile(folderID);
                 }
               },
               child: Text(LocaleKeys.buttons_generate_note.tr())),
@@ -179,8 +194,9 @@ class FromAudioFileWidget extends StatelessWidget {
 }
 
 class FromRecordingWidget extends StatelessWidget {
-  FromRecordingWidget({super.key});
+  FromRecordingWidget({super.key, required this.folderID});
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final int folderID;
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +231,9 @@ class FromRecordingWidget extends StatelessWidget {
               onPressed: () {
                 if (formKey.currentState!.validate() &&
                     context.read<NoteGenerationCubit>().audioFile != null) {
-                  context.read<NoteGenerationCubit>().generateNoteFromFile();
+                  context
+                      .read<NoteGenerationCubit>()
+                      .generateNoteFromFile(folderID);
                 }
               },
               child: Text(LocaleKeys.buttons_generate_note.tr())),

@@ -10,6 +10,7 @@ import 'package:star_menu/star_menu.dart';
 import '../../constants/colors.dart';
 import '../../model/folder/folder_with_count_model.dart';
 import '../../model/user/user_info_model.dart';
+import '../../navigation/app_router.dart';
 import '../../translations/locale_keys.g.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
 import '../widgets/custom_widgets/custom_snackbars.dart';
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: ColorConstants.lightBlue,
                                 fontWeight: FontWeight.w900,
                                 fontFamily: "Nunito"),
-                            children: [
+                            children: const [
                           TextSpan(
                               text: "Notes",
                               style: TextStyle(
@@ -111,7 +112,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 items: [
                   FloatingActionButton.extended(
-                      onPressed: () {}, label: const Text("Add Note")),
+                      onPressed: () {
+                        context.router.push(NoteGenerationRoute(folderID: 0));
+                      },
+                      label: const Text("Add Note")),
                   FloatingActionButton.extended(
                     onPressed: () {
                       showDialog(

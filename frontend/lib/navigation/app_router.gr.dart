@@ -101,22 +101,24 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     NoteGenerationDetailsRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<NoteGenerationDetailsRouteArgs>(
-          orElse: () => NoteGenerationDetailsRouteArgs(
-              source: pathParams.getString('src')));
+      final args = routeData.argsAs<NoteGenerationDetailsRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: NoteGenerationDetailsScreen(
           key: args.key,
           source: args.source,
+          folderID: args.folderID,
         ),
       );
     },
     NoteGenerationRoute.name: (routeData) {
+      final args = routeData.argsAs<NoteGenerationRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const NoteGenerationScreen(),
+        child: NoteGenerationScreen(
+          key: args.key,
+          folderID: args.folderID,
+        ),
       );
     },
     NoteRoute.name: (routeData) {
@@ -387,12 +389,14 @@ class NoteGenerationDetailsRoute
   NoteGenerationDetailsRoute({
     Key? key,
     required String source,
+    required int folderID,
     List<PageRouteInfo>? children,
   }) : super(
           NoteGenerationDetailsRoute.name,
           args: NoteGenerationDetailsRouteArgs(
             key: key,
             source: source,
+            folderID: folderID,
           ),
           rawPathParams: {'src': source},
           initialChildren: children,
@@ -408,30 +412,57 @@ class NoteGenerationDetailsRouteArgs {
   const NoteGenerationDetailsRouteArgs({
     this.key,
     required this.source,
+    required this.folderID,
   });
 
   final Key? key;
 
   final String source;
 
+  final int folderID;
+
   @override
   String toString() {
-    return 'NoteGenerationDetailsRouteArgs{key: $key, source: $source}';
+    return 'NoteGenerationDetailsRouteArgs{key: $key, source: $source, folderID: $folderID}';
   }
 }
 
 /// generated route for
 /// [NoteGenerationScreen]
-class NoteGenerationRoute extends PageRouteInfo<void> {
-  const NoteGenerationRoute({List<PageRouteInfo>? children})
-      : super(
+class NoteGenerationRoute extends PageRouteInfo<NoteGenerationRouteArgs> {
+  NoteGenerationRoute({
+    Key? key,
+    required int folderID,
+    List<PageRouteInfo>? children,
+  }) : super(
           NoteGenerationRoute.name,
+          args: NoteGenerationRouteArgs(
+            key: key,
+            folderID: folderID,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'NoteGenerationRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<NoteGenerationRouteArgs> page =
+      PageInfo<NoteGenerationRouteArgs>(name);
+}
+
+class NoteGenerationRouteArgs {
+  const NoteGenerationRouteArgs({
+    this.key,
+    required this.folderID,
+  });
+
+  final Key? key;
+
+  final int folderID;
+
+  @override
+  String toString() {
+    return 'NoteGenerationRouteArgs{key: $key, folderID: $folderID}';
+  }
 }
 
 /// generated route for

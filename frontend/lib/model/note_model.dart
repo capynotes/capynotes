@@ -99,3 +99,25 @@ class Note {
     return data;
   }
 }
+
+class GenerateNoteFromFileModel {
+  String? title;
+  int? userId;
+  String? audioKey;
+
+  GenerateNoteFromFileModel({this.title, this.userId, this.audioKey});
+
+  GenerateNoteFromFileModel.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    userId = json['userId'];
+    audioKey = json['audioKey'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['title'] = title;
+    data['userId'] = userId;
+    data['audioKey'] = audioKey;
+    return data;
+  }
+}

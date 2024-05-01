@@ -9,6 +9,7 @@ import 'package:star_menu/star_menu.dart';
 import '../../constants/asset_paths.dart';
 import '../../constants/colors.dart';
 import '../../model/folder/folder_with_count_model.dart';
+import '../../navigation/app_router.dart';
 import '../../viewmodel/folder_cubit/folder_cubit.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
 import '../widgets/custom_widgets/custom_text_form_field.dart';
@@ -106,7 +107,11 @@ class _FolderScreenState extends State<FolderScreen> {
               ),
               items: [
                 FloatingActionButton.extended(
-                    onPressed: () {}, label: const Text("Add Note")),
+                    onPressed: () {
+                      context.router.replace(
+                          NoteGenerationRoute(folderID: widget.folderID));
+                    },
+                    label: const Text("Add Note")),
                 FloatingActionButton.extended(
                   onPressed: () {
                     showDialog(
