@@ -6,6 +6,7 @@ import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 
 import '../../../translations/locale_keys.g.dart';
+import 'custom_text_form_field.dart';
 
 class CustomDialogs {
   static void showConfirmDialog(BuildContext context, String title,
@@ -59,5 +60,45 @@ class CustomDialogs {
             iconColor: Colors.white,
           ),
         ]);
+  }
+
+  static void showSinglePropFormDialog(
+      {required BuildContext context,
+      required GlobalKey<FormState> formKey,
+      required String title,
+      required String label,
+      required TextEditingController controller,
+      required Function() onConfirm}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Form(
+              key: formKey,
+              child: CustomTextFormField(
+                controller: controller,
+                label: label,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    onConfirm();
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Text("Confirm"),
+              ),
+            ],
+          );
+        });
   }
 }

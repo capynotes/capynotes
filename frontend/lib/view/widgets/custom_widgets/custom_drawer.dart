@@ -40,6 +40,18 @@ class CustomDrawer extends StatelessWidget {
           ),
           Expanded(
             child: DrawerComponent(
+              title: "Home",
+              onTap: () {
+                context.router.replace(const HomeRoute());
+              },
+              prefixIcon: Icon(
+                Icons.home_outlined,
+                color: ColorConstants.primaryColor,
+              ),
+            ),
+          ),
+          Expanded(
+            child: DrawerComponent(
               title: "My Notes",
               onTap: () {
                 context.router.popAndPush(const MyNotesRoute());
@@ -50,18 +62,18 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: DrawerComponent(
-              title: LocaleKeys.appbars_titles_my_audios.tr(),
-              onTap: () {
-                context.router.popAndPush(const MyAudiosRoute());
-              },
-              prefixIcon: Icon(
-                Icons.audiotrack_outlined,
-                color: ColorConstants.primaryColor,
-              ),
-            ),
-          ),
+          // Expanded(
+          //   child: DrawerComponent(
+          //     title: LocaleKeys.appbars_titles_my_audios.tr(),
+          //     onTap: () {
+          //       context.router.popAndPush(const MyAudiosRoute());
+          //     },
+          //     prefixIcon: Icon(
+          //       Icons.audiotrack_outlined,
+          //       color: ColorConstants.primaryColor,
+          //     ),
+          //   ),
+          // ),
           Expanded(
             child: DrawerComponent(
               title: LocaleKeys.buttons_my_profile.tr(),

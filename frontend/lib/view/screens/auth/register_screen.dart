@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_text_form_field.dart';
 import 'package:capynotes/viewmodel/auth/register/register_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import '../../../translations/locale_keys.g.dart';
 import '../../widgets/custom_widgets/custom_dialogs.dart';
 import '../../widgets/custom_widgets/custom_snackbars.dart';
@@ -19,6 +22,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _confirmFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
           } else if (state is RegisterError) {
             CustomSnackbars.displayErrorMotionToast(
                 context, state.title, state.description, () {});
+          } else if (state is RegisterConfirm) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return Form(
+                    key: _confirmFormKey,
+                    child: AlertDialog(
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomTextFormField(
+                              label: "Confirm Code",
+                              controller: context
+                                  .read<RegisterCubit>()
+                                  .confirmationCodeController),
+                          SizedBox(
+                            height: 16.0,
+                          ),
+                          CustomElevatedButton(
+                              child: Text("Confirm"),
+                              onPressed: () {
+                                context
+                                    .read<RegisterCubit>()
+                                    .amplifyConfirmUser(
+                                        username: context
+                                            .read<RegisterCubit>()
+                                            .emailController
+                                            .text,
+                                        confirmationCode: context
+                                            .read<RegisterCubit>()
+                                            .confirmationCodeController
+                                            .text);
+                              })
+                        ],
+                      ),
+                    ),
+                  );
+                });
           }
         },
         builder: (context, state) {

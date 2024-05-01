@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
         bloc: context.read<LoginCubit>()..checkPrefs(),
         listener: (context, state) {
           if (state is LoginSuccess) {
-            context.router.replaceNamed("/note-generation");
+            context.router.replaceNamed("/home");
           } else if (state is LoginError) {
             CustomSnackbars.displayErrorMotionToast(
                 context, state.title, state.description, () {});
