@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/constants/asset_paths.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_dialogs.dart';
 import 'package:capynotes/view/widgets/lotties/default_lottie_widget.dart';
 import 'package:capynotes/viewmodel/home_cubit/home_cubit.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -14,7 +15,6 @@ import '../../navigation/app_router.dart';
 import '../../translations/locale_keys.g.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
 import '../widgets/custom_widgets/custom_snackbars.dart';
-import '../widgets/custom_widgets/custom_text_form_field.dart';
 import '../widgets/folder_widget.dart';
 import '../widgets/note_widget.dart';
 
@@ -118,41 +118,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: const Text("Add Note")),
                   FloatingActionButton.extended(
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            final addFolderFormKey = GlobalKey<FormState>();
-                            return AlertDialog(
-                              title: const Text("Create Folder"),
-                              content: Form(
-                                key: addFolderFormKey,
-                                child: CustomTextFormField(
-                                  controller: context
-                                      .read<HomeCubit>()
-                                      .createFolderController,
-                                  label: "Folder Name",
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("Cancel"),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    if (addFolderFormKey.currentState!
-                                        .validate()) {
-                                      context.read<HomeCubit>().createFolder();
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  child: const Text("Create Folder"),
-                                ),
-                              ],
-                            );
-                          });
+                      final formKey = GlobalKey<FormState>();
+                      CustomDialogs.showSinglePropFormDialog(
+                        context: context,
+                        formKey: formKey,
+                        title: "Add Folder",
+                        label: "Folder Name",
+                        controller:
+                            context.read<HomeCubit>().createFolderController,
+                        onConfirm: () {
+                          context.read<HomeCubit>().createFolder();
+                        },
+                      );
                     },
                     label: const Text("Add Folder"),
                   ),

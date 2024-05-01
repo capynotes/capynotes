@@ -13,6 +13,7 @@ import '../../../constants/asset_paths.dart';
 import '../../../constants/colors.dart';
 import '../../../utility/utils.dart';
 import '../../../viewmodel/note_cubit/note_cubit.dart';
+import '../../widgets/custom_widgets/custom_dialogs.dart';
 import '../../widgets/custom_widgets/custom_drawer.dart';
 import '../../widgets/flashcard_set_tile_widget.dart';
 import '../../widgets/lotties/default_lottie_widget.dart';
@@ -103,6 +104,32 @@ class NoteScreen extends StatelessWidget {
                                   ],
                                 ),
                                 onPressed: () {}),
+                            const SizedBox(width: 8.0),
+                            CustomElevatedButton(
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Add Tag"),
+                                    SizedBox(width: 8.0),
+                                    Icon(
+                                      Icons.tag,
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () {
+                                  final formKey = GlobalKey<FormState>();
+                                  CustomDialogs.showSinglePropFormDialog(
+                                    context: context,
+                                    formKey: formKey,
+                                    title: "Add Tag",
+                                    label: "Tag Name",
+                                    controller:
+                                        context.read<NoteCubit>().tagController,
+                                    onConfirm: () {
+                                      context.read<NoteCubit>().addTagToNote();
+                                    },
+                                  );
+                                }),
                           ],
                         ),
                         Accordion(

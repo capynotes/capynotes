@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:capynotes/model/tag_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../enums/note_status_enum.dart';
@@ -15,6 +16,7 @@ class NoteCubit extends Cubit<NoteState> {
   final NoteService service;
   NoteModel? selectedNote;
   TextEditingController fcSetNameController = TextEditingController();
+  TextEditingController tagController = TextEditingController();
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
@@ -88,6 +90,19 @@ class NoteCubit extends Cubit<NoteState> {
       print(result);
       emit(NoteSuccess("Note Created Successfully",
           "Flashcard Set \"${result.title}\" Created Successfully"));
+    }
+  }
+
+  Future<void> addTagToNote() async {
+    emit(NoteLoading());
+    AddTagModel tagModel = AddTagModel(
+        note: TagNote(id: selectedNote!.note!.id), name: tagController.text);
+    TagResponseModel? result = await service.addTag(tagModel);
+    if (result == null) {
+      emit(NoteError("Add Failed", "Could not add tag to note"));
+    } else {
+      emit(NoteSuccess("Tag Added Successfully",
+          "Tag \"${result.name}\" Added Successfully"));
     }
   }
 }

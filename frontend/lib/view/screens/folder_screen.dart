@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:capynotes/view/widgets/custom_widgets/custom_dialogs.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
 import 'package:capynotes/view/widgets/lotties/default_lottie_widget.dart';
 import 'package:capynotes/view/widgets/note_widget.dart';
@@ -140,43 +141,20 @@ class _FolderScreenState extends State<FolderScreen> {
                     label: const Text("Add Note")),
                 FloatingActionButton.extended(
                   onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          final addFolderFormKey = GlobalKey<FormState>();
-                          return AlertDialog(
-                            title: const Text("Create Folder"),
-                            content: Form(
-                              key: addFolderFormKey,
-                              child: CustomTextFormField(
-                                controller: context
-                                    .read<FolderCubit>()
-                                    .createFolderController,
-                                label: "Folder Name",
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("Cancel"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  if (addFolderFormKey.currentState!
-                                      .validate()) {
-                                    context
-                                        .read<FolderCubit>()
-                                        .createFolderInFolder(widget.folderID);
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                                child: const Text("Create Folder"),
-                              ),
-                            ],
-                          );
-                        });
+                    final formKey = GlobalKey<FormState>();
+                    CustomDialogs.showSinglePropFormDialog(
+                      context: context,
+                      formKey: formKey,
+                      title: "Add Folder",
+                      label: "Folder Name",
+                      controller:
+                          context.read<FolderCubit>().createFolderController,
+                      onConfirm: () {
+                        context
+                            .read<FolderCubit>()
+                            .createFolderInFolder(widget.folderID);
+                      },
+                    );
                   },
                   label: const Text("Add Folder"),
                 ),
