@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:simple_tags/simple_tags.dart';
 
 import '../../../constants/asset_paths.dart';
 import '../../../constants/colors.dart';
@@ -105,31 +106,6 @@ class NoteScreen extends StatelessWidget {
                                 ),
                                 onPressed: () {}),
                             const SizedBox(width: 8.0),
-                            CustomElevatedButton(
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("Add Tag"),
-                                    SizedBox(width: 8.0),
-                                    Icon(
-                                      Icons.tag,
-                                    ),
-                                  ],
-                                ),
-                                onPressed: () {
-                                  final formKey = GlobalKey<FormState>();
-                                  CustomDialogs.showSinglePropFormDialog(
-                                    context: context,
-                                    formKey: formKey,
-                                    title: "Add Tag",
-                                    label: "Tag Name",
-                                    controller:
-                                        context.read<NoteCubit>().tagController,
-                                    onConfirm: () {
-                                      context.read<NoteCubit>().addTagToNote();
-                                    },
-                                  );
-                                }),
                           ],
                         ),
                         Accordion(
@@ -196,6 +172,64 @@ class NoteScreen extends StatelessWidget {
                                     // )
                                     ),
                               ),
+                              AccordionSection(
+                                  header: const Text("Tags"),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SimpleTags(
+                                        content:
+                                            state.note.note!.tags!.isNotEmpty
+                                                ? state.note.note!.tags!
+                                                    .map((e) => e.name!)
+                                                    .toList()
+                                                : ["No Tags"],
+                                        wrapSpacing: 4,
+                                        wrapRunSpacing: 4,
+                                        tagContainerPadding: EdgeInsets.all(6),
+                                        tagTextStyle: TextStyle(
+                                          color: ColorConstants.primaryColor,
+                                        ),
+                                        tagContainerDecoration: BoxDecoration(
+                                          color: ColorConstants.lightBlue,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      CustomElevatedButton(
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.tag,
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Text("Add Tag"),
+                                            ],
+                                          ),
+                                          onPressed: () {
+                                            final formKey =
+                                                GlobalKey<FormState>();
+                                            CustomDialogs
+                                                .showSinglePropFormDialog(
+                                              context: context,
+                                              formKey: formKey,
+                                              title: "Add Tag",
+                                              label: "Tag Name",
+                                              controller: context
+                                                  .read<NoteCubit>()
+                                                  .tagController,
+                                              onConfirm: () {
+                                                context
+                                                    .read<NoteCubit>()
+                                                    .addTagToNote();
+                                              },
+                                            );
+                                          }),
+                                    ],
+                                  )),
                             ]),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

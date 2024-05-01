@@ -57,6 +57,7 @@ dependencies:
   aws_common: ^0.6.4
   star_menu: ^4.0.0
   searchbar_animation: ^0.0.4
+  simple_tags: ^0.0.6
 
 dev_dependencies:
   flutter_test:
