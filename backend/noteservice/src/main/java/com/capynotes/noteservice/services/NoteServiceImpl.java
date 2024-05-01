@@ -83,7 +83,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note uploadAudioFromURL(String videoUrl, String fileName, Long userId) {
+    public Note uploadAudioFromURL(String videoUrl, String fileName, Long userId, Long folderId) {
         //String newName = UUID.randomUUID().toString() + "_" + fileName;
         LocalDateTime uploadTime = LocalDateTime.now();
 
@@ -91,8 +91,17 @@ public class NoteServiceImpl implements NoteService {
         newAudio = updateAudioStatus(newAudio.getId(), AudioStatus.DONE);
         newAudio = updateAudioURL(newAudio.getId(), fileUrl.toString());*/
 
-        Note note = new Note(fileName, userId, "file_url", uploadTime, NoteStatus.TRANSCRIBING);
-        noteRepository.save(note);
+        Note note = new Note(fileName, userId, uploadTime, NoteStatus.TRANSCRIBING);
+
+        if(folderId != 0) {
+            if(folderService.addFolderItemToFolder(note, folderId)) {
+                noteRepository.save(note);
+            } else {
+                throw new RuntimeException("Note could not be added to folder");
+            }
+        } else {
+            noteRepository.save(note);
+        }
 
         return note;
     }
