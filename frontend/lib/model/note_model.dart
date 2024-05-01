@@ -2,14 +2,16 @@ import 'package:capynotes/model/flashcard/flashcard_set_model.dart';
 import 'package:capynotes/model/summary_model.dart';
 
 import '../enums/note_status_enum.dart';
+import 'tag_model.dart';
 import 'transcript_model.dart';
 
 class NoteModel {
   Note? note;
   Transcript? transcript;
   Summary? summary;
+  String? audioUrl;
 
-  NoteModel({this.note, this.transcript, this.summary});
+  NoteModel({this.note, this.transcript, this.summary, this.audioUrl});
 
   NoteModel.fromJson(Map<String, dynamic> json) {
     note = json['note'] != null ? Note.fromJson(json['note']) : null;
@@ -38,30 +40,32 @@ class NoteModel {
 class Note {
   int? id;
   String? title;
-  String? pdfUrl;
+  String? pdfKey;
   int? userId;
-  String? audioName;
-  String? audioUploadTime;
+  String? audioKey;
+  String? creationTime;
   List<FlashcardSetModel>? cardSets;
   NoteStatus? status;
+  List<TagResponseModel>? tags;
 
   Note(
       {this.id,
       this.title,
-      this.pdfUrl,
+      this.pdfKey,
       this.userId,
-      this.audioName,
-      this.audioUploadTime,
+      this.audioKey,
+      this.creationTime,
       this.cardSets,
-      this.status});
+      this.status,
+      this.tags});
 
   Note.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    pdfUrl = json['pdfUrl'];
+    pdfKey = json['pdfUrl'];
     userId = json['userId'];
-    audioName = json['audioName'];
-    audioUploadTime = json['audioUploadTime'];
+    audioKey = json['audioKey'];
+    creationTime = json['creationTime'];
     if (json['cardSets'] != null) {
       cardSets = <FlashcardSetModel>[];
       json['cardSets'].forEach((v) {
@@ -69,20 +73,51 @@ class Note {
       });
     }
     status = getNoteStatusFromString(json['status']);
+    if (json['tags'] != null) {
+      tags = <TagResponseModel>[];
+      json['tags'].forEach((v) {
+        tags!.add(TagResponseModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['title'] = title;
-    data['pdfUrl'] = pdfUrl;
+    data['pdfUrl'] = pdfKey;
     data['userId'] = userId;
-    data['audioName'] = audioName;
-    data['audioUploadTime'] = audioUploadTime;
+    data['audioKey'] = audioKey;
+    data['creationTime'] = creationTime;
     if (cardSets != null) {
       data['cardSets'] = cardSets!.map((v) => v.toJson()).toList();
     }
     data['status'] = status.toString();
+    if (tags != null) {
+      data['tags'] = tags!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class GenerateNoteFromFileModel {
+  String? title;
+  int? userId;
+  String? audioKey;
+
+  GenerateNoteFromFileModel({this.title, this.userId, this.audioKey});
+
+  GenerateNoteFromFileModel.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    userId = json['userId'];
+    audioKey = json['audioKey'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['title'] = title;
+    data['userId'] = userId;
+    data['audioKey'] = audioKey;
     return data;
   }
 }

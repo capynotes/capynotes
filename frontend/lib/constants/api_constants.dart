@@ -1,5 +1,5 @@
 class ApiConstants {
-  static String baseUrl = "http://139.179.55.239:8080/";
+  static String baseUrl = "http://localhost:8080/";
 
   // Authentication related endpoints
   static String register = "person/register";
@@ -13,6 +13,8 @@ class ApiConstants {
   static String getMyAudios = "audio/";
   static String getMyNotes = "note/user/";
   static String getNote = "note/";
+  static String addNoteToHome = "note/add";
+  static String addNoteToFolder = "note/add-to-folder/";
 
   // Flashcard related endpoints
   static String getFlashcardSets = "flashcard/set/note/";
@@ -21,4 +23,11 @@ class ApiConstants {
   static String addFlashcard = "flashcard/add";
   static String flashcard = "flashcard/";
   static String editFlashcard = "flashcard/edit";
+
+  // Folder related endpoints
+  static String createFolder = "folder/add";
+  static String getUserFolders = "folder/main/";
+  static String getFolder = "folder/";
+  static String addFolderToFolder = "folder/add-to-folder/";
+  static String addTag = "note/add-tag";
 }

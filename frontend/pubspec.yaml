@@ -51,7 +51,13 @@ dependencies:
   just_audio: ^0.9.36
   flutter_cached_pdfview: ^0.4.2
   url_launcher: ^6.2.4
-
+  amplify_flutter: ^1.8.0
+  amplify_storage_s3: ^1.8.0
+  amplify_auth_cognito: ^1.8.0
+  aws_common: ^0.6.4
+  star_menu: ^4.0.0
+  searchbar_animation: ^0.0.4
+  simple_tags: ^0.0.6
 
 dev_dependencies:
   flutter_test:

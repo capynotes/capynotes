@@ -1,6 +1,8 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:capynotes/model/tag_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
 import '../../enums/note_status_enum.dart';
 import '../../model/flashcard/add_flashcard_set_model.dart';
 import '../../model/flashcard/flashcard_set_model.dart';
@@ -12,15 +14,13 @@ part 'note_state.dart';
 class NoteCubit extends Cubit<NoteState> {
   NoteCubit(this.service) : super(NoteInitial());
   final NoteService service;
-  final String path = "assets/audio/csgo.mp3";
   NoteModel? selectedNote;
-  // AudioPlayer player = AudioPlayer();
   TextEditingController fcSetNameController = TextEditingController();
+  TextEditingController tagController = TextEditingController();
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
     List<Note>? allNotes = await service.getMyNotes();
-    print(allNotes);
     if (allNotes == null) {
       emit(NoteError("Error", "Error"));
     } else if (allNotes.isEmpty) {
@@ -47,7 +47,33 @@ class NoteCubit extends Cubit<NoteState> {
     if (selectedNote == null) {
       emit(NoteNotFound());
     } else {
+      final audioUrl = await getDownloadUrl(
+          key: selectedNote!.note!.audioKey!,
+          accessLevel: StorageAccessLevel.guest);
+      selectedNote!.audioUrl = audioUrl;
       emit(NoteDisplay(note: selectedNote!));
+    }
+  }
+
+  Future<String> getDownloadUrl({
+    required String key,
+    required StorageAccessLevel accessLevel,
+  }) async {
+    try {
+      final result = await Amplify.Storage.getUrl(
+        key: key,
+        options: StorageGetUrlOptions(
+          accessLevel: accessLevel,
+          pluginOptions: const S3GetUrlPluginOptions(
+            validateObjectExistence: true,
+            expiresIn: Duration(days: 1),
+          ),
+        ),
+      ).result;
+      return result.url.toString();
+    } on StorageException catch (e) {
+      safePrint('Could not get a downloadable URL: ${e.message}');
+      rethrow;
     }
   }
 
@@ -62,8 +88,21 @@ class NoteCubit extends Cubit<NoteState> {
       emit(NoteError("Creation Failed", "Could not create flashcard set"));
     } else {
       print(result);
-      emit(NoteSuccess("Set Created Successfully",
+      emit(NoteSuccess("Note Created Successfully",
           "Flashcard Set \"${result.title}\" Created Successfully"));
+    }
+  }
+
+  Future<void> addTagToNote() async {
+    emit(NoteLoading());
+    AddTagModel tagModel = AddTagModel(
+        note: TagNote(id: selectedNote!.note!.id), name: tagController.text);
+    TagResponseModel? result = await service.addTag(tagModel);
+    if (result == null) {
+      emit(NoteError("Add Failed", "Could not add tag to note"));
+    } else {
+      emit(NoteSuccess("Tag Added Successfully",
+          "Tag \"${result.name}\" Added Successfully"));
     }
   }
 }

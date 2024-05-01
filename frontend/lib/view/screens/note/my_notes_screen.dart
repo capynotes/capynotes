@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/constants/colors.dart';
+import 'package:capynotes/navigation/app_router.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,6 @@ class MyNotesScreen extends StatelessWidget {
           body: BlocBuilder<NoteCubit, NoteState>(
             bloc: context.read<NoteCubit>()..getMyNotes(),
             builder: (context, state) {
-              print(state);
               if (state is NotesDisplay) {
                 return Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -55,8 +55,8 @@ class MyNotesScreen extends StatelessWidget {
                                 const SizedBox(height: 16.0),
                                 CustomElevatedButton(
                                     onPressed: () {
-                                      context.router
-                                          .replaceNamed("/note-generation");
+                                      context.router.replace(
+                                          NoteGenerationRoute(folderID: 0));
                                     },
                                     child: Text(LocaleKeys
                                         .buttons_lets_generate_notes

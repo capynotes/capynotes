@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/constants/colors.dart';
+import 'package:capynotes/navigation/app_router.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../constants/asset_paths.dart';
@@ -9,8 +10,8 @@ import '../../widgets/lotties/default_lottie_widget.dart';
 
 @RoutePage()
 class NoteGenerationScreen extends StatefulWidget {
-  const NoteGenerationScreen({super.key});
-
+  const NoteGenerationScreen({super.key, required this.folderID});
+  final int folderID;
   @override
   State<NoteGenerationScreen> createState() => _NoteGenerationScreenState();
 }
@@ -41,19 +42,22 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
           children: [
             SourceLottieCard(
               lottiePath: AssetPaths.youtubeLottie,
-              sourceScreenPath: "/note-generation-details/youtube",
+              sourceScreenPath: "youtube",
+              folderID: widget.folderID,
               height: MediaQuery.of(context).size.height / 3.5,
               // width: MediaQuery.of(context).size.width / 1.5,
             ),
             SourceLottieCard(
               lottiePath: AssetPaths.browseFolderLottie,
-              sourceScreenPath: "/note-generation-details/audio",
+              sourceScreenPath: "audio",
+              folderID: widget.folderID,
               height: MediaQuery.of(context).size.height / 3.5,
               // width: MediaQuery.of(context).size.width / 1.5,
             ),
             SourceLottieCard(
               lottiePath: AssetPaths.microphoneLottie,
-              sourceScreenPath: "/note-generation-details/recording",
+              sourceScreenPath: "recording",
+              folderID: widget.folderID,
               height: MediaQuery.of(context).size.height / 3.5,
               // width: MediaQuery.of(context).size.width / 1.5,
             ),
@@ -72,7 +76,8 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
         children: [
           SourceLottieCard(
             lottiePath: AssetPaths.youtubeLottie,
-            sourceScreenPath: "/note-generation-details/youtube",
+            sourceScreenPath: "youtube",
+            folderID: widget.folderID,
             otherDetails: const Text("Generate Note from a Youtube Video",
                 style: TextStyle(color: Colors.white)),
             height: null,
@@ -80,7 +85,8 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
           ),
           SourceLottieCard(
             lottiePath: AssetPaths.browseFolderLottie,
-            sourceScreenPath: "/note-generation-details/audio",
+            sourceScreenPath: "audio",
+            folderID: widget.folderID,
             otherDetails: const Text("Generate Note from a Audio File",
                 style: TextStyle(color: Colors.white)),
             height: null,
@@ -88,7 +94,8 @@ class _NoteGenerationScreenState extends State<NoteGenerationScreen> {
           ),
           SourceLottieCard(
             lottiePath: AssetPaths.microphoneLottie,
-            sourceScreenPath: "/note-generation-details/recording",
+            sourceScreenPath: "recording",
+            folderID: widget.folderID,
             otherDetails: const Text("Record instantly and Generate Note",
                 style: TextStyle(color: Colors.white)),
             height: null,
@@ -105,11 +112,13 @@ class SourceLottieCard extends StatelessWidget {
       {super.key,
       required this.lottiePath,
       required this.sourceScreenPath,
+      required this.folderID,
       this.otherDetails,
       this.height,
       this.width});
   final String lottiePath;
   final String sourceScreenPath;
+  final int folderID;
   final Widget? otherDetails;
   final double? height;
   final double? width;
@@ -117,7 +126,8 @@ class SourceLottieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.pushNamed(sourceScreenPath);
+        context.router.push(NoteGenerationDetailsRoute(
+            source: sourceScreenPath, folderID: folderID));
       },
       child: SizedBox(
         child: Card(

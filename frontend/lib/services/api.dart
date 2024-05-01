@@ -6,10 +6,12 @@ class Api {
   static Api get instance => _instance;
   Api._init();
 
-  Map<String, String> get tokenHeader => {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer ${UserInfo.loggedUser?.token}"
-      };
+  Map<String, String> get tokenHeader => UserInfo.loggedUser?.token == null
+      ? {"Content-Type": "application/json", "Authorization": "Bearer"}
+      : {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${UserInfo.loggedUser?.token}"
+        };
 
   Future<http.Response> getRequest(String adress, String path) async {
     final response =

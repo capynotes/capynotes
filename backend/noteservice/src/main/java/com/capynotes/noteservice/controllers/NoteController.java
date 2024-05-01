@@ -1,10 +1,10 @@
 package com.capynotes.noteservice.controllers;
 
-import com.capynotes.noteservice.dtos.NoteDto;
-import com.capynotes.noteservice.dtos.NoteRequest;
-import com.capynotes.noteservice.dtos.Response;
-import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
+import com.capynotes.noteservice.dtos.*;
+import com.capynotes.noteservice.models.FolderItem;
 import com.capynotes.noteservice.models.Note;
+import com.capynotes.noteservice.models.Tag;
+import com.capynotes.noteservice.services.FolderItemService;
 import com.capynotes.noteservice.services.NoteService;
 
 import java.io.FileNotFoundException;
@@ -28,6 +28,7 @@ import jakarta.annotation.PostConstruct;
 @RequestMapping("api/note")
 public class NoteController {
     NoteService noteService;
+    FolderItemService folderItemService;
     ConnectionFactory factory;
     Connection connection;
     Channel channel;
@@ -35,8 +36,9 @@ public class NoteController {
     String QUEUE_NAME = "transcription_queue";
     String YOUTUBE_QUEUE_NAME = "youtube_queue";
 
-    public NoteController(NoteService noteService) {
+    public NoteController(NoteService noteService, FolderItemService folderItemService) {
         this.noteService = noteService;
+        this.folderItemService = folderItemService;
     }
 
     @PostConstruct
@@ -82,8 +84,9 @@ public class NoteController {
         String videoUrl = videoTranscribeRequest.getVideoUrl();
         String fileName = videoTranscribeRequest.getNoteName();
         Long userId = videoTranscribeRequest.getUserId();
+        Long folderId = videoTranscribeRequest.getFolderId();
         try {
-            Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
+            Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId, folderId);
             String jsonString = "{\"noteId\":" + note.getId().toString() + ", \"videoUrl\":\"" + videoUrl + "\", \"noteName\":\"" + fileName + "\"}";
             channel.basicPublish("", YOUTUBE_QUEUE_NAME, null, jsonString.getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Sent note with id '" + note.getId().toString() + "'");
@@ -129,6 +132,105 @@ public class NoteController {
             return new Response("Note retrieved successfully.", 200, note);
         } catch (Exception e) {
             return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @GetMapping("/user/grid/{id}")
+    public Response getUserNotesInGrid(@PathVariable("id") Long id) throws FileNotFoundException {
+        List<NoteGrid> notes;
+        try {
+            notes = noteService.getNotesInGrid(id);
+            return new Response("Notes retrieved successfully.", 200, notes);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @PostMapping("/add-tag")
+    public Response addTagToNote(@RequestBody Tag tag) {
+        try {
+            noteService.addTag(tag);
+            return new Response("Tag added successfully.", 200, tag);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @DeleteMapping("/delete-tag/{id}")
+    public Response deleteTagFromNote(@PathVariable("id") Long id) {
+        try {
+            noteService.deleteTag(id);
+            return new Response("Tag deleted.", 200, null);
+        } catch (Exception e) {
+            return new Response("An error occurred." + e.toString(), 500, null);
+        }
+    }
+
+    @PostMapping("/folder-item/add")
+    public Response addFolderItem(@RequestBody FolderItem folderItem) {
+        try {
+            FolderItem createdItem = folderItemService.addFolderItem(folderItem);
+            return new Response("Success", 200, createdItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @GetMapping("/folder-item/all/{id}")
+    public Response getAllFolderItemsOfUser(@PathVariable("id") long id) {
+        try {
+            List<Object> items = folderItemService.getFolderItemsOfUser(id);
+            return new Response("Success", 200, items);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @GetMapping("/folder-item/{id}")
+    public Response getFolderItemById(@PathVariable("id") long id) {
+        try {
+            FolderItem foundItem = folderItemService.getFolderItem(id);
+            return new Response("Success", 200, foundItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @DeleteMapping("/folder-item/{id}")
+    public Response deleteFolderItemById(@PathVariable("id") long id) {
+        try {
+            folderItemService.deleteFolderItem(id);
+            return new Response("Success", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @PostMapping("/add-to-folder/{id}")
+    public Response addNoteToFolder(@RequestBody Note note, @PathVariable("id") long folderId) {
+        try {
+            if(noteService.addNoteToFolder(note, folderId)) {
+                return new Response("Success", 200, note);
+            }
+            return new Response("Could not add note to folder", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
+
+    @PostMapping("/add")
+    public Response addNote(@RequestBody Note note) {
+        try {
+            noteService.addNote(note);
+            return new Response("Success", 200, note);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
         }
     }
 }
