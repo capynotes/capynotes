@@ -1,34 +1,67 @@
-from hf_token import get_hf_token
-from langchain_community.llms import HuggingFaceEndpoint, CTransformers
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
+import re
+import google.generativeai as genai
+import os
+from database import get_transcript_from_database, insert_keyword_definitions, insert_summary_to_database, get_user_id
+from IPython.display import display
+from IPython.display import Markdown
 
-def extract_keywords(summary_text):
-    hft = get_hf_token()
 
-    template = """Question: {question}"""
-    prompt = PromptTemplate(template=template, input_variables=["question"])
-    llm = HuggingFaceEndpoint(repo_id = "HuggingFaceH4/zephyr-7b-alpha", temperature = 0.1, huggingfacehub_api_token=hft)
-    chain = LLMChain(prompt=prompt, llm=llm, verbose=True)
 
-    prompt = " Extract ONLY the GENUINELY important, significant, technical and definiton-worthy keywords using ONLY AND ONLY THIS TEXT (do NOT overextract) and give their DEFINITIONS (NO bullet points) in the format: '1. keyword_1 - definition_1 \n 2. keyword_2 - definition_2 \n ...'"
 
-    result = chain.invoke(summary_text + prompt)
-    print("first RESULT: ", result)
+def parse_keywords_and_definitions(text):
+    keyword_dict = {}
+    lines = text.replace('\n', '').split('**')
+    for i in range(1, len(lines), 2):
+        keyword = lines[i].strip().rstrip(':').lstrip(':')
+        # Remove non-letter characters and "\n" from the end of the definition
+        definition = re.sub(r'[^a-zA-Z\s]+$', '', lines[i + 1].strip())
+        keyword_dict[keyword] = definition
+    return keyword_dict
 
-    primary_answer = result.get("text", "").split("\n\nQuestion:")[0].strip() if result else None
+def get_transcription():
 
-    print("primary answer: ", primary_answer)
-    print()
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    file_path = os.path.join(current_directory, 'test.txt')
+    transcription = ""
+    with open(file_path, 'r') as file: 
+        transcription = file.read()
+    return transcription
 
-    lines = primary_answer.split('\n')
-    lines = [line.strip() for line in lines if line.strip() and not line.startswith("Answer:") and not line.startswith("Answer")]
-    print(lines)
-    keyword_list = [{'keyword': (line.split(' - ')[0].strip()).split('.')[1].strip(), 'definition': line.split(' - ')[1].strip()} for line in lines]
+def main():
 
-    print("keyword list: ", keyword_list)
-    print()
+    GEMINI_API_KEY= os.getenv('GEMINI_API_KEY')
 
-    #return keyword_list
+    # Configure genai with a valid API key
+    genai.configure(api_key=GEMINI_API_KEY)
 
-extract_keywords("'In this chapter, we continue our discussion of threads and how they can be used to create more than one application. Because the system supports only one thread for every application, each application can use multiple threads that are created by the thread library that is being ported into the other applications. The difficulty with this is that the central execution system does not know about the threading and therefore cannot execute the same code over and over again.'")
+    model = genai.GenerativeModel('gemini-pro')
+
+    note_id = 2 # This should be obtained using SQS
+    user_id = get_user_id(note_id) 
+
+    transcription = get_transcript_from_database(note_id)
+
+    pre_prompt = f"In the following transcription please find required number of keywords based on the content so that the keywords are enough to cover the whole transcription. Give the keywords and the definition of the keywords that are understood and created from the given transcription. As a response give a list of keywords followed by their defintions in the format of <keyword>: <definition>. Here is the transcription:"
+
+    prompt = pre_prompt + transcription
+
+    response = model.generate_content(prompt)
+
+    keywords_and_definitions = parse_keywords_and_definitions(response.text)
+
+    #Insert the generated keywords and definitiosn to the database
+    insert_keyword_definitions(keywords_and_definitions, note_id, user_id)
+
+    
+    #create summary
+    pre_prompt = "Imagine you are a diligent student attending a lecture and taking comprehensive notes. Provide a detailed summary of the following transcription, organizing the content into meaningful headings and subheadings. The summary should accurately capture the main points discussed in the lecture, utilizing proper paragraph structure for readability. Here is the transcription: "
+    prompt = pre_prompt + transcription
+    summary_response = model.generate_content(prompt)
+
+    #insert summary
+    insert_summary_to_database(note_id, summary_response.text) 
+    
+
+
+if __name__ == "__main__":
+    main()
