@@ -1,5 +1,9 @@
 package com.capynotes.noteservice.controllers;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.dtos.NoteRequest;
 import com.capynotes.noteservice.dtos.Response;
@@ -27,18 +31,16 @@ import jakarta.annotation.PostConstruct;
 @RestController
 @RequestMapping("api/note")
 public class NoteController {
-    NoteService noteService;
-    ConnectionFactory factory;
-    Connection connection;
-    Channel channel;
-
-    String QUEUE_NAME = "transcription_queue";
-    String YOUTUBE_QUEUE_NAME = "youtube_queue";
+    private NoteService noteService;
+    private AmazonSQS sqsClient;
+    private String queueUrl;
+    private String youtubeQueueUrl;
 
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
     }
-@GetMapping("/{id}")
+
+    @GetMapping("/{id}")
     public Response getNote(@PathVariable("id") Long id) throws FileNotFoundException {
         NoteDto note;
         try {
@@ -48,24 +50,16 @@ public class NoteController {
             return new Response("An error occurred." + e.toString(), 500, null);
         }
     }
+
     @PostConstruct
     public void init() {
-        factory = new ConnectionFactory();
-        factory.setHost("rabbitmq");
-        factory.setPort(5672);
-        factory.setUsername("guest");
-        factory.setPassword("guest");
-        try {
-            connection = factory.newConnection();
-            channel = connection.createChannel();
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            channel.queueDeclare(YOUTUBE_QUEUE_NAME, false, false, false, null);
-            System.out.println(" [*] Waiting for messages.");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
+        sqsClient = AmazonSQSClientBuilder.standard()
+                .withCredentials(
+                        new AWSStaticCredentialsProvider(new BasicAWSCredentials("your_access_key", "your_secret_key")))
+                .withRegion("your_region")
+                .build();
+        queueUrl = sqsClient.getQueueUrl("transcription_queue").getQueueUrl();
+        youtubeQueueUrl = sqsClient.getQueueUrl("youtube_queue").getQueueUrl();
     }
 
     @PostMapping("/upload-audio")
@@ -74,8 +68,9 @@ public class NoteController {
         Response response;
         try {
             Note note = noteService.uploadAudio(file, userId, fileName);
-            channel.basicPublish("", QUEUE_NAME, null, note.getId().toString().getBytes(StandardCharsets.UTF_8));
-            System.out.println(" [x] Sent '" + note.getId().toString() + "'");
+            String jsonString = "{\"noteId\":" + note.getId().toString() + "\"}";
+            sqsClient.sendMessage(queueUrl, jsonString);
+            System.out.println(" [x] Sent '" + jsonString + "'");
             response = new Response("Note created.", 200, note);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -93,8 +88,9 @@ public class NoteController {
         Long userId = videoTranscribeRequest.getUserId();
         try {
             Note note = noteService.uploadAudioFromURL(videoUrl, fileName, userId);
-            String jsonString = "{\"noteId\":" + note.getId().toString() + ", \"videoUrl\":\"" + videoUrl + "\", \"noteName\":\"" + fileName + "\"}";
-            channel.basicPublish("", YOUTUBE_QUEUE_NAME, null, jsonString.getBytes(StandardCharsets.UTF_8));
+            String jsonString = "{\"noteId\":" + note.getId().toString() + ", \"videoUrl\":\"" + videoUrl
+                    + "\", \"noteName\":\"" + fileName + "\"}";
+            sqsClient.sendMessage(youtubeQueueUrl, jsonString);
             System.out.println(" [x] Sent note with id '" + note.getId().toString() + "'");
             response = new Response("Note created.", 200, note);
             return new ResponseEntity<>(response, HttpStatus.OK);
