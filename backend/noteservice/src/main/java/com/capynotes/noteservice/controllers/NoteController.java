@@ -214,6 +214,8 @@ public class NoteController {
     public Response addNoteToFolder(@RequestBody Note note, @PathVariable("id") long folderId) {
         try {
             if(noteService.addNoteToFolder(note, folderId)) {
+                channel.basicPublish("", QUEUE_NAME, null, note.getId().toString().getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Sent '" + note.getId().toString() + "'");
                 return new Response("Success", 200, note);
             }
             return new Response("Could not add note to folder", 200, null);
@@ -227,6 +229,8 @@ public class NoteController {
     public Response addNote(@RequestBody Note note) {
         try {
             noteService.addNote(note);
+            channel.basicPublish("", QUEUE_NAME, null, note.getId().toString().getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Sent '" + note.getId().toString() + "'");
             return new Response("Success", 200, note);
         } catch (Exception e) {
             e.printStackTrace();

@@ -91,7 +91,7 @@ services:
   summarization_service:
     image: 'summarization-service-image'
     build:
-      context: ./summarization
+      context: ./summary-keyword
     container_name: summarization-service
     ports:
       - "8085:8085"

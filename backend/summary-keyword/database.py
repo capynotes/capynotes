@@ -8,13 +8,13 @@ def initialize_connection():
     global connection
     connection = psycopg2.connect(**DB_CONFIG)
 
-def get_transcript_from_database(transcript_id):
+def get_transcript_from_database(note_id):
     global connection
     if connection is None:
         initialize_connection()
     cursor = connection.cursor()
 
-    query = f"SELECT transcription FROM transcript WHERE id = {transcript_id};"
+    query = f"SELECT transcription FROM transcript WHERE note_id = {note_id};"
     cursor.execute(query)
     result = cursor.fetchone()
 
@@ -98,7 +98,6 @@ def create_flashcard_set(flashcard_set_title, note_id, user_id):
     #get the note creation time
     creation_time = datetime.now()
 
-    # REMOVE ID PART
     insert_query = """
         INSERT INTO flashcard_set (creation_time, title, user_id, note_id) 
         VALUES ( %s, %s, %s, %s) 
@@ -106,7 +105,6 @@ def create_flashcard_set(flashcard_set_title, note_id, user_id):
     """ 
     
     try:
-        #REMOVE ID PART
         values = (creation_time, flashcard_set_title, user_id, note_id)
         cursor.execute(insert_query, values)
         connection.commit()
@@ -146,5 +144,5 @@ def get_user_id(note_id):
     cursor.execute(query)
     result = cursor.fetchone()
     cursor.close()
-
+    print(result)
     return result[0]

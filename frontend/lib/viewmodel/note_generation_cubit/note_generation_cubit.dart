@@ -23,6 +23,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   String selectedFileName = LocaleKeys.labels_no_file_selected.tr();
   PlatformFile? audioFile;
   PlatformFile? platformFile;
+  String? selectedFileExtension;
   Note? generatedNote;
 
   Future<void> pickAudio() async {
@@ -34,6 +35,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
       audioFile = result.files.single;
       selectedFileName = result.files.single.name;
       platformFile = result.files.single;
+      selectedFileExtension = platformFile!.extension;
 
       emit(NoteGenerationSuccess(
           LocaleKeys.dialogs_success_dialogs_file_pick_success_title.tr(),
@@ -43,6 +45,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
       selectedFileName = LocaleKeys.labels_no_file_selected.tr();
       audioFile = null;
       platformFile = null;
+      selectedFileExtension = null;
       emit(NoteGenerationError(
           LocaleKeys.dialogs_error_dialogs_file_pick_error_title.tr(),
           LocaleKeys.dialogs_error_dialogs_file_pick_error_description.tr()));
@@ -59,7 +62,7 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
           platformFile!.readStream!,
           size: platformFile!.size,
         ),
-        key: noteNameController.text,
+        key: "${noteNameController.text}.${selectedFileExtension!}",
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');
         },

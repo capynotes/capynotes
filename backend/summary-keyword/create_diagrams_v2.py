@@ -13,7 +13,7 @@ def get_transcription():
 
 def main():
 
-    GOOGLE_API_KEY= "AIzaSyA9-15YBRgZv66CRhpkyflGWuAtM1QHZYY"
+    GOOGLE_API_KEY= ""
 
     # Configure genai with a valid API key
     genai.configure(api_key=GOOGLE_API_KEY)
