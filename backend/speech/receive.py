@@ -33,8 +33,14 @@ def send_to_summarize(note_id):
 
 def callback_recv(messages):
     for message in messages:
-        print(" [x] Received ", str(message['Body']))
-        note_id = int(message['Body'])
+        message_body = json.loads(message['Body'])  # Assuming 'Body' contains a JSON string
+        note_id = message_body.get('noteId')  # Extracting noteId from the message
+        if note_id is None:
+            print("Invalid message format. 'noteId' not found.")
+            # Handle the invalid message, maybe by logging or sending it to a dead-letter queue
+            continue
+
+        print(" [x] Received noteId:", note_id)
         note_data = get_audio_key_from_database(note_id)
         audio_file_name = note_data
 
