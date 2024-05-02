@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 import os
 import time
 import sys
@@ -19,7 +20,8 @@ def send_to_summarize(note_id):
     while True:
         try:
             # Send message to SQS summarization queue
-            sqs.send_message(QueueUrl=summarization_queue_url, MessageBody=str(note_id))
+            outgoing_message = {'note_id': note_id}
+            sqs.send_message(QueueUrl=summarization_queue_url, MessageBody=json.dumps(outgoing_message))
             print(" [x] Sent ", str(note_id))
             break
         except (NoCredentialsError, PartialCredentialsError) as e:
