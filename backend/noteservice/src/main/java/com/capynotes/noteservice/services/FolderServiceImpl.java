@@ -50,7 +50,7 @@ public class FolderServiceImpl implements FolderService {
                     Folder folder = getFolderById((Long) itemArray[0]);
                     if(folder != null) {
                         Pair<Integer, Integer> counts = folder.countFoldersAndNotes();
-                        mainItems.add(new FolderWithCount(folder.getId(), folder.getTitle(), counts.a, counts.b));
+                        mainItems.add(new FolderWithCount(folder.getId(), folder.getTitle(), counts.a, counts.b, folder.findSearchFilters()));
                     }
                 } else {
                     Note note = getNoteById((Long) itemArray[0]);
@@ -82,7 +82,7 @@ public class FolderServiceImpl implements FolderService {
                 } else {
                     Folder itemIsFolder = (Folder) item;
                     Pair<Integer, Integer> counts = itemIsFolder.countFoldersAndNotes();
-                    FolderWithCount fwc = new FolderWithCount(item.getId(), item.getTitle(), counts.a, counts.b);
+                    FolderWithCount fwc = new FolderWithCount(item.getId(), item.getTitle(), counts.a, counts.b, itemIsFolder.findSearchFilters());
                     processedItems.add(fwc);
                 }
             }
