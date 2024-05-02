@@ -1,5 +1,34 @@
 from openai import OpenAI
-from database import get_transcript_from_database, insert_diagrams_to_database
+from database import get_transcript_from_database, insert_diagrams_to_database, insert_diagram_key_to_database
+import base64
+import requests
+from aws_utils import create_s3_client, get_bucket_name
+import os
+
+def mm(graph, file_path):
+  graphbytes = graph.encode("utf8")
+  base64_bytes = base64.b64encode(graphbytes)
+  base64_string = base64_bytes.decode("ascii")
+  
+  url = "https://mermaid.ink/img/" + base64_string
+  
+  # Fetch the image using the URL
+  response = requests.get(url)
+  response.raise_for_status()  # Raise an exception if the request fails
+  
+  # Write the image data to a file
+  with open(file_path, "wb") as f:
+    f.write(response.content)
+
+def upload_diagrams_to_S3(diagram_img, file_path, file_name):
+  s3_client = create_s3_client()
+  bucket_name = get_bucket_name()
+  try:
+    s3_client.upload_file(file_path, bucket_name, file_name)
+    return True
+  except Exception as e:
+    print(f"Error uploading file: {e}")
+    return False
 
 def parse_diagrams(gpt_response):
   print(gpt_response)
@@ -48,5 +77,27 @@ def generate_diagrams(note_id):
   # Parse the bullet pointed diagram list
   diagram_codes = parse_diagrams(completion)
 
-  # Insert the generated output to the database
-  insert_diagrams_to_database(note_id, diagram_codes)
+
+  path_prefix = "/tmp/"
+
+  for diagram in diagram_codes:
+    # Insert the generated output to the database
+    inserted_id = insert_diagrams_to_database(note_id, diagram)
+
+    # File name is created uniquely based on the unique key in diagram table
+    file_name = inserted_id + ".png"
+
+    
+    # File path is created based on the name of the folder for the diagrams and the unique file name for the diagram
+    file_path = path_prefix + file_name
+
+    mm(diagram, file_path)
+
+    upload_diagrams_to_S3(file_path, file_name)
+
+    #Remove the newly created file from local
+    os.remove(file_path)
+    
+    # Insert the unique file name of the diagram as diagram key to the diagram table in DB
+    insert_diagram_key_to_database(inserted_id, file_name)
+
