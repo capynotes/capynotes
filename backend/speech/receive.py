@@ -3,14 +3,14 @@ import os
 import time
 import sys
 import pika
-from database import get_note_from_database, insert_transcription, insert_timestamps
+from database import get_audio_key_from_database, insert_transcription, insert_timestamps
 from transcribe import whisper_transcribe_audio
 
 connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
 channel_send = connection_send.channel()
 channel_send.queue_declare(queue="summarization_queue")
 
-def send_to_summarize(transcription_id):
+def send_to_summarize(note_id):
     global connection_send, channel_send
 
     while True:
@@ -20,8 +20,8 @@ def send_to_summarize(transcription_id):
                 channel_send = connection_send.channel()
                 channel_send.queue_declare(queue="summarization_queue")
 
-            channel_send.basic_publish(exchange="", routing_key="summarization_queue", body=str(transcription_id))
-            print(" [x] Sent ", str(transcription_id))
+            channel_send.basic_publish(exchange="", routing_key="summarization_queue", body=str(note_id))
+            print(" [x] Sent ", str(note_id))
             break
 
         except pika.exceptions.StreamLostError as e:
@@ -35,8 +35,9 @@ def send_to_summarize(transcription_id):
 def callback_recv(ch, method, properties, body):
     print(" [x] Received ", str(body))
     note_id = int(body.decode())
-    note_data = get_note_from_database(note_id)
-    audio_file_name = note_data[5]
+    note_data = get_audio_key_from_database(note_id)
+    print(note_data)
+    audio_file_name = note_data
 
     result = whisper_transcribe_audio(audio_file_name)
 
@@ -49,7 +50,7 @@ def callback_recv(ch, method, properties, body):
                     'phrase': item['text']}
                     for item in segments]
     insert_timestamps(transformed_list)
-    send_to_summarize(transcription_id_value)
+    send_to_summarize(note_id)
 
 def main():
     while True:

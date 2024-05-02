@@ -3,32 +3,25 @@ import time
 import sys
 import pika
 
-from database import get_summary_from_database, insert_keyword_definitions
-from extract import extract_keywords
+from extract import summarize_keyword
 
 def callback_recv(ch, method, properties, body):
-    summary_id = int(body.decode())
-    summary_data = get_summary_from_database(summary_id)
-    note_id = summary_data[1]
-    raw_keyword_def_list = extract_keywords(summary_data[2])
-    transformed_list = [{'note_id': note_id,
-                    'keyword': item['keyword'],
-                    'definition': item['definition']}
-                    for item in raw_keyword_def_list]
-    print()
-    print("transformed list: ", transformed_list)
-    insert_keyword_definitions(transformed_list)
+    print(" [x] Received ", str(body))
+    note_id = int(body.decode())
+    summarize_keyword(note_id)
+    
+
 
 def main():
     while True:
         try:
             connection_recv = pika.BlockingConnection(
-                pika.ConnectionParameters(host="localhost"),
+                pika.ConnectionParameters(host="rabbitmq"),
             )
             channel_recv = connection_recv.channel()
-            channel_recv.queue_declare(queue="keyword_queue")
+            channel_recv.queue_declare(queue="summarization_queue")
             channel_recv.basic_consume(
-                queue="keyword_queue",
+                queue="summarization_queue",
                 on_message_callback=callback_recv,
                 auto_ack=True,
             )
