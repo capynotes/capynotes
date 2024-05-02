@@ -6,16 +6,20 @@ connection = None
 def initialize_connection():
     global connection
     connection = psycopg2.connect(**DB_CONFIG)
+    cursor = connection.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS diagram (
+        id SERIAL PRIMARY KEY,
+        note_id BIGINT NOT NULL,
+        diagram_code TEXT NOT NULL)'''
+    )
 
-connection = None
-
-def get_transcript_from_database(transcript_id):
+def get_transcript_from_database(note_id):
     global connection
     if connection is None:
         initialize_connection()
     cursor = connection.cursor()
 
-    query = f"SELECT transcription FROM transcript WHERE id = {transcript_id};"
+    query = f"SELECT transcription FROM transcript WHERE note_id = {note_id};"
     cursor.execute(query)
     result = cursor.fetchone()
 

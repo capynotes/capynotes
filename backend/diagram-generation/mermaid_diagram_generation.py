@@ -1,10 +1,10 @@
-import os
 from openai import OpenAI
 from database import get_transcript_from_database, insert_diagrams_to_database
 
 def parse_diagrams(gpt_response):
+  print(gpt_response)
   diagram_codes = []
-  lines = gpt_response.split('*')
+  lines = gpt_response.split('*')[1:]
 
   code_block = ""
   for line in lines:
@@ -23,11 +23,9 @@ def parse_diagrams(gpt_response):
       diagram_codes.append(code_block)
   return diagram_codes
 
-def main():
-  api_key = os.getenv('GPT_API_KEY')
-  # THIS note ID SHOULD BE OBTAINED VIA SQS
-  note_id = 0
-  client = OpenAI(api_key=api_key)
+def generate_diagrams(note_id):
+  # api_key = os.getenv('GPT_API_KEY')
+  client = OpenAI(api_key="")
   
   # Instructions for the generated diagrams
   pre_prompt = "Based on the following transcription, your aim is to generate diagrams showing the relations between topics, concepts, or titles. You need to generate a number of diagrams. You need to decide the number of diagrams based on the transcription's context. Some diagrams can be grouped together under 1 diagram in a meaningful way. The diagrams should be in Mermaid Diagramming Language. Do not forget to use “graph TB” in your diagrams. Do not use quotation marks in your diagrams. Your diagrams should be comprehensive and logical. If the topic can be understood without a diagram(i.e. Too small, 1 line diagram), do not provide that diagram. If your diagram is too long to fit on a page, split it into parts. The provided diagrams’ context should not be similar to each other. Your output will be a bullet-pointed list(i.e., use asterisks for each diagram). Each bullet point will be for one diagram. Do not use any other symbol to separate the diagrams from each other. Make sure the diagramming language code you provided is correct. Here is the transcription: "
@@ -52,6 +50,3 @@ def main():
 
   # Insert the generated output to the database
   insert_diagrams_to_database(note_id, diagram_codes)
-
-if __name__ == "__main__":
-  main()

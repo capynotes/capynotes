@@ -11,7 +11,7 @@ def parse_keywords_and_definitions(text):
         keyword = lines[i].strip().rstrip(':').lstrip(':')
         # Remove non-letter characters and "\n" from the end of the definition
         definition = re.sub(r'[^a-zA-Z\s]+$', '', lines[i + 1].strip())
-        keyword_dict[keyword] = definition
+        keyword_dict[keyword] = definition.strip().rstrip(':').lstrip(':')
     return keyword_dict
 
 def summarize_keyword(note_id):
@@ -27,7 +27,7 @@ def summarize_keyword(note_id):
     print("userid: ", user_id)
     transcription = get_transcript_from_database(note_id)
 
-    pre_prompt = f"In the following transcription please find required number of keywords based on the content so that the keywords are enough to cover the whole transcription. Give the keywords and the definition of the keywords that are understood and created from the given transcription. As a response give a list of keywords followed by their defintions in the format of <keyword>: <definition>. Here is the transcription:"
+    pre_prompt = f"Based on the following transcription, your aim is to generate diagrams showing the relations between topics, concepts, or titles. You need to generate a number of diagrams. You need to decide the number of diagrams based on the transcription's context. Some diagrams can be grouped together under 1 diagram in a meaningful way. The diagrams should be in Mermaid Diagramming Language. Do not forget to use “graph TB” in your diagrams. Do not use quotation marks in your diagrams outside of parentheses. Your diagrams should be comprehensive and logical. If the topic can be understood without a diagram(i.e. Too small, 1 line diagram), do not provide that diagram. If your diagram is too long to fit on a page, split it into parts. The provided diagrams’ context should not be similar to each other. Your output will be a bullet-pointed list(i.e., use asterisks for each diagram). Each bullet point will be for one diagram. Do not use any other symbol to separate the diagrams from each other. Make sure the diagramming language code you provided is correct and working. Here is the transcription:"
 
     prompt = pre_prompt + transcription
 
