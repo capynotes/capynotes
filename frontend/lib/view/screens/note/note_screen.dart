@@ -8,11 +8,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:simple_tags/simple_tags.dart';
 
 import '../../../constants/asset_paths.dart';
 import '../../../constants/colors.dart';
 import '../../../utility/utils.dart';
 import '../../../viewmodel/note_cubit/note_cubit.dart';
+import '../../widgets/custom_widgets/custom_dialogs.dart';
 import '../../widgets/custom_widgets/custom_drawer.dart';
 import '../../widgets/flashcard_set_tile_widget.dart';
 import '../../widgets/lotties/default_lottie_widget.dart';
@@ -66,12 +68,7 @@ class NoteScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         PlayerWidget(
-                          //path: state.note.note!.audioName!,
-                          path:
-                              "https://cs49x-transcribe.s3.eu-north-1.amazonaws.com/02f042a6-4f94-4e6e-a789-306dcce591d7_os1.mp3",
-                          // context
-                          //     .read<NoteCubit>()
-                          //     .path, //Change with selected note's path
+                          path: state.note.audioUrl!,
                           player: player,
                         ),
                         const SizedBox(height: 16.0),
@@ -81,13 +78,13 @@ class NoteScreen extends StatelessWidget {
                             CustomElevatedButton(
                               child: const Text("View PDF"),
                               onPressed: () => kIsWeb
-                                  ? Utils.launchURL(state.note.note!.pdfUrl ??
+                                  ? Utils.launchURL(state.note.note!.pdfKey ??
                                       'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
                                   : Navigator.push(
                                       context,
                                       MaterialPageRoute<dynamic>(
                                         builder: (_) => NotePDFScreen(
-                                          url: state.note.note!.pdfUrl ??
+                                          url: state.note.note!.pdfKey ??
                                               'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
                                           noteName: state.note.note!.title ??
                                               "No Title",
@@ -108,6 +105,7 @@ class NoteScreen extends StatelessWidget {
                                   ],
                                 ),
                                 onPressed: () {}),
+                            const SizedBox(width: 8.0),
                           ],
                         ),
                         Accordion(
@@ -174,6 +172,64 @@ class NoteScreen extends StatelessWidget {
                                     // )
                                     ),
                               ),
+                              AccordionSection(
+                                  header: const Text("Tags"),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SimpleTags(
+                                        content:
+                                            state.note.note!.tags!.isNotEmpty
+                                                ? state.note.note!.tags!
+                                                    .map((e) => e.name!)
+                                                    .toList()
+                                                : ["No Tags"],
+                                        wrapSpacing: 4,
+                                        wrapRunSpacing: 4,
+                                        tagContainerPadding: EdgeInsets.all(6),
+                                        tagTextStyle: TextStyle(
+                                          color: ColorConstants.primaryColor,
+                                        ),
+                                        tagContainerDecoration: BoxDecoration(
+                                          color: ColorConstants.lightBlue,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      CustomElevatedButton(
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.tag,
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Text("Add Tag"),
+                                            ],
+                                          ),
+                                          onPressed: () {
+                                            final formKey =
+                                                GlobalKey<FormState>();
+                                            CustomDialogs
+                                                .showSinglePropFormDialog(
+                                              context: context,
+                                              formKey: formKey,
+                                              title: "Add Tag",
+                                              label: "Tag Name",
+                                              controller: context
+                                                  .read<NoteCubit>()
+                                                  .tagController,
+                                              onConfirm: () {
+                                                context
+                                                    .read<NoteCubit>()
+                                                    .addTagToNote();
+                                              },
+                                            );
+                                          }),
+                                    ],
+                                  )),
                             ]),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

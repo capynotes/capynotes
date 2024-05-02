@@ -20,6 +20,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/note/**").permitAll()
                         .requestMatchers("/api/flashcard/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/api/folder/**").permitAll()
                         .anyRequest()
                         .authenticated())
         ;

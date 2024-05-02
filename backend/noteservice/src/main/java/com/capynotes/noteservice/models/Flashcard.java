@@ -9,7 +9,7 @@ import lombok.Data;
 @Table(name = "flashcard")
 public class Flashcard {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String front;

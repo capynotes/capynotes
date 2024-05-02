@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:capynotes/model/flashcard/add_flashcard_set_model.dart';
 import 'package:capynotes/model/flashcard/flashcard_set_model.dart';
+import 'package:capynotes/model/tag_model.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:http/http.dart';
 
@@ -63,6 +64,25 @@ class NoteService {
         FlashcardSetModel flashcardSetModel =
             FlashcardSetModel.fromJson(responseModel.data);
         return flashcardSetModel;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<TagResponseModel?> addTag(AddTagModel requestBody) async {
+    try {
+      Response? response;
+      response = await Api.instance.postRequest(ApiConstants.baseUrl,
+          ApiConstants.addTag, jsonEncode(requestBody.toJson()));
+      if (response.statusCode == 200) {
+        dynamic body = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(body);
+        TagResponseModel tagResponseModel =
+            TagResponseModel.fromJson(responseModel.data);
+        return tagResponseModel;
       } else {
         return null;
       }

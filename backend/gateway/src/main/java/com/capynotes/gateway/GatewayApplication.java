@@ -28,6 +28,10 @@ public class GatewayApplication {
 						.filters(f -> f
 								.prefixPath("/api"))
 						.uri("http://note-service-spring-app:8083"))
+				.route(r -> r.path("/folder/**")
+						.filters(f -> f
+								.prefixPath("/api"))
+						.uri("http://note-service-spring-app:8083"))
 				.build();
 	}
 

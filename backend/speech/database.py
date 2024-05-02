@@ -25,18 +25,19 @@ def initialize_connection():
     connection.commit()
     cursor.close()
 
-def get_note_from_database(note_id):
+def get_audio_key_from_database(note_id):
     global connection
     if connection is None:
         initialize_connection()
     cursor = connection.cursor()
 
-    query = f"SELECT * FROM note WHERE id = {note_id};"
+    query = f"SELECT audio_key FROM note WHERE id = {note_id};"
     cursor.execute(query)
     result = cursor.fetchone()
+    print(result)
     cursor.close()
 
-    return result
+    return str(result[0])
 
 def insert_transcription(note_id, transcription):
     global connection

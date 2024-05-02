@@ -5,7 +5,7 @@ import sys
 import aws_utils
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
-from database import get_note_from_database, insert_transcription, insert_timestamps
+from database import get_audio_key_from_database, insert_transcription, insert_timestamps
 from transcribe import whisper_transcribe_audio
 
 # Setup SQS client
@@ -13,12 +13,14 @@ sqs = aws_utils.create_sqs_client()
 summarization_queue_url = 'https://sqs.eu-north-1.amazonaws.com/101807873666/summarization'
 transcription_queue_url = 'https://sqs.eu-north-1.amazonaws.com/101807873666/transcript'
 
-def send_to_summarize(transcription_id):
+def send_to_summarize(note_id):
+    global connection_send, channel_send
+
     while True:
         try:
             # Send message to SQS summarization queue
-            sqs.send_message(QueueUrl=summarization_queue_url, MessageBody=str(transcription_id))
-            print(" [x] Sent ", str(transcription_id))
+            sqs.send_message(QueueUrl=summarization_queue_url, MessageBody=str(note_id))
+            print(" [x] Sent ", str(note_id))
             break
         except (NoCredentialsError, PartialCredentialsError) as e:
             print(f"Credentials error: {e}")
@@ -31,8 +33,8 @@ def callback_recv(messages):
     for message in messages:
         print(" [x] Received ", str(message['Body']))
         note_id = int(message['Body'])
-        note_data = get_note_from_database(note_id)
-        audio_file_name = note_data[5]
+        note_data = get_audio_key_from_database(note_id)
+        audio_file_name = note_data
 
         result = whisper_transcribe_audio(audio_file_name)
         transcription = result['text']
@@ -44,7 +46,7 @@ def callback_recv(messages):
                             'phrase': item['text']}
                             for item in segments]
         insert_timestamps(transformed_list)
-        send_to_summarize(transcription_id_value)
+        send_to_summarize(note_id)
         # Delete message from queue after processing
         sqs.delete_message(QueueUrl=transcription_queue_url, ReceiptHandle=message['ReceiptHandle'])
 

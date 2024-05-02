@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,12 +24,35 @@ class LoginCubit extends Cubit<LoginState> {
   bool rememberMe = false;
   bool isObscure = true;
 
+  Future<void> amplifyLoginUser(String email, String password) async {
+    try {
+      final result = await Amplify.Auth.signIn(
+        username: email,
+        password: password,
+      );
+      await _amplifyHandleLoginResult(result);
+    } on AuthException catch (e) {
+      safePrint('Error signing in: ${e.message}');
+    }
+  }
+
+  Future<void> _amplifyHandleLoginResult(SignInResult result) async {
+    switch (result.nextStep.signInStep) {
+      case AuthSignInStep.done:
+        safePrint('Sign in is complete');
+        break;
+      default:
+        safePrint('Sign in not complete: ${result.nextStep.signInStep}');
+    }
+  }
+
   Future<void> login() async {
     emit(LoginLoading());
     loginModel.email = emailController.text;
     loginModel.password = passwordController.text;
     UserModel? response = await service.login(loginModel);
     if (response != null) {
+      await amplifyLoginUser(emailController.text, passwordController.text);
       if (rememberMe) {
         setEmailPref();
         setPasswordPref();
