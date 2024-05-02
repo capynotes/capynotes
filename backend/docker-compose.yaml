@@ -107,4 +107,13 @@ services:
       - "8086:8086"
     depends_on:
       - db
+  diagram_service:
+    image: 'diagram-service-image'
+    build:
+      context: ./diagram-generation
+    container_name: diagram-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - db
 
