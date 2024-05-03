@@ -35,18 +35,18 @@ services:
     ports:
       - "8080:8080"
 
-  notification-service-spring-app:
-    image: 'notification-service-image'
-    build:
-      context: ./notificationservice
-    container_name: notification-service-spring-app
-    depends_on:
-      - db
-    environment:
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: admin
-    ports:
-      - "8081:8081"
+  # notification-service-spring-app:
+  #   image: 'notification-service-image'
+  #   build:
+  #     context: ./notificationservice
+  #   container_name: notification-service-spring-app
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     SPRING_DATASOURCE_USERNAME: postgres
+  #     SPRING_DATASOURCE_PASSWORD: admin
+  #   ports:
+  #     - "8081:8081"
 
   auth-service-spring-app:
     image: 'auth-service-image'

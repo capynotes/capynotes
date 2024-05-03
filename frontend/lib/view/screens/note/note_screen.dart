@@ -43,6 +43,30 @@ class NoteScreen extends StatelessWidget {
               state.title,
               state.description,
               () => context.read<NoteCubit>().getNote(noteID));
+        } else if (state is NoteCrossList) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Cross Referenced Notes"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                        state.crossList.length,
+                        (index) => ListTile(
+                              title: Text(state.crossList[index].title!),
+                              subtitle:
+                                  Text(state.crossList[index].status!.name),
+                              onTap: () {
+                                context
+                                    .read<NoteCubit>()
+                                    .getNote(state.crossList[index].id!);
+                                Navigator.pop(context);
+                              },
+                            )),
+                  ),
+                );
+              });
         }
       },
       builder: (context, state) {
@@ -181,26 +205,34 @@ class NoteScreen extends StatelessWidget {
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      SimpleTags(
-                                        content:
-                                            state.note.note!.tags!.isNotEmpty
-                                                ? state.note.note!.tags!
-                                                    .map((e) => e.name!)
-                                                    .toList()
-                                                : ["No Tags"],
-                                        wrapSpacing: 4,
-                                        wrapRunSpacing: 4,
-                                        tagContainerPadding: EdgeInsets.all(6),
-                                        tagTextStyle: TextStyle(
-                                          color: ColorConstants.primaryColor,
-                                        ),
-                                        tagContainerDecoration: BoxDecoration(
-                                          color: ColorConstants.lightBlue,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(20),
-                                          ),
-                                        ),
-                                      ),
+                                      state.note.note!.tags!.isNotEmpty
+                                          ? SimpleTags(
+                                              onTagPress: (tag) {
+                                                context
+                                                    .read<NoteCubit>()
+                                                    .getCrossReferenced(tag);
+                                              },
+                                              content: state.note.note!.tags!
+                                                  .map((e) => e.name!)
+                                                  .toList(),
+                                              wrapSpacing: 4,
+                                              wrapRunSpacing: 4,
+                                              tagContainerPadding:
+                                                  EdgeInsets.all(6),
+                                              tagTextStyle: TextStyle(
+                                                color:
+                                                    ColorConstants.primaryColor,
+                                              ),
+                                              tagContainerDecoration:
+                                                  BoxDecoration(
+                                                color: ColorConstants.lightBlue,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(20),
+                                                ),
+                                              ),
+                                            )
+                                          : Text(
+                                              "No tags added. Please add a tag below."),
                                       SizedBox(height: 8.0),
                                       CustomElevatedButton(
                                           child: const Row(
