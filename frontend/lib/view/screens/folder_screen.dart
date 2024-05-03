@@ -60,6 +60,9 @@ class _FolderScreenState extends State<FolderScreen> {
                   textEditingController: TextEditingController(),
                   isOriginalAnimation: true,
                   enableKeyboardFocus: true,
+                  onChanged: (value) {
+                    context.read<FolderCubit>().searchFolder(value);
+                  },
                   onExpansionComplete: () {
                     debugPrint('do something just after searchbox is opened.');
                   },

@@ -14,9 +14,9 @@ class FolderCubit extends Cubit<FolderState> {
   final FolderService service;
   TextEditingController createFolderController = TextEditingController();
 
+  FolderContentsModel? allFolderContents;
+  FolderContentsModel? tempFolderContents;
   Future<void> getFolderContents(int id) async {
-    FolderContentsModel? allFolderContents;
-    FolderContentsModel? tempFolderContents;
     emit(FolderLoading());
     allFolderContents = await service.getFolderContents(id);
     if (allFolderContents == null) {
@@ -24,8 +24,8 @@ class FolderCubit extends Cubit<FolderState> {
     } else {
       tempFolderContents = allFolderContents;
       emit(FolderDisplay(
-          allFolderContents: allFolderContents,
-          tempFolderContents: tempFolderContents));
+          allFolderContents: allFolderContents!,
+          tempFolderContents: tempFolderContents!));
     }
   }
 
@@ -42,6 +42,23 @@ class FolderCubit extends Cubit<FolderState> {
     } else {
       emit(FolderSuccess("Folder Created Successfully",
           "Folder \"${result.title}\" Created Successfully"));
+    }
+  }
+
+  void searchFolder(String query) {
+    if (query.isNotEmpty) {
+      tempFolderContents!.items = allFolderContents!.items
+          ?.where((item) => item.searchFilters.contains(query.toLowerCase()))
+          .toList();
+
+      emit(FolderDisplay(
+          allFolderContents: allFolderContents!,
+          tempFolderContents: tempFolderContents!));
+    } else {
+      tempFolderContents = allFolderContents;
+      emit(FolderDisplay(
+          allFolderContents: allFolderContents!,
+          tempFolderContents: tempFolderContents!));
     }
   }
 }
