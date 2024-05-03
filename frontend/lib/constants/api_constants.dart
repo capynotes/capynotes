@@ -15,6 +15,7 @@ class ApiConstants {
   static String getNote = "note/";
   static String addNoteToHome = "note/add";
   static String addNoteToFolder = "note/add-to-folder/";
+  static String getCrossReferenced = "note/cross-reference";
 
   // Flashcard related endpoints
   static String getFlashcardSets = "flashcard/set/note/";

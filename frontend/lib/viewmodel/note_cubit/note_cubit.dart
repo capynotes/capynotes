@@ -1,11 +1,14 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:capynotes/model/cross_reference_model.dart';
 import 'package:capynotes/model/tag_model.dart';
+import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../enums/note_status_enum.dart';
 import '../../model/flashcard/add_flashcard_set_model.dart';
 import '../../model/flashcard/flashcard_set_model.dart';
+import '../../model/folder/note_grid_model.dart';
 import '../../model/note_model.dart';
 import '../../services/note_service.dart';
 
@@ -103,6 +106,23 @@ class NoteCubit extends Cubit<NoteState> {
     } else {
       emit(NoteSuccess("Tag Added Successfully",
           "Tag \"${result.name}\" Added Successfully"));
+    }
+  }
+
+  Future<void> getCrossReferenced(String tag) async {
+    emit(NoteLoading());
+    CrossReferenceModel crossReferenceModel = CrossReferenceModel(
+        userId: UserInfo.loggedUser!.id!,
+        currentNoteId: selectedNote!.note!.id!,
+        tag: tag);
+    List<NoteGridModel>? crossedNotes =
+        await service.getCrossReferenced(crossReferenceModel);
+    if (crossedNotes == null) {
+      emit(NoteError("Error", "Error"));
+    } else if (crossedNotes.isEmpty) {
+      emit(NoteNotFound());
+    } else {
+      emit(NoteCrossList(crossList: crossedNotes));
     }
   }
 }
