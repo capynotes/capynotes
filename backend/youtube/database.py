@@ -13,7 +13,7 @@ def update_s3_name(note_id, name):
     if connection is None:
         initialize_connection()
     cursor = connection.cursor()
-    query = f"UPDATE note SET audio_name = '{name}' WHERE id = {note_id};"
+    query = f"UPDATE note SET audio_key = '{name}' WHERE id = {note_id};"
     
     cursor.execute(query)
     connection.commit()
