@@ -57,12 +57,15 @@ class NoteGenerationCubit extends Cubit<NoteGenerationState> {
   Future<void> generateNoteFromFile(int folderID) async {
     emit(NoteGenerationLoading());
     try {
+      DateTime now = DateTime.now();
+
       final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(
           platformFile!.readStream!,
           size: platformFile!.size,
         ),
-        key: "${noteNameController.text}.${selectedFileExtension!}",
+        key:
+            "${now.toIso8601String()}_${noteNameController.text.replaceAll(RegExp(r' '), '')}.${selectedFileExtension!}",
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');
         },

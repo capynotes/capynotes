@@ -37,3 +37,8 @@ final class NoteSuccess extends NoteState {
 
   NoteSuccess(this.title, this.description);
 }
+
+final class NoteCrossList extends NoteState {
+  List<NoteGridModel> crossList;
+  NoteCrossList({required this.crossList});
+}

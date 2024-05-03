@@ -20,11 +20,13 @@ def mm(graph, file_path):
   with open(file_path, "wb") as f:
     f.write(response.content)
 
-def upload_diagrams_to_S3(diagram_img, file_path, file_name):
+def upload_diagrams_to_S3(inserted_id, file_path, file_name):
   s3_client = create_s3_client()
   bucket_name = get_bucket_name()
   try:
     s3_client.upload_file(file_path, bucket_name, file_name)
+    # Insert the unique file name of the diagram as diagram key to the diagram table in DB
+    insert_diagram_key_to_database(inserted_id, file_name)
     return True
   except Exception as e:
     print(f"Error uploading file: {e}")
@@ -57,7 +59,7 @@ def generate_diagrams(note_id):
   client = OpenAI(api_key="")
   
   # Instructions for the generated diagrams
-  pre_prompt = "Based on the following transcription, your aim is to generate diagrams showing the relations between topics, concepts, or titles. You need to generate a number of diagrams. You need to decide the number of diagrams based on the transcription's context. Some diagrams can be grouped together under 1 diagram in a meaningful way. The diagrams should be in Mermaid Diagramming Language. Do not forget to use “graph TB” in your diagrams. Do not use quotation marks in your diagrams. Your diagrams should be comprehensive and logical. If the topic can be understood without a diagram(i.e. Too small, 1 line diagram), do not provide that diagram. If your diagram is too long to fit on a page, split it into parts. The provided diagrams’ context should not be similar to each other. Your output will be a bullet-pointed list(i.e., use asterisks for each diagram). Each bullet point will be for one diagram. Do not use any other symbol to separate the diagrams from each other. Make sure the diagramming language code you provided is correct. Here is the transcription: "
+  pre_prompt = "Based on the following transcription, your aim is to generate diagrams showing the relations between topics, concepts, or titles. You need to generate a number of diagrams. You need to decide the number of diagrams based on the transcription's context. Some diagrams can be grouped together under 1 diagram in a meaningful way. The diagrams should be in Mermaid Diagramming Language. Do not forget to use “graph TB” in your diagrams. Do not use quotation marks in your diagrams outside of parentheses. Your diagrams should be comprehensive and logical. If the topic can be understood without a diagram(i.e. Too small, 1 line diagram), do not provide that diagram. If your diagram is too long to fit on a page, split it into parts. The provided diagrams’ context should not be similar to each other. Your output will be a bullet-pointed list(i.e., use asterisks for each diagram). Each bullet point will be for one diagram. Do not use any other symbol to separate the diagrams from each other. Make sure the diagramming language code you provided is correct and working. Here is the transcription: "
   
   # retrieve the transcription from database
   transcription = get_transcript_from_database(note_id)
@@ -78,14 +80,14 @@ def generate_diagrams(note_id):
   diagram_codes = parse_diagrams(completion)
 
 
-  path_prefix = "/tmp/"
+  path_prefix = "temp/"
 
   for diagram in diagram_codes:
     # Insert the generated output to the database
     inserted_id = insert_diagrams_to_database(note_id, diagram)
 
     # File name is created uniquely based on the unique key in diagram table
-    file_name = inserted_id + ".png"
+    file_name = str(inserted_id) + ".png"
 
     
     # File path is created based on the name of the folder for the diagrams and the unique file name for the diagram
@@ -93,11 +95,8 @@ def generate_diagrams(note_id):
 
     mm(diagram, file_path)
 
-    upload_diagrams_to_S3(file_path, file_name)
+    upload_diagrams_to_S3(inserted_id, file_path, "diagrams/" + file_name)
 
     #Remove the newly created file from local
     os.remove(file_path)
-    
-    # Insert the unique file name of the diagram as diagram key to the diagram table in DB
-    insert_diagram_key_to_database(inserted_id, file_name)
 

@@ -35,6 +35,7 @@ def send_to_summarize(note_id):
 def callback_recv(ch, method, properties, body):
     print(" [x] Received ", str(body))
     note_id = int(body.decode())
+    print(note_id)
     note_data = get_audio_key_from_database(note_id)
     print(note_data)
     audio_file_name = note_data
