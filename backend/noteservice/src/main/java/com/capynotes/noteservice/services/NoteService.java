@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.services;
 
+import com.capynotes.noteservice.dtos.CrossReference;
 import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.dtos.NoteGrid;
 import com.capynotes.noteservice.enums.NoteStatus;
@@ -26,4 +27,5 @@ public interface NoteService {
     void deleteTag(Long id) throws FileNotFoundException;
     boolean addNoteToFolder(Note note, Long folderId);
     Note addNote(Note note);
+    List<NoteGrid> getNotesWithSameTag(CrossReference crossReference) throws FileNotFoundException;
 }

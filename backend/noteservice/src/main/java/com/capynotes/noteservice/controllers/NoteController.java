@@ -237,4 +237,15 @@ public class NoteController {
             return new Response("Exception", 500, null);
         }
     }
+
+    @PostMapping("/cross-reference")
+    public Response getNotesWithSameTag(@RequestBody CrossReference crossReference) {
+        try {
+            List<NoteGrid> relatedNotes = noteService.getNotesWithSameTag(crossReference);
+            return new Response("Success", 200, relatedNotes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
+        }
+    }
 }
