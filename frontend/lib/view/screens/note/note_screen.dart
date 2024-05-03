@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:simple_tags/simple_tags.dart';
 
@@ -126,8 +127,11 @@ class NoteScreen extends StatelessWidget {
                             children: [
                               AccordionSection(
                                   header: const Text("Summary"),
-                                  content: Text(state.note.summary?.summary ??
-                                      "No Summary")),
+                                  content: Markdown(
+                                      selectable: true,
+                                      shrinkWrap: true,
+                                      data: state.note.summary?.summary ??
+                                          "No Summary")),
                               AccordionSection(
                                 header: const Text("Transcript"),
                                 content: SingleChildScrollView(
