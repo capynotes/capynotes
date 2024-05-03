@@ -1,12 +1,14 @@
 package com.capynotes.noteservice.controllers;
 
 import com.capynotes.noteservice.dtos.*;
+import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.models.FolderItem;
 import com.capynotes.noteservice.models.Note;
 import com.capynotes.noteservice.models.Tag;
 import com.capynotes.noteservice.services.FolderItemService;
 import com.capynotes.noteservice.services.NoteService;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -235,6 +237,29 @@ public class NoteController {
         } catch (Exception e) {
             e.printStackTrace();
             return new Response("Exception", 500, null);
+        }
+    }
+
+    @GetMapping("/generate-pdf/{id}")
+    public Response generatePdf(@PathVariable("id") Long noteId) {
+        try {
+            // summary bitince rabbitmq'dan noteId al
+            // rabbitmq implementleyince pathvariable silincek
+            NoteDto noteDto = noteService.findNoteByNoteId(noteId);
+            String fileName = noteDto.getNote().getTitle().replaceAll("\\s", "");
+            noteService.createPdf(noteDto);
+            File pdf = new File(fileName + ".pdf");
+            noteService.uploadToS3(pdf);
+            noteService.changeNoteStatus(noteId, NoteStatus.DONE);
+            if (pdf.exists()) {
+                return new Response("PDF generated successfully!", 200, pdf);
+            } else {
+                return new Response("Error generating PDF", 500, null);
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return new Response("Error generating PDF", 500, null);
         }
     }
 }

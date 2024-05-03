@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface NoteRepository extends JpaRepository<Note, Long> {
     Optional<List<Note>> findNoteByUserId(Long userId);
     Optional<Note> findNoteById(Long noteId);
+    @Query(nativeQuery = true, value = "SELECT id, note_id, diagram_code, diagram_key FROM diagram WHERE note_id=:noteId")
+    List<Object[]> findDiagramsByNoteId(Long noteId);
 }
