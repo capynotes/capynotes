@@ -238,7 +238,7 @@ public class NoteController {
         }
     }
 
-    @GetMapping("/cross-reference")
+    @PostMapping("/cross-reference")
     public Response getNotesWithSameTag(@RequestBody CrossReference crossReference) {
         try {
             List<NoteGrid> relatedNotes = noteService.getNotesWithSameTag(crossReference);

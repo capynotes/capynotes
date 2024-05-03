@@ -14,7 +14,7 @@ class NoteWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (noteItemModel.status == NoteStatus.DONE) {
-          context.router.replaceNamed("/note/${noteItemModel.id}");
+          context.router.navigateNamed("/note/${noteItemModel.id}");
         }
       },
       child: Container(

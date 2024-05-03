@@ -16,11 +16,7 @@ final class NotesDisplay extends NoteState {
       required this.allNotes});
 }
 
-final class NoteDisplay extends NoteState {
-  NoteModel note;
-
-  NoteDisplay({required this.note});
-}
+final class NoteDisplay extends NoteState {}
 
 final class NoteNotFound extends NoteState {}
 
@@ -42,3 +38,16 @@ final class NoteCrossList extends NoteState {
   List<NoteGridModel> crossList;
   NoteCrossList({required this.crossList});
 }
+
+final class NoteCrossCheck extends NoteState {}
+
+final class NoteCrossDisplay extends NoteState {}
+
+final class NoteCrossError extends NoteState {
+  final String title;
+  final String description;
+
+  NoteCrossError(this.title, this.description);
+}
+
+final class NoteCrossNotFound extends NoteState {}
