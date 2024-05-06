@@ -231,7 +231,7 @@ public class NoteServiceImpl implements NoteService {
             document.addPage(page);
 
             float margin = 50;
-            float leading = -15;
+            float leading = -20;
             float currentY = page.getMediaBox().getHeight() - margin;
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
             try {
@@ -251,12 +251,36 @@ public class NoteServiceImpl implements NoteService {
 
                 String[] paragraphs = summary.split("\\r?\\n");
                 for (String paragraph: paragraphs) {
+                    PDFont font = PDType1Font.HELVETICA;
+                    float fontSize = 12;
+
+                    if(paragraph.contains("**")) {
+                        font = PDType1Font.HELVETICA_BOLD;
+                        fontSize = 12;
+                        paragraph = paragraph.substring(2, paragraph.length() - 2);
+                    } else if(paragraph.contains("*")) {
+                        font = PDType1Font.HELVETICA;
+                        fontSize = 12;
+                        if(paragraph.lastIndexOf('*') == 0) {
+                            paragraph = paragraph.substring(1);
+                            paragraph = "• " + paragraph;
+                        } else {
+                            paragraph = paragraph.substring(0, paragraph.lastIndexOf('*'));
+                            font = PDType1Font.TIMES_ITALIC;
+                        }
+                    } else if(paragraph.contains("#")) {
+                        font = PDType1Font.HELVETICA_BOLD;
+                        fontSize = 16 - paragraph.lastIndexOf("#", 0);
+                        paragraph = paragraph.substring(paragraph.lastIndexOf("#", 0));
+                    }
+
                     String[] words = paragraph.split("\\s+");
                     StringBuilder line = new StringBuilder();
 
                     float totalWidth = 0;
                     for (String word : words) {
-                        float wordWidth = PDType1Font.HELVETICA.getStringWidth(word) / 1000 * 12;
+                        //float wordWidth = PDType1Font.HELVETICA.getStringWidth(word) / 1000 * 12;
+                        float wordWidth = calculateStringWidth(word, font, fontSize);
                         totalWidth += wordWidth;
                         if (1.5*rowX + totalWidth > width) {
                             // next line gec
@@ -271,7 +295,7 @@ public class NoteServiceImpl implements NoteService {
                             }
 
                             contentStream.beginText();
-                            contentStream.setFont(PDType1Font.HELVETICA, 12);
+                            contentStream.setFont(font, fontSize);
                             contentStream.newLineAtOffset(rowX, currentY);
                             contentStream.showText(line.toString());
                             contentStream.endText();
@@ -283,8 +307,12 @@ public class NoteServiceImpl implements NoteService {
                         line.append(word).append(" ");
                     }
                     currentY += leading;
+                    if(fontSize > 12 && fontSize < 16) {
+                        currentY += leading / 3;
+                    }
                     // add last line
                     contentStream.beginText();
+                    contentStream.setFont(font, fontSize);
                     contentStream.newLineAtOffset(rowX, currentY);
                     contentStream.showText(line.toString());
                     contentStream.endText();
@@ -294,16 +322,36 @@ public class NoteServiceImpl implements NoteService {
                 //keyword
                 FlashcardSet set = noteDto.getNote().getCardSets().get(0);
                 for(Flashcard flashcard: set.getCards()) {
-                    String keyword = flashcard.getFront() + ": " + flashcard.getBack();
+                    //String keyword = flashcard.getFront() + ": " + flashcard.getBack();
+                    //String[] frontWords = flashcard.getFront().split("\\s+");
+                    String front = flashcard.getFront();
+                    String[] backWords = flashcard.getBack().split("\\s+");
+                    //String[] words = keyword.split("\\s+");
 
-                    String[] words = keyword.split("\\s+");
-                    StringBuilder line = new StringBuilder();
+                    StringBuilder back = new StringBuilder();
 
                     float totalWidth = 0;
-                    for (String word : words) {
-                        float wordWidth = PDType1Font.HELVETICA.getStringWidth(word) / 1000 * 12;
+
+                    //keyword yaz
+                    float frontKeywordWidth = calculateStringWidth(front, PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.beginText();
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.newLineAtOffset(rowX, currentY);
+                    contentStream.showText(front + ": ");
+                    //contentStream.endText();
+                    //totalWidth += frontKeywordWidth;
+                    float colonWidth = calculateStringWidth(": ", PDType1Font.HELVETICA_BOLD, 12);
+                    totalWidth += frontKeywordWidth + colonWidth;
+                    float keywordOffsetX = totalWidth;
+
+                    //definition yaz
+                    //back.append(": ");
+
+                    for (int j = 0; j < backWords.length; j++) {
+                        float wordWidth = calculateStringWidth(backWords[j], PDType1Font.HELVETICA_BOLD, 12);
                         totalWidth += wordWidth;
-                        if (1.5 * rowX + totalWidth > width) {
+
+                        if (rowX + totalWidth > width) {
                             // next line gec
                             if (currentY <= 50) {
                                 PDPage newPage = new PDPage();
@@ -314,25 +362,29 @@ public class NoteServiceImpl implements NoteService {
                             } else {
                                 currentY += leading;
                             }
-
-                            contentStream.beginText();
+                            //contentStream.beginText();
                             contentStream.setFont(PDType1Font.HELVETICA, 12);
-                            contentStream.newLineAtOffset(rowX, currentY);
-                            contentStream.showText(line.toString());
+                            contentStream.newLineAtOffset(keywordOffsetX, 0);
+                            contentStream.showText(back.toString());
                             contentStream.endText();
-                            line = new StringBuilder();
+                            back = new StringBuilder();
 
                             totalWidth = 0;
+                            contentStream.beginText();
                         }
 
-                        line.append(word).append(" ");
+                        back.append(backWords[j]).append(" ");
+
+                        if (j == backWords.length - 1) {
+                            //contentStream.beginText();
+                            contentStream.setFont(PDType1Font.HELVETICA, 12);
+                            contentStream.newLineAtOffset(rowX, currentY);
+                            contentStream.showText(back.toString());
+                            contentStream.endText();
+                        }
                     }
+
                     currentY += leading;
-                    // add last line
-                    contentStream.beginText();
-                    contentStream.newLineAtOffset(rowX, currentY);
-                    contentStream.showText(line.toString());
-                    contentStream.endText();
                 }
                 currentY += 2*leading;
 

@@ -250,14 +250,14 @@ public class NoteController {
             noteService.createPdf(noteDto);
             File pdf = new File(fileName + ".pdf");
             noteService.uploadToS3(pdf);
-            noteService.changeNoteStatus(noteId, NoteStatus.DONE);
+            //noteService.changeNoteStatus(noteId, NoteStatus.DONE);
             if (pdf.exists()) {
                 return new Response("PDF generated successfully!", 200, pdf);
             } else {
                 return new Response("Error generating PDF", 500, null);
             }
 
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new Response("Error generating PDF", 500, null);
         }
