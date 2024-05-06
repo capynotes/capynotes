@@ -25,6 +25,25 @@ extension NoteStatusExtension on NoteStatus {
         return "Something's wrong";
     }
   }
+
+  String get toJson {
+    switch (this) {
+      case NoteStatus.NO_REQUEST:
+        return "NO_REQUEST";
+      case NoteStatus.PENDING:
+        return "PENDING";
+      case NoteStatus.TRANSCRIBING:
+        return "TRANSCRIBING";
+      case NoteStatus.SUMMARIZING:
+        return "SUMMARIZING";
+      case NoteStatus.DONE:
+        return "DONE";
+      case NoteStatus.ERROR:
+        return "ERROR";
+      default:
+        return "Something's wrong";
+    }
+  }
 }
 
 NoteStatus getNoteStatusFromString(String statusString) {

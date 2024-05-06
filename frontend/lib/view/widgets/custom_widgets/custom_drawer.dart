@@ -119,7 +119,9 @@ class CustomDrawer extends StatelessWidget {
                   context.read<LoginCubit>().emailController.clear();
                   context.read<LoginCubit>().passwordController.clear();
                 }
-
+                context.read<LoginCubit>().signOutCurrentUser();
+                UserInfo.loggedUser = null;
+                UserInfo.token = "";
                 context.router.replaceNamed("/login");
               },
               prefixIcon: Icon(

@@ -1,5 +1,7 @@
 import 'package:capynotes/model/folder/folder_contents_model.dart';
 import 'package:capynotes/model/folder/folder_model.dart';
+import 'package:capynotes/model/folder/folder_with_count_model.dart';
+import 'package:capynotes/model/folder/note_grid_model.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,18 +16,18 @@ class FolderCubit extends Cubit<FolderState> {
   final FolderService service;
   TextEditingController createFolderController = TextEditingController();
 
+  FolderContentsModel? allFolderContents;
+  FolderContentsModel? tempFolderContents;
   Future<void> getFolderContents(int id) async {
-    FolderContentsModel? allFolderContents;
-    FolderContentsModel? tempFolderContents;
     emit(FolderLoading());
     allFolderContents = await service.getFolderContents(id);
     if (allFolderContents == null) {
       emit(FolderNotFound());
     } else {
-      tempFolderContents = allFolderContents;
+      tempFolderContents = allFolderContents!.deepCopy();
       emit(FolderDisplay(
-          allFolderContents: allFolderContents,
-          tempFolderContents: tempFolderContents));
+          allFolderContents: allFolderContents!,
+          tempFolderContents: tempFolderContents!));
     }
   }
 
@@ -42,6 +44,32 @@ class FolderCubit extends Cubit<FolderState> {
     } else {
       emit(FolderSuccess("Folder Created Successfully",
           "Folder \"${result.title}\" Created Successfully"));
+    }
+  }
+
+  void searchFolder(String query) {
+    if (query != "") {
+      tempFolderContents!.items = allFolderContents!.items?.where((item) {
+        if (item is FolderWithCountModel) {
+          return item.searchFilters!.any((filter) =>
+                  filter.toLowerCase().contains(query.toLowerCase())) ||
+              item.title!.toLowerCase().contains(query.toLowerCase());
+        } else if (item is NoteGridModel) {
+          return item.searchFilters!.any((filter) =>
+                  filter.toLowerCase().contains(query.toLowerCase())) ||
+              item.title!.toLowerCase().contains(query.toLowerCase());
+        }
+        return false;
+      }).toList();
+      emit(FolderDisplay(
+          allFolderContents: allFolderContents!,
+          tempFolderContents: tempFolderContents!));
+    } else {
+      tempFolderContents!.items = allFolderContents!.items;
+
+      emit(FolderDisplay(
+          allFolderContents: allFolderContents!,
+          tempFolderContents: tempFolderContents!));
     }
   }
 }

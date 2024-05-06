@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'folder_with_count_model.dart';
 import 'note_grid_model.dart';
 
@@ -34,5 +36,28 @@ class FolderContentsModel {
       data['processedItems'] = items!.map((v) => v.toJson()).toList();
     }
     return data;
+  }
+
+  FolderContentsModel deepCopy() {
+    FolderContentsModel copiedModel = FolderContentsModel(
+      id: id,
+      title: title,
+      items: [],
+    );
+
+    if (this.items != null) {
+      for (var item in items!) {
+        if (item is FolderWithCountModel) {
+          FolderWithCountModel copiedFolder =
+              FolderWithCountModel.fromJson(item.toJson());
+          copiedModel.items!.add(copiedFolder);
+        } else if (item is NoteGridModel) {
+          NoteGridModel copiedNote = NoteGridModel.fromJson(item.toJson());
+          copiedModel.items!.add(copiedNote);
+        }
+      }
+    }
+
+    return copiedModel;
   }
 }

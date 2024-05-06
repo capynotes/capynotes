@@ -2,6 +2,7 @@ import 'package:capynotes/model/folder/folder_with_count_model.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import '../../constants/asset_paths.dart';
+import '../../navigation/app_router.dart';
 
 class FolderWidget extends StatelessWidget {
   const FolderWidget({super.key, required this.folderWithCount});
@@ -10,7 +11,8 @@ class FolderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.replaceNamed("/folder/${folderWithCount.id}");
+        context.router.replace(FolderRoute(
+            folderID: folderWithCount.id!, title: folderWithCount.title!));
       },
       child: Container(
         decoration: BoxDecoration(
