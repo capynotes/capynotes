@@ -19,8 +19,9 @@ import '../widgets/folder_widget.dart';
 
 @RoutePage()
 class FolderScreen extends StatefulWidget {
-  FolderScreen({super.key, @PathParam('id') required this.folderID});
+  FolderScreen({super.key, required this.folderID, required this.title});
   int folderID;
+  String title;
 
   @override
   State<FolderScreen> createState() => _FolderScreenState();
@@ -29,76 +30,70 @@ class FolderScreen extends StatefulWidget {
 class _FolderScreenState extends State<FolderScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FolderCubit, FolderState>(
-      bloc: context.read<FolderCubit>()..getFolderContents(widget.folderID),
-      listener: (context, state) {
-        if (state is FolderSuccess) {
-          CustomSnackbars.displaySuccessMotionToast(
-              context, state.title, state.description, () {
-            context.read<FolderCubit>().getFolderContents(widget.folderID);
-          });
-        } else if (state is FolderError) {
-          CustomSnackbars.displaySuccessMotionToast(
-              context, state.title, state.description, () {
-            context.read<FolderCubit>().getFolderContents(widget.folderID);
-          });
-        }
-      },
-      builder: (context, state) {
-        if (state is FolderDisplay) {
-          final GlobalKey<ScaffoldState> _key = GlobalKey();
-          return Scaffold(
-            key: _key,
-            appBar: AppBar(
-              title: Text("${state.allFolderContents.title}"),
-              backgroundColor: ColorConstants.primaryColor,
-              centerTitle: true,
-              actions: [
-                SearchBarAnimation(
-                  durationInMilliSeconds: 500,
-                  searchBoxWidth: MediaQuery.of(context).size.width * 0.2,
-                  textEditingController: TextEditingController(),
-                  isOriginalAnimation: true,
-                  enableKeyboardFocus: true,
-                  onChanged: (value) {
-                    context.read<FolderCubit>().searchFolder(value);
-                  },
-                  onExpansionComplete: () {
-                    debugPrint('do something just after searchbox is opened.');
-                  },
-                  onCollapseComplete: () {
-                    debugPrint('do something just after searchbox is closed.');
-                  },
-                  onPressButton: (isSearchBarOpens) {
-                    debugPrint(
-                        'do something before animation started. It\'s the ${isSearchBarOpens ? 'opening' : 'closing'} animation');
-                  },
-                  trailingWidget: const Icon(
-                    Icons.search,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  secondaryButtonWidget: const Icon(
-                    Icons.close,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                  buttonWidget: const Icon(
-                    Icons.search,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    _key.currentState?.openEndDrawer();
-                  },
-                )
-              ],
+    final GlobalKey<ScaffoldState> _key = GlobalKey();
+
+    return Scaffold(
+      key: _key,
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: ColorConstants.primaryColor,
+        centerTitle: true,
+        actions: [
+          SearchBarAnimation(
+            durationInMilliSeconds: 500,
+            searchBoxWidth: MediaQuery.of(context).size.width * 0.2,
+            textEditingController: TextEditingController(),
+            isOriginalAnimation: true,
+            enableKeyboardFocus: true,
+            onChanged: (value) {
+              context.read<FolderCubit>().searchFolder(value);
+            },
+            onCollapseComplete: () {
+              context.read<FolderCubit>().searchFolder("");
+            },
+            trailingWidget: const Icon(
+              Icons.search,
+              size: 20,
+              color: Colors.black,
             ),
-            endDrawer: CustomDrawer(),
-            body: Padding(
+            secondaryButtonWidget: const Icon(
+              Icons.close,
+              size: 20,
+              color: Colors.black,
+            ),
+            buttonWidget: const Icon(
+              Icons.search,
+              size: 20,
+              color: Colors.black,
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              _key.currentState?.openEndDrawer();
+            },
+          )
+        ],
+      ),
+      endDrawer: CustomDrawer(),
+      body: BlocConsumer<FolderCubit, FolderState>(
+        bloc: context.read<FolderCubit>()..getFolderContents(widget.folderID),
+        listener: (context, state) {
+          if (state is FolderSuccess) {
+            CustomSnackbars.displaySuccessMotionToast(
+                context, state.title, state.description, () {
+              context.read<FolderCubit>().getFolderContents(widget.folderID);
+            });
+          } else if (state is FolderError) {
+            CustomSnackbars.displaySuccessMotionToast(
+                context, state.title, state.description, () {
+              context.read<FolderCubit>().getFolderContents(widget.folderID);
+            });
+          }
+        },
+        builder: (context, state) {
+          if (state is FolderDisplay) {
+            return Padding(
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
                 child: Column(
@@ -125,54 +120,58 @@ class _FolderScreenState extends State<FolderScreen> {
                   ],
                 ),
               ),
-            ),
-            floatingActionButton: StarMenu(
-              onItemTapped: (index, controller) {
-                if (index != 2) controller.closeMenu!();
+            );
+          } else {
+            return DefaultLottie(path: AssetPaths.loadingLottie);
+          }
+        },
+      ),
+      floatingActionButton: StarMenu(
+        onItemTapped: (index, controller) {
+          if (index != 2) controller.closeMenu!();
+        },
+        params: StarMenuParameters(
+          shape: MenuShape.linear,
+          // circleShapeParams: CircleShapeParams(
+          //     endAngle: 180, startAngle: 0, radiusX: 60, radiusY: 60)
+          linearShapeParams: LinearShapeParams(
+              angle: 270, space: 10, alignment: LinearAlignment.center),
+        ),
+        items: [
+          // FloatingActionButton(onPressed: () {}),
+          // FloatingActionButton(onPressed: () {}),
+          // FloatingActionButton(onPressed: () {}),
+          FloatingActionButton.extended(
+              onPressed: () {
+                context.router
+                    .replace(NoteGenerationRoute(folderID: widget.folderID));
               },
-              params: const StarMenuParameters(
-                shape: MenuShape.linear,
-                linearShapeParams: LinearShapeParams(
-                    angle: 270, space: 10, alignment: LinearAlignment.center),
-              ),
-              items: [
-                FloatingActionButton.extended(
-                    onPressed: () {
-                      context.router.replace(
-                          NoteGenerationRoute(folderID: widget.folderID));
-                    },
-                    label: const Text("Add Note")),
-                FloatingActionButton.extended(
-                  onPressed: () {
-                    final formKey = GlobalKey<FormState>();
-                    CustomDialogs.showSinglePropFormDialog(
-                      context: context,
-                      formKey: formKey,
-                      title: "Add Folder",
-                      label: "Folder Name",
-                      controller:
-                          context.read<FolderCubit>().createFolderController,
-                      onConfirm: () {
-                        context
-                            .read<FolderCubit>()
-                            .createFolderInFolder(widget.folderID);
-                      },
-                    );
-                  },
-                  label: const Text("Add Folder"),
-                ),
-                const SizedBox(height: 70),
-              ],
-              child: FloatingActionButton(
-                onPressed: () {},
-                child: const Icon(Icons.add),
-              ),
-            ),
-          );
-        } else {
-          return DefaultLottie(path: AssetPaths.loadingLottie);
-        }
-      },
+              label: const Text("Add Note")),
+          FloatingActionButton.extended(
+            onPressed: () {
+              final formKey = GlobalKey<FormState>();
+              CustomDialogs.showSinglePropFormDialog(
+                context: context,
+                formKey: formKey,
+                title: "Add Folder",
+                label: "Folder Name",
+                controller: context.read<FolderCubit>().createFolderController,
+                onConfirm: () {
+                  context
+                      .read<FolderCubit>()
+                      .createFolderInFolder(widget.folderID);
+                },
+              );
+            },
+            label: const Text("Add Folder"),
+          ),
+          const SizedBox(height: 70),
+        ],
+        child: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
+      ),
     );
   }
 }

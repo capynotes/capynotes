@@ -27,7 +27,7 @@ class NoteGridModel {
     data['id'] = id;
     data['title'] = title;
     data['creationTime'] = creationTime;
-    data['status'] = status;
+    data['status'] = status!.toJson;
     data['searchFilters'] = searchFilters;
     return data;
   }

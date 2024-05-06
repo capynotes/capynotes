@@ -59,14 +59,13 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     FolderRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<FolderRouteArgs>(
-          orElse: () => FolderRouteArgs(folderID: pathParams.getInt('id')));
+      final args = routeData.argsAs<FolderRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: FolderScreen(
           key: args.key,
           folderID: args.folderID,
+          title: args.title,
         ),
       );
     },
@@ -280,14 +279,15 @@ class FolderRoute extends PageRouteInfo<FolderRouteArgs> {
   FolderRoute({
     Key? key,
     required int folderID,
+    required String title,
     List<PageRouteInfo>? children,
   }) : super(
           FolderRoute.name,
           args: FolderRouteArgs(
             key: key,
             folderID: folderID,
+            title: title,
           ),
-          rawPathParams: {'id': folderID},
           initialChildren: children,
         );
 
@@ -300,15 +300,18 @@ class FolderRouteArgs {
   const FolderRouteArgs({
     this.key,
     required this.folderID,
+    required this.title,
   });
 
   final Key? key;
 
   final int folderID;
 
+  final String title;
+
   @override
   String toString() {
-    return 'FolderRouteArgs{key: $key, folderID: $folderID}';
+    return 'FolderRouteArgs{key: $key, folderID: $folderID, title: $title}';
   }
 }
 
