@@ -1,64 +1,39 @@
 import os
-import time
 import sys
-import pika
+import time
+import boto3
+import aws_utils
 
 from extract import summarize_keyword
 
-connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
-channel_send = connection_send.channel()
-channel_send.queue_declare(queue="diagram_queue")
+sqs = aws_utils.create_sqs_client()
+queue_send = sqs.get_queue_by_name(QueueName='diagram_queue')
 
 def send_to_diagram(note_id):
-    global connection_send, channel_send
+    try:
+        response = queue_send.send_message(MessageBody=str(note_id))
+        print(" [x] Sent ", str(note_id))
+    except Exception as e:
+        print(f"An unexpected error occurred while sending message: {e}")
 
-    while True:
-        try:
-            if not connection_send or connection_send.is_closed:
-                connection_send = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
-                channel_send = connection_send.channel()
-                channel_send.queue_declare(queue="diagram_queue")
-
-            channel_send.basic_publish(exchange="", routing_key="diagram_queue", body=str(note_id))
-            print(" [x] Sent ", str(note_id))
-            break
-
-        except pika.exceptions.StreamLostError as e:
-            print(f"Stream connection lost: {e}")
-            time.sleep(5)
-
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            time.sleep(5)
-
-def callback_recv(ch, method, properties, body):
-    print(" [x] Received ", str(body))
-    note_id = int(body.decode())
-    summarize_keyword(note_id)
-    send_to_diagram(note_id)
+def callback_recv(message):
+    try:
+        print(" [x] Received ", message.body)
+        note_id = int(message.body)
+        summarize_keyword(note_id)
+        send_to_diagram(note_id)
+        message.delete()
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 def main():
+    queue_recv = sqs.get_queue_by_name(QueueName='summarization_queue')
+
     while True:
         try:
-            connection_recv = pika.BlockingConnection(
-                pika.ConnectionParameters(host="rabbitmq"),
-            )
-            channel_recv = connection_recv.channel()
-            channel_recv.queue_declare(queue="summarization_queue")
-            channel_recv.basic_consume(
-                queue="summarization_queue",
-                on_message_callback=callback_recv,
-                auto_ack=True,
-            )
-
             print(" [*] Waiting for messages. To exit press CTRL+C")
-            channel_recv.start_consuming()
-
-        except pika.exceptions.StreamLostError as e:
-            print(f"Stream connection lost: {e}")
-            print("Reconnecting...")
-            time.sleep(5)
-            continue
+            for message in queue_recv.receive_messages():
+                callback_recv(message)
 
         except KeyboardInterrupt:
             print("Interrupted")
@@ -66,7 +41,7 @@ def main():
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-            break
+            time.sleep(5)
 
 if __name__ == "__main__":
     try:
