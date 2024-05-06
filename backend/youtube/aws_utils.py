@@ -13,3 +13,6 @@ def get_bucket_name():
 
 def create_s3_client():
     return boto3.client('s3', **get_aws_credentials())
+
+def create_sqs_client():
+    return boto3.client('sqs', **get_aws_credentials())
