@@ -11,7 +11,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Update and install ffmpeg using the Amazon Linux package manager
-RUN yum update -y && \
+RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum install -y ffmpeg
 
 # Copy the rest of your application to the container
