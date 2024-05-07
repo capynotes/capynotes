@@ -34,7 +34,7 @@ def lambda_handler(event, context):
             
             # Load it as JSON
             message_data = json.loads(message_body)
-            note_id = message_body.get('noteId')
+            note_id = message_data.get('noteId')
             
             # Print the message body to the Lambda log
             callback_recv(note_id)
