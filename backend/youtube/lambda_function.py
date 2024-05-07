@@ -18,8 +18,8 @@ def send_to_speech(note_id):
         print(f"An unexpected error occurred: {e}")
 
 def process_message(message):
-    print(" [x] Received ", message['Body'])
-    yt_json_data = json.loads(message['Body'])
+    print(" [x] Received ", message['body'])
+    yt_json_data = json.loads(message['body'])
 
     note_id = yt_json_data["noteId"]
     video_url = yt_json_data["videoUrl"]
