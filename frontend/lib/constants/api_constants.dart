@@ -1,5 +1,5 @@
 class ApiConstants {
-  static String baseUrl = "http://localhost:8080/";
+  static String baseUrl = "http://139.179.224.80:8080/";
 
   // Authentication related endpoints
   static String register = "person/register";
