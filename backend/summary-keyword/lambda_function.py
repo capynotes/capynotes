@@ -5,6 +5,7 @@ import aws_utils
 from extract import summarize_keyword
 
 diagram_queue_url = 'https://sqs.us-east-1.amazonaws.com/211125669571/diagram_queue'
+summarization_queue_url = 'https://sqs.us-east-1.amazonaws.com/211125669571/summarization'
 sqs = aws_utils.create_sqs_client()
 
 def send_to_diagram(note_id):
@@ -17,11 +18,10 @@ def send_to_diagram(note_id):
 
 def callback_recv(message):
     try:
-        print(" [x] Received ", message.body)
-        note_id = int(message.body)
+        print(" [x] Received ", message)
+        note_id = int(message)
         summarize_keyword(note_id)
         send_to_diagram(note_id)
-        message.delete()
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
@@ -40,6 +40,13 @@ def lambda_handler(event, context):
             callback_recv(note_id)
 
             print("Note ID: " + note_id + " processed!")
+
+            receipt_handle = record['receiptHandle']
+            sqs.delete_message(
+                QueueUrl=summarization_queue_url,
+                ReceiptHandle=receipt_handle
+            )
+            print("Deleted message from SQS queue:", receipt_handle)
 
         return {
             'statusCode': 200,
