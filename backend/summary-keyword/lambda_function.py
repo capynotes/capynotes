@@ -4,12 +4,13 @@ import aws_utils
 
 from extract import summarize_keyword
 
+diagram_queue_url = 'https://sqs.us-east-1.amazonaws.com/211125669571/diagram_queue'
 sqs = aws_utils.create_sqs_client()
-queue_send = sqs.get_queue_by_name(QueueName='diagram_queue')
 
 def send_to_diagram(note_id):
     try:
-        response = queue_send.send_message(MessageBody=str(note_id))
+        outgoing_message = {'noteId': note_id}
+        sqs.send_message(QueueUrl=diagram_queue_url, MessageBody=json.dumps(outgoing_message))
         print(" [x] Sent ", str(note_id))
     except Exception as e:
         print(f"An unexpected error occurred while sending message: {e}")
@@ -30,7 +31,6 @@ def lambda_handler(event, context):
         for record in event['Records']:
             # Parse the SQS message body
             message_body = record['body']
-            
             
             # Load it as JSON
             message_data = json.loads(message_body)
