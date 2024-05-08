@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -247,10 +248,12 @@ public class NoteController {
             // rabbitmq implementleyince pathvariable silincek
             NoteDto noteDto = noteService.findNoteByNoteId(noteId);
             String fileName = noteDto.getNote().getTitle().replaceAll("\\s", "");
-            noteService.createPdf(noteDto);
+            LocalDateTime currentTime = LocalDateTime.now();
+            fileName = currentTime.toString() + "_" + fileName;
+            noteService.createPdf(noteDto, fileName);
             File pdf = new File(fileName + ".pdf");
             noteService.uploadToS3(pdf);
-            noteService.changeNoteStatus(noteId, NoteStatus.DONE);
+            noteService.updateNote(noteId, NoteStatus.DONE, "pdfs/" + fileName + ".pdf");
             if (pdf.exists()) {
                 return new Response("PDF generated successfully!", 200, pdf);
             } else {

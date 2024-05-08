@@ -221,10 +221,10 @@ public class NoteServiceImpl implements NoteService {
         return noteRepository.save(note);
     }
     @Override
-    public void createPdf(NoteDto noteDto) throws IOException, InterruptedException {
+    public void createPdf(NoteDto noteDto, String fileName) throws IOException, InterruptedException {
         //String summary = summaryRepository.getSummaryByNote_id(noteId).get().getSummary();
         String summary = noteDto.getSummary().getSummary();
-        String fileName = noteDto.getNote().getTitle();
+        String title = noteDto.getNote().getTitle();
         String[] keywords;
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage();
@@ -239,9 +239,9 @@ public class NoteServiceImpl implements NoteService {
 
                 contentStream.beginText();
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-                float strWidth = calculateStringWidth(fileName, PDType1Font.HELVETICA_BOLD, 12);
+                float strWidth = calculateStringWidth(title, PDType1Font.HELVETICA_BOLD, 12);
                 contentStream.newLineAtOffset(middleX - strWidth/2, currentY);
-                contentStream.showText(fileName);
+                contentStream.showText(title);
                 contentStream.newLine();
                 contentStream.endText();
                 currentY += leading;
@@ -409,7 +409,7 @@ public class NoteServiceImpl implements NoteService {
                     contentStream.endText();
                     currentY += leading;
 
-                    byte[] diagramByte = downloadFromS3((String) diagram[3]);
+                    byte[] diagramByte = downloadFromS3("public/" + (String) diagram[3]);
                     PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, diagramByte, null);
                     float startX = middleX - pdImage.getWidth() / 2;
                     contentStream.drawImage(pdImage, startX, currentY - pdImage.getHeight(), pdImage.getWidth(), pdImage.getHeight());
@@ -432,7 +432,6 @@ public class NoteServiceImpl implements NoteService {
                 contentStream.close();
             }
 
-            fileName = fileName.replaceAll("\\s", "");
             document.save(fileName + ".pdf");
         }
     }
@@ -461,17 +460,17 @@ public class NoteServiceImpl implements NoteService {
         byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
         metadata.setContentLength(bytes.length);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        LocalDateTime dateTime = LocalDateTime.now();
-        String key = "public/pdfs/" + dateTime.toString() + "_" + file.getName();
+        String key = "public/pdfs/" + file.getName();
         amazonS3.putObject(bucketName, key, byteArrayInputStream, metadata);
     }
 
     @Override
-    public void changeNoteStatus(Long noteId, NoteStatus noteStatus) {
+    public void updateNote(Long noteId, NoteStatus noteStatus, String pdfKey) {
         Optional<Note> noteOpt = noteRepository.findNoteById(noteId);
         if(noteOpt.isPresent()) {
             Note note = noteOpt.get();
             note.setStatus(noteStatus);
+            note.setPdfKey(pdfKey);
             noteRepository.save(note);
         }
     }

@@ -21,6 +21,6 @@ public class Transcript {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String transcription;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Timestamp> timestamps;
 }

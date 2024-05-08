@@ -27,8 +27,8 @@ public interface NoteService {
     void deleteTag(Long id) throws FileNotFoundException;
     boolean addNoteToFolder(Note note, Long folderId);
     Note addNote(Note note);
-    void createPdf(NoteDto noteDto) throws IOException, InterruptedException;
+    void createPdf(NoteDto noteDto, String fileName) throws IOException, InterruptedException;
     byte[] downloadFromS3(String key) throws IOException;
     void uploadToS3(File file) throws IOException;
-    void changeNoteStatus(Long noteId, NoteStatus noteStatus);
+    void updateNote(Long noteId, NoteStatus noteStatus, String pdfKey);
 }
