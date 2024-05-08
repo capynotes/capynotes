@@ -7,6 +7,11 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.util.IOUtils;
+import com.capynotes.noteservice.dtos.NoteDto;
+import com.capynotes.noteservice.dtos.NoteGrid;
+import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
+import com.capynotes.noteservice.dtos.VideoTranscribeResponse;
 import com.capynotes.noteservice.dtos.*;
 import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
@@ -14,19 +19,18 @@ import com.capynotes.noteservice.exceptions.FileUploadException;
 import com.capynotes.noteservice.models.*;
 import com.capynotes.noteservice.repositories.*;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -40,7 +44,7 @@ public class NoteServiceImpl implements NoteService {
     private final TranscriptRepository transcriptRepository;
     private final SummaryRepository summaryRepository;
     private final TimestampRepository timestampRepository;
-    
+
     @Value("${aws.bucket.name}")
     private String bucketName;
 
@@ -214,6 +218,255 @@ public class NoteServiceImpl implements NoteService {
         note.setStatus(NoteStatus.TRANSCRIBING);
         return noteRepository.save(note);
     }
+  
+    @Override
+    public void createPdf(NoteDto noteDto, String fileName) throws IOException, InterruptedException {
+        //String summary = summaryRepository.getSummaryByNote_id(noteId).get().getSummary();
+        String summary = noteDto.getSummary().getSummary();
+        String title = noteDto.getNote().getTitle();
+        String[] keywords;
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            float margin = 50;
+            float leading = -20;
+            float currentY = page.getMediaBox().getHeight() - margin;
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            try {
+                float middleX = page.getMediaBox().getWidth() / 2;
+
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                float strWidth = calculateStringWidth(title, PDType1Font.HELVETICA_BOLD, 12);
+                contentStream.newLineAtOffset(middleX - strWidth/2, currentY);
+                contentStream.showText(title);
+                contentStream.newLine();
+                contentStream.endText();
+                currentY += leading;
+
+                float width = page.getMediaBox().getWidth() - 2 * margin;
+                float rowX = margin;
+
+                String[] paragraphs = summary.split("\\r?\\n");
+                for (String paragraph: paragraphs) {
+                    PDFont font = PDType1Font.HELVETICA;
+                    float fontSize = 12;
+
+                    if(paragraph.contains("**")) {
+                        font = PDType1Font.HELVETICA_BOLD;
+                        fontSize = 12;
+                        paragraph = paragraph.substring(2, paragraph.length() - 2);
+                    } else if(paragraph.contains("*")) {
+                        font = PDType1Font.HELVETICA;
+                        fontSize = 12;
+                        if(paragraph.lastIndexOf('*') == 0) {
+                            paragraph = paragraph.substring(1);
+                            paragraph = "• " + paragraph;
+                        } else {
+                            paragraph = paragraph.substring(0, paragraph.lastIndexOf('*'));
+                            font = PDType1Font.TIMES_ITALIC;
+                        }
+                    } else if(paragraph.contains("#")) {
+                        font = PDType1Font.HELVETICA_BOLD;
+                        fontSize = 16 - paragraph.lastIndexOf("#", 0);
+                        paragraph = paragraph.substring(paragraph.lastIndexOf("#", 0));
+                    }
+
+                    String[] words = paragraph.split("\\s+");
+                    StringBuilder line = new StringBuilder();
+
+                    float totalWidth = 0;
+                    for (String word : words) {
+                        //float wordWidth = PDType1Font.HELVETICA.getStringWidth(word) / 1000 * 12;
+                        float wordWidth = calculateStringWidth(word, font, fontSize);
+                        totalWidth += wordWidth;
+                        if (1.5*rowX + totalWidth > width) {
+                            // next line gec
+                            if(currentY <= 50) {
+                                PDPage newPage = new PDPage();
+                                document.addPage(newPage);
+                                contentStream.close();
+                                contentStream = new PDPageContentStream(document, newPage);
+                                currentY = newPage.getMediaBox().getHeight() - 50;
+                            } else {
+                                currentY += leading;
+                            }
+
+                            contentStream.beginText();
+                            contentStream.setFont(font, fontSize);
+                            contentStream.newLineAtOffset(rowX, currentY);
+                            contentStream.showText(line.toString());
+                            contentStream.endText();
+                            line = new StringBuilder();
+
+                            totalWidth = 0;
+                        }
+
+                        line.append(word).append(" ");
+                    }
+                    currentY += leading;
+                    if(fontSize > 12 && fontSize < 16) {
+                        currentY += leading / 3;
+                    }
+                    // add last line
+                    contentStream.beginText();
+                    contentStream.setFont(font, fontSize);
+                    contentStream.newLineAtOffset(rowX, currentY);
+                    contentStream.showText(line.toString());
+                    contentStream.endText();
+                }
+                currentY += leading;
+
+                //keyword
+                FlashcardSet set = noteDto.getNote().getCardSets().get(0);
+                for(Flashcard flashcard: set.getCards()) {
+                    //String keyword = flashcard.getFront() + ": " + flashcard.getBack();
+                    //String[] frontWords = flashcard.getFront().split("\\s+");
+                    String front = flashcard.getFront();
+                    String[] backWords = flashcard.getBack().split("\\s+");
+                    //String[] words = keyword.split("\\s+");
+
+                    StringBuilder back = new StringBuilder();
+
+                    float totalWidth = 0;
+
+                    //keyword yaz
+                    float frontKeywordWidth = calculateStringWidth(front, PDType1Font.HELVETICA_BOLD, 12);
+
+                    if (currentY <= 50) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        //contentStream.beginText();
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
+
+                    contentStream.beginText();
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.newLineAtOffset(rowX, currentY);
+                    contentStream.showText(front + ": ");
+                    //contentStream.endText();
+                    //totalWidth += frontKeywordWidth;
+                    float colonWidth = calculateStringWidth(": ", PDType1Font.HELVETICA_BOLD, 12);
+                    totalWidth += frontKeywordWidth + colonWidth;
+                    float keywordOffsetX = totalWidth;
+
+                    //definition yaz
+                    //back.append(": ");
+                    boolean oneLine = true;
+                    for (int j = 0; j < backWords.length; j++) {
+                        float wordWidth = calculateStringWidth(backWords[j], PDType1Font.HELVETICA_BOLD, 12);
+                        totalWidth += wordWidth;
+
+                        if (rowX + totalWidth > width) {
+
+                            if(oneLine) {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(keywordOffsetX, 0);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
+                            } else {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(rowX, currentY);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
+                            }
+
+                            currentY += leading;
+                            oneLine = false;
+
+                            back = new StringBuilder();
+
+                            totalWidth = 0;
+                            contentStream.beginText();
+                        }
+
+                        back.append(backWords[j]).append(" ");
+
+                        if (j == backWords.length - 1) {
+                            if(oneLine) {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(keywordOffsetX, 0);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
+                            } else {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(rowX, currentY);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
+                            }
+                        }
+                    }
+
+                    currentY += leading;
+                    if (currentY <= 50) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        //contentStream.beginText();
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
+                }
+                currentY += 2*leading;
+
+                // tree
+                if(currentY <= 200) {
+                    PDPage newPage = new PDPage();
+                    document.addPage(newPage);
+                    contentStream.close();
+                    contentStream = new PDPageContentStream(document, newPage);
+                    currentY = newPage.getMediaBox().getHeight() - 50;
+                }
+
+                List<Object[]> diagramsOfNote = noteRepository.findDiagramsByNoteId(noteDto.getNote().getId());
+                int diagramCounter = 1;
+                for(Object[] diagram: diagramsOfNote) {
+
+                    contentStream.beginText();
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.newLineAtOffset(rowX, currentY);
+                    contentStream.showText("Diagram " + diagramCounter);
+                    diagramCounter++;
+                    contentStream.endText();
+                    currentY += leading;
+
+                    byte[] diagramByte = downloadFromS3("public/" + (String) diagram[3]);
+                    PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, diagramByte, null);
+                    float startX = middleX - pdImage.getWidth() / 2;
+                    contentStream.drawImage(pdImage, startX, currentY - pdImage.getHeight(), pdImage.getWidth(), pdImage.getHeight());
+
+                    currentY = currentY - pdImage.getHeight() - 50;
+
+                    if(currentY <= 200) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                contentStream.close();
+            }
+
+            document.save(fileName + ".pdf");
+        }
+    }
+
+    @Override
+    public byte[] downloadFromS3(String key) throws IOException {
+        S3Object s3Object = amazonS3.getObject(bucketName, key);
+        InputStream inputStream = s3Object.getObjectContent();
+
+        return org.apache.commons.io.IOUtils.toByteArray(inputStream);
+    }
 
     @Override
     public List<NoteGrid> getNotesWithSameTag(CrossReference crossReference) throws FileNotFoundException {
@@ -239,6 +492,30 @@ public class NoteServiceImpl implements NoteService {
             throw new FileNotFoundException("Note with id " + id + " does not exist.");
         }
         return note.get();
+    }
+
+    public static float calculateStringWidth(String text, PDFont font, float fontSize) throws IOException {
+        return font.getStringWidth(text) / 1000 * fontSize;
+    }
+    @Override
+    public void uploadToS3(File file) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
+        metadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        String key = "public/pdfs/" + file.getName();
+        amazonS3.putObject(bucketName, key, byteArrayInputStream, metadata);
+    }
+
+    @Override
+    public void updateNote(Long noteId, NoteStatus noteStatus, String pdfKey) {
+        Optional<Note> noteOpt = noteRepository.findNoteById(noteId);
+        if(noteOpt.isPresent()) {
+            Note note = noteOpt.get();
+            note.setStatus(noteStatus);
+            note.setPdfKey(pdfKey);
+            noteRepository.save(note);
+        }
     }
     // should listen rabbit mq for creation of keywords
 }

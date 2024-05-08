@@ -11,6 +11,7 @@ import com.capynotes.noteservice.models.Tag;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -27,5 +28,9 @@ public interface NoteService {
     void deleteTag(Long id) throws FileNotFoundException;
     boolean addNoteToFolder(Note note, Long folderId);
     Note addNote(Note note);
+    void createPdf(NoteDto noteDto, String fileName) throws IOException, InterruptedException;
+    byte[] downloadFromS3(String key) throws IOException;
+    void uploadToS3(File file) throws IOException;
+    void updateNote(Long noteId, NoteStatus noteStatus, String pdfKey);
     List<NoteGrid> getNotesWithSameTag(CrossReference crossReference) throws FileNotFoundException;
 }

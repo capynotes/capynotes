@@ -1,15 +1,18 @@
 package com.capynotes.noteservice.controllers;
 
 import com.capynotes.noteservice.dtos.*;
+import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.models.FolderItem;
 import com.capynotes.noteservice.models.Note;
 import com.capynotes.noteservice.models.Tag;
 import com.capynotes.noteservice.services.FolderItemService;
 import com.capynotes.noteservice.services.NoteService;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -238,6 +241,29 @@ public class NoteController {
         }
     }
 
+    @GetMapping("/generate-pdf/{id}")
+    public Response generatePdf(@PathVariable("id") Long noteId) {
+        try {
+            NoteDto noteDto = noteService.findNoteByNoteId(noteId);
+            String fileName = noteDto.getNote().getTitle().replaceAll("\\s", "");
+            LocalDateTime currentTime = LocalDateTime.now();
+            fileName = currentTime.toString() + "_" + fileName;
+            noteService.createPdf(noteDto, fileName);
+            File pdf = new File(fileName + ".pdf");
+            noteService.uploadToS3(pdf);
+            noteService.updateNote(noteId, NoteStatus.DONE, "pdfs/" + fileName + ".pdf");
+            if (pdf.exists()) {
+                return new Response("PDF generated successfully!", 200, pdf);
+            } else {
+                return new Response("Error generating PDF", 500, null);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Error generating PDF", 500, null);
+        }
+    }
+  
     @PostMapping("/cross-reference")
     public Response getNotesWithSameTag(@RequestBody CrossReference crossReference) {
         try {
