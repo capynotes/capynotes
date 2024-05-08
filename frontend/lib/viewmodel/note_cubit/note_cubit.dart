@@ -51,13 +51,23 @@ class NoteCubit extends Cubit<NoteState> {
     if (selectedNote == null) {
       emit(NoteNotFound());
     } else {
+      String audioKey;
+      String pdfKey;
+      if (selectedNote!.note!.audioKey!.startsWith("public/")) {
+        audioKey = selectedNote!.note!.audioKey!.substring(7);
+      } else {
+        audioKey = selectedNote!.note!.audioKey!;
+      }
+      if (selectedNote!.note!.pdfKey!.startsWith("public/")) {
+        pdfKey = selectedNote!.note!.pdfKey!.substring(7);
+      } else {
+        pdfKey = selectedNote!.note!.pdfKey!;
+      }
       final audioUrl = await getDownloadUrl(
-          key: selectedNote!.note!.audioKey!.substring(7),
-          accessLevel: StorageAccessLevel.guest);
+          key: audioKey, accessLevel: StorageAccessLevel.guest);
       selectedNote!.audioUrl = audioUrl;
       final pdfUrl = await getDownloadUrl(
-          key: selectedNote!.note!.pdfKey!.substring(7),
-          accessLevel: StorageAccessLevel.guest);
+          key: pdfKey, accessLevel: StorageAccessLevel.guest);
       selectedNote!.pdfUrl = pdfUrl;
       emit(NoteDisplay());
     }
