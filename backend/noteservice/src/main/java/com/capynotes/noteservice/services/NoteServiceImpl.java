@@ -461,7 +461,8 @@ public class NoteServiceImpl implements NoteService {
         byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
         metadata.setContentLength(bytes.length);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        String key = "pdfs/" + file.getName();
+        LocalDateTime dateTime = LocalDateTime.now();
+        String key = "public/pdfs/" + dateTime.toString() + "_" + file.getName();
         amazonS3.putObject(bucketName, key, byteArrayInputStream, metadata);
     }
 

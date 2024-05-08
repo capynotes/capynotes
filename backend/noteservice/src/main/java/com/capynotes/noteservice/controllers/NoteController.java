@@ -250,7 +250,7 @@ public class NoteController {
             noteService.createPdf(noteDto);
             File pdf = new File(fileName + ".pdf");
             noteService.uploadToS3(pdf);
-            //noteService.changeNoteStatus(noteId, NoteStatus.DONE);
+            noteService.changeNoteStatus(noteId, NoteStatus.DONE);
             if (pdf.exists()) {
                 return new Response("PDF generated successfully!", 200, pdf);
             } else {
