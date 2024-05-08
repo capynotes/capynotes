@@ -187,8 +187,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                   ? Utils.launchURL(context
                                           .read<NoteCubit>()
                                           .selectedNote!
-                                          .note!
-                                          .pdfKey ??
+                                          .pdfUrl ??
                                       'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
                                   : Navigator.push(
                                       context,
@@ -197,8 +196,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                           url: context
                                                   .read<NoteCubit>()
                                                   .selectedNote!
-                                                  .note!
-                                                  .pdfKey ??
+                                                  .pdfUrl ??
                                               'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
                                           noteName: context
                                                   .read<NoteCubit>()

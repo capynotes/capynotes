@@ -10,8 +10,10 @@ class NoteModel {
   Transcript? transcript;
   Summary? summary;
   String? audioUrl;
+  String? pdfUrl;
 
-  NoteModel({this.note, this.transcript, this.summary, this.audioUrl});
+  NoteModel(
+      {this.note, this.transcript, this.summary, this.audioUrl, this.pdfUrl});
 
   NoteModel.fromJson(Map<String, dynamic> json) {
     note = json['note'] != null ? Note.fromJson(json['note']) : null;
@@ -62,7 +64,7 @@ class Note {
   Note.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    pdfKey = json['pdfUrl'];
+    pdfKey = json['pdfKey'];
     userId = json['userId'];
     audioKey = json['audioKey'];
     creationTime = json['creationTime'];
@@ -85,7 +87,7 @@ class Note {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['title'] = title;
-    data['pdfUrl'] = pdfKey;
+    data['pdfKey'] = pdfKey;
     data['userId'] = userId;
     data['audioKey'] = audioKey;
     data['creationTime'] = creationTime;

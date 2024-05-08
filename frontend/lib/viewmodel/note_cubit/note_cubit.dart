@@ -52,9 +52,13 @@ class NoteCubit extends Cubit<NoteState> {
       emit(NoteNotFound());
     } else {
       final audioUrl = await getDownloadUrl(
-          key: selectedNote!.note!.audioKey!,
+          key: selectedNote!.note!.audioKey!.substring(7),
           accessLevel: StorageAccessLevel.guest);
       selectedNote!.audioUrl = audioUrl;
+      final pdfUrl = await getDownloadUrl(
+          key: selectedNote!.note!.pdfKey!.substring(7),
+          accessLevel: StorageAccessLevel.guest);
+      selectedNote!.pdfUrl = pdfUrl;
       emit(NoteDisplay());
     }
   }
