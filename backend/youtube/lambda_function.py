@@ -12,7 +12,8 @@ transcription_queue_url = 'https://sqs.us-east-1.amazonaws.com/211125669571/tran
 def send_to_speech(note_id):
     try:
         # Send message to SQS transcription queue
-        sqs.send_message(QueueUrl=transcription_queue_url, MessageBody=str(note_id))
+        outgoing_message = {'noteId': note_id}
+        sqs.send_message(QueueUrl=transcription_queue_url, MessageBody=json.dumps(outgoing_message))
         print(" [x] Sent ", str(note_id))
     except Exception as e:
         print(f"An unexpected error occurred: {e}")

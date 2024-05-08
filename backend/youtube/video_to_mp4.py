@@ -1,54 +1,45 @@
-import os
+from pytube import YouTube 
+import io
 from aws_utils import create_s3_client, get_bucket_name
 
-def upload_mp4_to_s3(file_path, file_name):
+def upload_stream_to_s3(stream, bucket_name, object_name):
     s3_client = create_s3_client()
-    bucket_name = get_bucket_name()
     try:
-        s3_client.upload_file(file_path, bucket_name, file_name)
+        # Set the pointer of the stream back to the start
+        stream.seek(0)
+        s3_client.upload_fileobj(stream, bucket_name, object_name)
         return True
     except Exception as e:
         print(f"Error uploading file: {e}")
         return False
-
-def video_to_mp4(video_url, note_name):
-    # Setup the download directory and filename
-    destination = "downloads/"
-    video_name = note_name.replace(" ", "") + '.mp4'
-    destination_file_path = os.path.join(destination, video_name)
     
-    # Configure yt-dlp command
-    from yt_dlp import YoutubeDL
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp4',
-        }],
-        'outtmpl': destination_file_path,
-        'noplaylist': True
-    }
-    
-    # Download the file
-    with YoutubeDL(ydl_opts) as ydl:
-        try:
-            ydl.download([video_url])
-        except Exception as e:
-            print(f"Error downloading video: {e}")
-            return False
+def video_to_mp3(video_url, note_name):
+    # Get video URL
+    yt = YouTube(video_url) 
 
-    # Check if the file was downloaded and upload to S3
-    if os.path.exists(destination_file_path):
-        file_status = upload_mp4_to_s3(destination_file_path, video_name)
-        
-        # Delete the file from local after uploading
-        os.remove(destination_file_path)
-        
-        if file_status:
-            return video_name
-        else:
-            return False
+    # Extract only audio
+    video = yt.streams.filter(file_extension='mp4', only_audio=True).first() 
+    
+    # Prepare the destination name
+    mp3_filename = note_name.replace(" ", "") + '.mp3'
+
+    # In-memory stream
+    mp3_stream = io.BytesIO()
+    video.stream_to_buffer(mp3_stream)
+
+    # Convert to MP3 (if necessary, this example assumes the stream is already in MP3 format)
+    # Usually you would need an external library like ffmpeg to convert from video to MP3
+
+    # Get the S3 bucket name
+    bucket_name = get_bucket_name()
+
+    # Upload to S3
+    file_status = upload_stream_to_s3(mp3_stream, bucket_name, mp3_filename)
+    
+    # Clean up the memory stream
+    mp3_stream.close()
+    
+    if file_status:
+        return mp3_filename
     else:
-        print("Failed to download the video.")
         return False
-
