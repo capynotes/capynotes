@@ -24,3 +24,9 @@ class NoteGenerationSuccess extends NoteGenerationState {
 
   NoteGenerationSuccess(this.title, this.description);
 }
+
+class NoteGenerationRecording extends NoteGenerationState {}
+
+class NoteGenerationPaused extends NoteGenerationState {}
+
+class NoteGenerationConfirmRecording extends NoteGenerationState {}
