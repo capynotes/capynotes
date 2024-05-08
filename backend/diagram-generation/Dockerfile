@@ -1,11 +1,12 @@
-FROM python:3.11
+FROM public.ecr.aws/lambda/python:3.9
 
-WORKDIR /app
+WORKDIR /var/task
 
-COPY requirements.txt ./
-
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "receive.py" ]
+# CMD is not needed as AWS Lambda requires handler specification
+# Define function handler
+CMD ["lambda_function.lambda_handler"]

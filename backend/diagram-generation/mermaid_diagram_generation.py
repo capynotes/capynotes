@@ -80,7 +80,7 @@ def generate_diagrams(note_id):
   diagram_codes = parse_diagrams(completion)
 
 
-  path_prefix = "temp/"
+  path_prefix = "tmp/"
 
   for diagram in diagram_codes:
     # Insert the generated output to the database
