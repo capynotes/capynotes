@@ -334,6 +334,16 @@ public class NoteServiceImpl implements NoteService {
 
                     //keyword yaz
                     float frontKeywordWidth = calculateStringWidth(front, PDType1Font.HELVETICA_BOLD, 12);
+
+                    if (currentY <= 50) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        //contentStream.beginText();
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
+
                     contentStream.beginText();
                     contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
                     contentStream.newLineAtOffset(rowX, currentY);
@@ -346,27 +356,28 @@ public class NoteServiceImpl implements NoteService {
 
                     //definition yaz
                     //back.append(": ");
-
+                    boolean oneLine = true;
                     for (int j = 0; j < backWords.length; j++) {
                         float wordWidth = calculateStringWidth(backWords[j], PDType1Font.HELVETICA_BOLD, 12);
                         totalWidth += wordWidth;
 
                         if (rowX + totalWidth > width) {
-                            // next line gec
-                            if (currentY <= 50) {
-                                PDPage newPage = new PDPage();
-                                document.addPage(newPage);
-                                contentStream.close();
-                                contentStream = new PDPageContentStream(document, newPage);
-                                currentY = newPage.getMediaBox().getHeight() - 50;
+
+                            if(oneLine) {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(keywordOffsetX, 0);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
                             } else {
-                                currentY += leading;
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(rowX, currentY);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
                             }
-                            //contentStream.beginText();
-                            contentStream.setFont(PDType1Font.HELVETICA, 12);
-                            contentStream.newLineAtOffset(keywordOffsetX, 0);
-                            contentStream.showText(back.toString());
-                            contentStream.endText();
+
+                            currentY += leading;
+                            oneLine = false;
+
                             back = new StringBuilder();
 
                             totalWidth = 0;
@@ -376,15 +387,29 @@ public class NoteServiceImpl implements NoteService {
                         back.append(backWords[j]).append(" ");
 
                         if (j == backWords.length - 1) {
-                            //contentStream.beginText();
-                            contentStream.setFont(PDType1Font.HELVETICA, 12);
-                            contentStream.newLineAtOffset(rowX, currentY);
-                            contentStream.showText(back.toString());
-                            contentStream.endText();
+                            if(oneLine) {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(keywordOffsetX, 0);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
+                            } else {
+                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.newLineAtOffset(rowX, currentY);
+                                contentStream.showText(back.toString());
+                                contentStream.endText();
+                            }
                         }
                     }
 
                     currentY += leading;
+                    if (currentY <= 50) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        //contentStream.beginText();
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
                 }
                 currentY += 2*leading;
 
