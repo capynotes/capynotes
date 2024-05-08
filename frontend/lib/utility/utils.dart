@@ -10,4 +10,11 @@ class Utils {
       throw Exception('Could not launch $url');
     }
   }
+
+  static String durationToString(Duration duration) {
+    int minutes = duration.inMinutes;
+    int seconds = duration.inSeconds.remainder(60);
+
+    return "$minutes min $seconds sec";
+  }
 }

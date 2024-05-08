@@ -121,6 +121,7 @@ class NoteCubit extends Cubit<NoteState> {
 
     if (crossedNotes == null || crossedNotes.isEmpty) {
       crossList = [];
+      print(crossedNotes);
     } else {
       crossList = crossedNotes;
     }

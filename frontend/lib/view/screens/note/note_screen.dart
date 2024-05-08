@@ -245,6 +245,7 @@ class _NoteScreenState extends State<NoteScreen> {
                               AccordionSection(
                                   header: const Text("Summary"),
                                   content: Markdown(
+                                      physics: NeverScrollableScrollPhysics(),
                                       selectable: true,
                                       shrinkWrap: true,
                                       data: context
@@ -315,22 +316,24 @@ class _NoteScreenState extends State<NoteScreen> {
                                               onTagPress: (tag) {
                                                 context
                                                     .read<NoteCubit>()
-                                                    .getCrossReferenced(tag);
+                                                    .getCrossReferenced(
+                                                        tag.substring(1));
                                               },
                                               content: context
                                                   .read<NoteCubit>()
                                                   .selectedNote!
                                                   .note!
                                                   .tags!
-                                                  .map((e) => e.name!)
+                                                  .map((e) => "#${e.name!}")
                                                   .toList(),
                                               wrapSpacing: 4,
+                                              tagTextSoftWrap: true,
+                                              tagTextMaxlines: 1,
                                               wrapRunSpacing: 4,
                                               tagContainerPadding:
                                                   EdgeInsets.all(6),
                                               tagTextStyle: TextStyle(
-                                                color:
-                                                    ColorConstants.primaryColor,
+                                                color: Colors.grey[700],
                                               ),
                                               tagContainerDecoration:
                                                   BoxDecoration(
@@ -436,12 +439,14 @@ class _NoteScreenState extends State<NoteScreen> {
                   ),
                 ),
               ));
-        } else if (state is NoteLoading) {
-          return DefaultLottie(path: AssetPaths.loadingLottie);
+        } else if (state is NoteLoading || state is NoteCrossCheck) {
+          return Scaffold(
+            body: DefaultLottie(path: AssetPaths.loadingLottie),
+          );
         } else if (state is NoteNotFound) {
           return const Center(child: Text("Note not found"));
         } else {
-          return const Center(child: Text(""));
+          return Scaffold(body: const Center(child: Text("")));
         }
       },
     );
