@@ -12,6 +12,7 @@ import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.dtos.NoteGrid;
 import com.capynotes.noteservice.dtos.VideoTranscribeRequest;
 import com.capynotes.noteservice.dtos.VideoTranscribeResponse;
+import com.capynotes.noteservice.dtos.*;
 import com.capynotes.noteservice.enums.NoteStatus;
 import com.capynotes.noteservice.exceptions.FileDownloadException;
 import com.capynotes.noteservice.exceptions.FileUploadException;
@@ -33,10 +34,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -220,6 +218,7 @@ public class NoteServiceImpl implements NoteService {
         note.setStatus(NoteStatus.TRANSCRIBING);
         return noteRepository.save(note);
     }
+  
     @Override
     public void createPdf(NoteDto noteDto, String fileName) throws IOException, InterruptedException {
         //String summary = summaryRepository.getSummaryByNote_id(noteId).get().getSummary();
@@ -467,6 +466,25 @@ public class NoteServiceImpl implements NoteService {
         InputStream inputStream = s3Object.getObjectContent();
 
         return org.apache.commons.io.IOUtils.toByteArray(inputStream);
+    }
+
+    @Override
+    public List<NoteGrid> getNotesWithSameTag(CrossReference crossReference) throws FileNotFoundException {
+        List<NoteGrid> noteGridsOfUser = new ArrayList<>();
+        for(Note note: findNotesByUserId(crossReference.getUserId())) {
+            noteGridsOfUser.add(new NoteGrid(note));
+        }
+        List<NoteGrid> result = new ArrayList<>();
+        for(NoteGrid noteGrid: noteGridsOfUser) {
+            if(!Objects.equals(noteGrid.getId(), crossReference.getCurrentNoteId())) {
+                for(String filter: noteGrid.getSearchFilters()) {
+                    if(filter.equals(crossReference.getTag())) {
+                        result.add(noteGrid);
+                    }
+                }
+            }
+        }
+        return result;
     }
     private Note getNote(Long id) throws FileNotFoundException {
         Optional<Note> note = noteRepository.findNoteById(id);

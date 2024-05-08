@@ -20,6 +20,7 @@ class NoteCubit extends Cubit<NoteState> {
   NoteModel? selectedNote;
   TextEditingController fcSetNameController = TextEditingController();
   TextEditingController tagController = TextEditingController();
+  List<NoteGridModel>? crossList;
 
   Future<void> getMyNotes() async {
     emit(NoteLoading());
@@ -54,7 +55,7 @@ class NoteCubit extends Cubit<NoteState> {
           key: selectedNote!.note!.audioKey!,
           accessLevel: StorageAccessLevel.guest);
       selectedNote!.audioUrl = audioUrl;
-      emit(NoteDisplay(note: selectedNote!));
+      emit(NoteDisplay());
     }
   }
 
@@ -110,19 +111,24 @@ class NoteCubit extends Cubit<NoteState> {
   }
 
   Future<void> getCrossReferenced(String tag) async {
-    emit(NoteLoading());
+    emit(NoteCrossCheck());
     CrossReferenceModel crossReferenceModel = CrossReferenceModel(
         userId: UserInfo.loggedUser!.id!,
         currentNoteId: selectedNote!.note!.id!,
         tag: tag);
     List<NoteGridModel>? crossedNotes =
         await service.getCrossReferenced(crossReferenceModel);
-    if (crossedNotes == null) {
-      emit(NoteError("Error", "Error"));
-    } else if (crossedNotes.isEmpty) {
-      emit(NoteNotFound());
+
+    if (crossedNotes == null || crossedNotes.isEmpty) {
+      crossList = [];
+      print(crossedNotes);
     } else {
-      emit(NoteCrossList(crossList: crossedNotes));
+      crossList = crossedNotes;
     }
+    emit(NoteCrossDisplay());
+  }
+
+  emitDisplay() {
+    emit(NoteDisplay());
   }
 }

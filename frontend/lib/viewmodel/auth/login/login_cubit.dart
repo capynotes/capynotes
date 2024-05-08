@@ -1,3 +1,4 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,15 @@ class LoginCubit extends Cubit<LoginState> {
         break;
       default:
         safePrint('Sign in not complete: ${result.nextStep.signInStep}');
+    }
+  }
+
+  Future<void> signOutCurrentUser() async {
+    final result = await Amplify.Auth.signOut();
+    if (result is CognitoCompleteSignOut) {
+      safePrint('Sign out completed successfully');
+    } else if (result is CognitoFailedSignOut) {
+      safePrint('Error signing user out: ${result.exception.message}');
     }
   }
 

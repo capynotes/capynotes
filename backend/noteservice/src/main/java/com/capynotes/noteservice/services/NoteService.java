@@ -1,5 +1,6 @@
 package com.capynotes.noteservice.services;
 
+import com.capynotes.noteservice.dtos.CrossReference;
 import com.capynotes.noteservice.dtos.NoteDto;
 import com.capynotes.noteservice.dtos.NoteGrid;
 import com.capynotes.noteservice.enums.NoteStatus;
@@ -31,4 +32,5 @@ public interface NoteService {
     byte[] downloadFromS3(String key) throws IOException;
     void uploadToS3(File file) throws IOException;
     void updateNote(Long noteId, NoteStatus noteStatus, String pdfKey);
+    List<NoteGrid> getNotesWithSameTag(CrossReference crossReference) throws FileNotFoundException;
 }

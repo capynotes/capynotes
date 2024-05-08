@@ -60,7 +60,7 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
         AutoRoute(page: ContactUsRoute.page, path: "/contact-us"),
         AutoRoute(page: MyAudiosRoute.page, path: "/my-audios"),
         AutoRoute(page: HomeRoute.page, path: "/home"),
-        AutoRoute(page: FolderRoute.page, path: "/folder/:id"),
+        AutoRoute(page: FolderRoute.page, path: "/folder"),
       ];
 
   @override

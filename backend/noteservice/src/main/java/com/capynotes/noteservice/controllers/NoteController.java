@@ -244,8 +244,6 @@ public class NoteController {
     @GetMapping("/generate-pdf/{id}")
     public Response generatePdf(@PathVariable("id") Long noteId) {
         try {
-            // summary bitince rabbitmq'dan noteId al
-            // rabbitmq implementleyince pathvariable silincek
             NoteDto noteDto = noteService.findNoteByNoteId(noteId);
             String fileName = noteDto.getNote().getTitle().replaceAll("\\s", "");
             LocalDateTime currentTime = LocalDateTime.now();
@@ -263,6 +261,17 @@ public class NoteController {
         } catch (Exception e) {
             e.printStackTrace();
             return new Response("Error generating PDF", 500, null);
+        }
+    }
+  
+    @PostMapping("/cross-reference")
+    public Response getNotesWithSameTag(@RequestBody CrossReference crossReference) {
+        try {
+            List<NoteGrid> relatedNotes = noteService.getNotesWithSameTag(crossReference);
+            return new Response("Success", 200, relatedNotes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response("Exception", 500, null);
         }
     }
 }
