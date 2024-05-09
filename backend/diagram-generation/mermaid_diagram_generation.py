@@ -24,7 +24,7 @@ def upload_diagrams_to_S3(inserted_id, file_path, file_name):
   s3_client = create_s3_client()
   bucket_name = get_bucket_name()
   try:
-    s3_client.upload_file(file_path, bucket_name, file_name)
+    s3_client.upload_file(file_path, bucket_name, "public/" + file_name)
     # Insert the unique file name of the diagram as diagram key to the diagram table in DB
     insert_diagram_key_to_database(inserted_id, file_name)
     return True
@@ -80,7 +80,7 @@ def generate_diagrams(note_id):
   diagram_codes = parse_diagrams(completion)
 
 
-  path_prefix = "tmp/"
+  path_prefix = "/tmp/"
 
   for diagram in diagram_codes:
     # Insert the generated output to the database
@@ -95,7 +95,7 @@ def generate_diagrams(note_id):
 
     mm(diagram, file_path)
 
-    upload_diagrams_to_S3(inserted_id, file_path, "diagrams/" + file_name)
+    upload_diagrams_to_S3(inserted_id, file_path, "diagrams/" + str(note_id) + "/" + file_name)
 
     #Remove the newly created file from local
     os.remove(file_path)

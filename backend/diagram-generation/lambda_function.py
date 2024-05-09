@@ -38,7 +38,7 @@ def lambda_handler(event, context):
             # Print the message body to the Lambda log
             callback_recv(note_id)
 
-            print("Note ID: " + note_id + " processed!")
+            print("Note ID: " + str(note_id) + " processed!")
 
             receipt_handle = record['receiptHandle']
             sqs.delete_message(
