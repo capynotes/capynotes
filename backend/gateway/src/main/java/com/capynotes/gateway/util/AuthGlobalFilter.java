@@ -44,6 +44,6 @@ public class AuthGlobalFilter implements GlobalFilter {
     }
 
     private boolean isPathAllowedWithoutToken(String path) {
-        return path.equals("/api/auth/id") || path.equals("/api/auth/email") || path.equals("/api/person/login") || path.equals("/api/person/register");
+        return path.equals("/api/auth/id") || path.equals("/api/auth/email") || path.equals("/api/person/login") || path.equals("/api/person/register") || path.equals("/api/note/generate-pdf/**");
     }
 }

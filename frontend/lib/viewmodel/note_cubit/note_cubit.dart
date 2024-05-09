@@ -22,6 +22,35 @@ class NoteCubit extends Cubit<NoteState> {
   TextEditingController tagController = TextEditingController();
   List<NoteGridModel>? crossList;
 
+  List<String> galleryItems = [];
+
+  Future<void> getNoteDiagramURLs() async {
+    try {
+      final result = await Amplify.Storage.list(
+        path: "diagrams/${selectedNote!.note!.id}",
+        options: const StorageListOptions(
+          accessLevel: StorageAccessLevel.guest,
+          pluginOptions: S3ListPluginOptions.listAll(),
+        ),
+      ).result;
+      print(result.items);
+      result.items.removeAt(0);
+      List<String> diagramKeyList = [];
+      for (var item in result.items) {
+        print(item.key);
+        diagramKeyList.add(item.key);
+      }
+      for (var key in diagramKeyList) {
+        String url = await getDownloadUrl(
+            key: key, accessLevel: StorageAccessLevel.guest);
+        galleryItems.add(url);
+      }
+    } on StorageException catch (e) {
+      safePrint('Error listing files: ${e.message}');
+      rethrow;
+    }
+  }
+
   Future<void> getMyNotes() async {
     emit(NoteLoading());
     List<Note>? allNotes = await service.getMyNotes();
@@ -46,6 +75,7 @@ class NoteCubit extends Cubit<NoteState> {
   }
 
   Future<void> getNote(int id) async {
+    galleryItems = [];
     emit(NoteLoading());
     selectedNote = await service.getNote(id);
     if (selectedNote == null) {
@@ -59,6 +89,7 @@ class NoteCubit extends Cubit<NoteState> {
           key: selectedNote!.note!.pdfKey!,
           accessLevel: StorageAccessLevel.guest);
       selectedNote!.pdfUrl = pdfUrl;
+      await getNoteDiagramURLs();
       emit(NoteDisplay());
     }
   }

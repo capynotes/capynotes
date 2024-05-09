@@ -4,6 +4,32 @@ import base64
 import requests
 from aws_utils import create_s3_client, get_bucket_name
 import os
+import json
+
+def send_generate_pdf(note_id):
+  url = "http://note-service-spring-app:8083/note/generate-pdf/" + str(note_id)
+
+  try:
+      # Send a GET request
+      response = requests.get(url)
+
+      # Process the response
+      if response.status_code == 200:
+          return {
+              'statusCode': 200,
+              'body': json.dumps('Request was successful!')
+          }
+      else:
+          return {
+              'statusCode': response.status_code,
+              'body': json.dumps('Request failed!')
+          }
+  except Exception as e:
+      print(e)
+      return {
+          'statusCode': 500,
+          'body': json.dumps('Error occurred while making the HTTP request')
+      }
 
 def mm(graph, file_path):
   graphbytes = graph.encode("utf8")
@@ -24,7 +50,7 @@ def upload_diagrams_to_S3(inserted_id, file_path, file_name):
   s3_client = create_s3_client()
   bucket_name = get_bucket_name()
   try:
-    s3_client.upload_file(file_path, bucket_name, file_name)
+    s3_client.upload_file(file_path, bucket_name, "public/" + file_name)
     # Insert the unique file name of the diagram as diagram key to the diagram table in DB
     insert_diagram_key_to_database(inserted_id, file_name)
     return True
@@ -95,7 +121,7 @@ def generate_diagrams(note_id):
 
     mm(diagram, file_path)
 
-    upload_diagrams_to_S3(inserted_id, file_path, "diagrams/" + file_name)
+    upload_diagrams_to_S3(inserted_id, file_path, "diagrams/" + str(note_id) + "/" + + file_name)
 
     #Remove the newly created file from local
     os.remove(file_path)

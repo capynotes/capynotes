@@ -909,6 +909,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  photo_view:
+    dependency: "direct main"
+    description:
+      name: photo_view
+      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
+  photo_view_x:
+    dependency: "direct main"
+    description:
+      name: photo_view_x
+      sha256: beec486a65c42d33744e44ca6d741c59d3ded215f938f0eba73e686c185f5d3c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   platform:
     dependency: transitive
     description:
