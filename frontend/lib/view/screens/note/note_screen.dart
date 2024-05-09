@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:capynotes/view/screens/note/note_pdf_screen.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_elevated_button.dart';
 import 'package:capynotes/view/widgets/custom_widgets/custom_snackbars.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -14,6 +15,8 @@ import 'package:material_dialogs/dialogs.dart';
 import 'package:material_dialogs/shared/types.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:simple_tags/simple_tags.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import '../../../constants/asset_paths.dart';
 import '../../../constants/colors.dart';
@@ -150,6 +153,7 @@ class _NoteScreenState extends State<NoteScreen> {
       builder: (context, state) {
         if (state is NoteDisplay || state is NoteCrossDisplay) {
           AudioPlayer player = AudioPlayer();
+          CarouselController carouselController = CarouselController();
           return Scaffold(
               appBar: AppBar(
                   title: Text(
@@ -187,8 +191,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                   ? Utils.launchURL(context
                                           .read<NoteCubit>()
                                           .selectedNote!
-                                          .note!
-                                          .pdfKey ??
+                                          .pdfUrl ??
                                       'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf')
                                   : Navigator.push(
                                       context,
@@ -197,8 +200,7 @@ class _NoteScreenState extends State<NoteScreen> {
                                           url: context
                                                   .read<NoteCubit>()
                                                   .selectedNote!
-                                                  .note!
-                                                  .pdfKey ??
+                                                  .pdfUrl ??
                                               'http://denninginstitute.com/pjd/PUBS/CACMcols/cacmSep23.pdf',
                                           noteName: context
                                                   .read<NoteCubit>()
@@ -222,7 +224,11 @@ class _NoteScreenState extends State<NoteScreen> {
                                     ),
                                   ],
                                 ),
-                                onPressed: () {}),
+                                onPressed: () {
+                                  context
+                                      .read<NoteCubit>()
+                                      .getNoteDiagramURLs();
+                                }),
                             const SizedBox(width: 8.0),
                           ],
                         ),
@@ -370,6 +376,55 @@ class _NoteScreenState extends State<NoteScreen> {
                                           }),
                                     ],
                                   )),
+                              AccordionSection(
+                                  header: const Text("Diagrams"),
+                                  content: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.5,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.75,
+                                      child: CarouselSlider(
+                                        items: List.generate(
+                                            context
+                                                .read<NoteCubit>()
+                                                .galleryItems
+                                                .length,
+                                            (index) => GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: Text(
+                                                                "Diagram $index"),
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
+                                                            content: PhotoView(
+                                                              backgroundDecoration:
+                                                                  BoxDecoration(
+                                                                      color: Colors
+                                                                          .transparent),
+                                                              imageProvider:
+                                                                  NetworkImage(context
+                                                                      .read<
+                                                                          NoteCubit>()
+                                                                      .galleryItems[index]),
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: Image.network(
+                                                    context
+                                                        .read<NoteCubit>()
+                                                        .galleryItems[index],
+                                                  ),
+                                                )),
+                                        carouselController: carouselController,
+                                        options: CarouselOptions(
+                                            autoPlay: false,
+                                            viewportFraction: 1),
+                                      ))),
                             ]),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

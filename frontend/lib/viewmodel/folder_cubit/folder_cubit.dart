@@ -18,6 +18,7 @@ class FolderCubit extends Cubit<FolderState> {
 
   FolderContentsModel? allFolderContents;
   FolderContentsModel? tempFolderContents;
+
   Future<void> getFolderContents(int id) async {
     emit(FolderLoading());
     allFolderContents = await service.getFolderContents(id);

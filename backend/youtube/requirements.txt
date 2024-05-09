@@ -1,4 +1,4 @@
 boto3
 psycopg2
 pika
-pytube
+pytube @ git+https://github.com/capynotes/pytube

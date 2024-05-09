@@ -10,7 +10,7 @@ def initialize_connection():
     cursor.execute('''CREATE TABLE IF NOT EXISTS transcript(
             id SERIAL PRIMARY KEY,
             note_id BIGINT NOT NULL,
-            transcript TEXT NOT NULL
+            transcription TEXT NOT NULL
         )'''
     )
     connection.commit()
