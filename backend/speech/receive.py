@@ -20,7 +20,7 @@ def send_to_summarize(note_id):
     while True:
         try:
             # Send message to SQS summarization queue
-            outgoing_message = {'note_id': note_id}
+            outgoing_message = {'noteId': note_id}
             sqs.send_message(QueueUrl=summarization_queue_url, MessageBody=json.dumps(outgoing_message))
             print(" [x] Sent ", str(note_id))
             break
