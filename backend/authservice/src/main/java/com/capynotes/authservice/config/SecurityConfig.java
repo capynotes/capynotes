@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/person/**").permitAll()
+                .requestMatchers("/api/note/generate-pdf/**").permitAll()
                 .anyRequest()
                 .authenticated())
                 .authenticationProvider(authenticationProvider())

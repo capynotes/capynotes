@@ -4,6 +4,32 @@ import base64
 import requests
 from aws_utils import create_s3_client, get_bucket_name
 import os
+import json
+
+def send_generate_pdf(note_id):
+  url = "http://note-service-spring-app:8083/note/generate-pdf/" + str(note_id)
+
+  try:
+      # Send a GET request
+      response = requests.get(url)
+
+      # Process the response
+      if response.status_code == 200:
+          return {
+              'statusCode': 200,
+              'body': json.dumps('Request was successful!')
+          }
+      else:
+          return {
+              'statusCode': response.status_code,
+              'body': json.dumps('Request failed!')
+          }
+  except Exception as e:
+      print(e)
+      return {
+          'statusCode': 500,
+          'body': json.dumps('Error occurred while making the HTTP request')
+      }
 
 def mm(graph, file_path):
   graphbytes = graph.encode("utf8")

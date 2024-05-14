@@ -1,3 +1,3 @@
 boto3
 psycopg2-binary
-pytube
+pytube @ git+https://github.com/capynotes/pytube

@@ -3,12 +3,13 @@ import time
 import sys
 import pika
 
-from mermaid_diagram_generation import generate_diagrams
+from mermaid_diagram_generation import generate_diagrams, send_generate_pdf
 
 def callback_recv(ch, method, properties, body):
     print(" [x] Received ", str(body))
     note_id = int(body.decode())
     generate_diagrams(note_id)
+    send_generate_pdf(note_id)
     
 def main():
     while True:

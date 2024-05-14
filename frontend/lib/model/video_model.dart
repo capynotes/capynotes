@@ -10,7 +10,7 @@ class VideoModel {
     url = json['videoUrl'];
     noteName = json['noteName'];
     userId = json['userId'];
-    folderID = json['folderID'];
+    folderID = json['folderId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -18,7 +18,7 @@ class VideoModel {
     data['videoUrl'] = url;
     data['noteName'] = noteName;
     data['userId'] = userId;
-    data['folderID'] = folderID;
+    data['folderId'] = folderID ?? 0;
     return data;
   }
 }

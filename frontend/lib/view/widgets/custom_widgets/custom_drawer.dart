@@ -54,7 +54,7 @@ class CustomDrawer extends StatelessWidget {
             child: DrawerComponent(
               title: "My Notes",
               onTap: () {
-                context.router.popAndPush(const MyNotesRoute());
+                context.router.push(const MyNotesRoute());
               },
               prefixIcon: Icon(
                 Icons.notes_rounded,
