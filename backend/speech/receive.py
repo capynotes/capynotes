@@ -67,8 +67,6 @@ def main():
             response = sqs.receive_message(QueueUrl=transcription_queue_url, MaxNumberOfMessages=10, WaitTimeSeconds=20)
             if 'Messages' in response:
                 callback_recv(response['Messages'])
-            else:
-                print(" [*] Waiting for messages. To exit press CTRL+C")
         except KeyboardInterrupt:
             print("Interrupted")
             break
