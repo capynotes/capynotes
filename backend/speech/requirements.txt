@@ -1,2 +1,4 @@
 boto3
 psycopg2
+torch
+stable-ts==1.4.0

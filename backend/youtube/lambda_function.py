@@ -1,6 +1,6 @@
 import json
 import boto3
-from video_to_mp4 import video_to_mp4
+from video_to_mp4 import video_to_mp3
 from database import update_s3_name
 import aws_utils
 
@@ -26,7 +26,7 @@ def process_message(message):
     video_url = yt_json_data["videoUrl"]
     note_name = yt_json_data["noteName"]
 
-    file_name = video_to_mp4(video_url, note_name)
+    file_name = video_to_mp3(video_url, note_name)
     if file_name:
         update_s3_name(note_id, file_name)
         send_to_speech(int(note_id))

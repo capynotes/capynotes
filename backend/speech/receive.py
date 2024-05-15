@@ -11,8 +11,8 @@ from transcribe import whisper_transcribe_audio
 
 # Setup SQS client
 sqs = aws_utils.create_sqs_client()
-summarization_queue_url = 'https://sqs.eu-north-1.amazonaws.com/101807873666/summarization'
-transcription_queue_url = 'https://sqs.eu-north-1.amazonaws.com/101807873666/transcript'
+summarization_queue_url = 'https://sqs.us-east-1.amazonaws.com/211125669571/summarization'
+transcription_queue_url = 'https://sqs.us-east-1.amazonaws.com/211125669571/transcription'
 
 def send_to_summarize(note_id):
     global connection_send, channel_send
@@ -53,8 +53,10 @@ def callback_recv(messages):
                             'finish': item['end'],
                             'phrase': item['text']}
                             for item in segments]
+
         insert_timestamps(transformed_list)
         send_to_summarize(note_id)
+        
         # Delete message from queue after processing
         sqs.delete_message(QueueUrl=transcription_queue_url, ReceiptHandle=message['ReceiptHandle'])
 
