@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/asset_paths.dart';
+import '../../../constants/colors.dart';
 import '../../widgets/lotties/default_lottie_widget.dart';
 
 @RoutePage()
@@ -53,7 +54,27 @@ class FlashcardScreen extends StatelessWidget {
                     ],
                   )));
         } else if (state is FlashcardLoading) {
-          return DefaultLottie(path: AssetPaths.loadingLottie);
+          return Scaffold(
+              appBar: AppBar(
+                title: RichText(
+                    text: TextSpan(
+                        text: "Capy",
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: ColorConstants.lightBlue,
+                            fontWeight: FontWeight.w900,
+                            fontFamily: "Nunito"),
+                        children: const [
+                      TextSpan(
+                          text: "Notes",
+                          style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: "Nunito"))
+                    ])),
+              ),
+              body: DefaultLottie(path: AssetPaths.loadingLottie));
         } else {
           return const Center(child: Text(""));
         }
@@ -70,21 +91,30 @@ class FlashcardScreen extends StatelessWidget {
           onPressed: () {
             controller.previousPage();
           },
-          child: const Text("Wrong"),
+          child: const Text(
+            "Wrong",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           onPressed: () {
             controller.nextPage();
           },
-          child: const Text("Pass"),
+          child: const Text(
+            "Pass",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
           onPressed: () {
             controller.nextPage();
           },
-          child: const Text("Correct"),
+          child: const Text(
+            "Correct",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );

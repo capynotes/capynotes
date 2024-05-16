@@ -4,13 +4,12 @@ class AssetPaths {
   // Images
   static String micImage =
       kIsWeb ? "images/mic_image.png" : "assets/images/mic_image.png";
-  static String folderImage = kIsWeb
-      ? "images/minimal_folder.jpeg"
-      : "assets/images/minimal_folder.jpeg";
+  static String folderImage =
+      kIsWeb ? "images/minimal_folder.png" : "assets/images/minimal_folder.png";
   // static String folderImage =
   //     kIsWeb ? "images/iso_folder.png" : "assets/images/iso_folder.png";
   static String notebookImage =
-      kIsWeb ? "images/minimal_note.jpeg" : "assets/images/minimal_note.jpeg";
+      kIsWeb ? "images/minimal_note.png" : "assets/images/minimal_note.png";
   // Icons
   static String capyNotesNoBg = kIsWeb
       ? "icons/capynotes_logo_no_bg.png"

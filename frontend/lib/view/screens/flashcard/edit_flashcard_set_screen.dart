@@ -225,7 +225,27 @@ class EditFlashcardSetScreen extends StatelessWidget {
             ),
           );
         } else if (state is FlashcardLoading) {
-          return DefaultLottie(path: AssetPaths.loadingLottie);
+          return Scaffold(
+              appBar: AppBar(
+                title: RichText(
+                    text: TextSpan(
+                        text: "Capy",
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: ColorConstants.lightBlue,
+                            fontWeight: FontWeight.w900,
+                            fontFamily: "Nunito"),
+                        children: const [
+                      TextSpan(
+                          text: "Notes",
+                          style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: "Nunito"))
+                    ])),
+              ),
+              body: DefaultLottie(path: AssetPaths.loadingLottie));
         } else {
           return const Center(child: Text(""));
         }

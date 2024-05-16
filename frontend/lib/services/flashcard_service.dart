@@ -32,7 +32,7 @@ class FlashcardService {
 
   Future<bool> deleteFlashcard(int flashcardID) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.deleteRequest(
           ApiConstants.baseUrl, "${ApiConstants.flashcard}$flashcardID");
       if (response.statusCode == 200) {
@@ -47,11 +47,11 @@ class FlashcardService {
 
   Future<FlashcardModel?> editFlashcard(FlashcardModel flashcardModel) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.putRequest(ApiConstants.baseUrl,
           ApiConstants.editFlashcard, jsonEncode(flashcardModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         FlashcardModel flashcardModel =
             FlashcardModel.fromJson(responseModel.data);

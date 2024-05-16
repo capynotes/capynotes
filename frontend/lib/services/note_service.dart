@@ -61,7 +61,7 @@ class NoteService {
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.createFlashcardSet, jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = response.decodeBody();
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         FlashcardSetModel flashcardSetModel =
             FlashcardSetModel.fromJson(responseModel.data);
@@ -80,7 +80,7 @@ class NoteService {
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.addTag, jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = response.decodeBody();
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         TagResponseModel tagResponseModel =
             TagResponseModel.fromJson(responseModel.data);
@@ -100,7 +100,7 @@ class NoteService {
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.getCrossReferenced, jsonEncode(bodyModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = response.decodeBody();
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         List<NoteGridModel> noteList = [];
         for (var note in responseModel.data) {

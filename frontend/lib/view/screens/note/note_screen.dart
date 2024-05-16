@@ -496,6 +496,25 @@ class _NoteScreenState extends State<NoteScreen> {
               ));
         } else if (state is NoteLoading || state is NoteCrossCheck) {
           return Scaffold(
+            appBar: AppBar(
+              title: RichText(
+                  text: TextSpan(
+                      text: "Capy",
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: ColorConstants.lightBlue,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: "Nunito"),
+                      children: const [
+                    TextSpan(
+                        text: "Notes",
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w900,
+                            fontFamily: "Nunito"))
+                  ])),
+            ),
             body: DefaultLottie(path: AssetPaths.loadingLottie),
           );
         } else if (state is NoteNotFound) {

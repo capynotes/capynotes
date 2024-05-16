@@ -52,11 +52,11 @@ class AuthService {
 
   Future<String?> changePassword(ChangePasswordModel bodyModel) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.putRequest(ApiConstants.baseUrl,
           ApiConstants.changePw, jsonEncode(bodyModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         response = responseModel.data;
         return response.toString();

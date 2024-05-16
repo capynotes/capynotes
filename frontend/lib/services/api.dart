@@ -50,24 +50,42 @@ class Api {
   Future<http.Response> loginRequest(String adress, String path,
       [Object? requestBody]) async {
     final response = await http.post(
-        Uri.parse("http://44.203.210.197:8082/api/person/login"),
+        Uri.parse("http://44.200.210.42:8082/api/person/login"),
         headers: {"Content-Type": "application/json"},
         body: requestBody);
 
     return response;
   }
 
-  Future<http.Response> putRequest(String adress, String path,
+  Future<AWSHttpResponse> putRequest(String adress, String path,
       [Object? requestBody]) async {
-    final response = await http.put(Uri.parse(adress + path),
-        headers: tokenHeader, body: requestBody);
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final result = await cognitoPlugin.fetchAuthSession();
+    final identityToken = result.userPoolTokensResult.value.idToken.raw;
+
+    final restOperation = Amplify.API.put(path,
+        headers: {
+          "Authorization": identityToken,
+          "Content-Type": "application/json"
+        },
+        body: HttpPayload(requestBody, "application/json"));
+    final response = await restOperation.response;
     return response;
   }
 
-  Future<http.Response> deleteRequest(String adress, String path,
+  Future<AWSHttpResponse> deleteRequest(String adress, String path,
       [Object? requestBody]) async {
-    final response = await http.delete(Uri.parse(adress + path),
-        headers: tokenHeader, body: requestBody);
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final result = await cognitoPlugin.fetchAuthSession();
+    final identityToken = result.userPoolTokensResult.value.idToken.raw;
+
+    final restOperation = Amplify.API.delete(path,
+        headers: {
+          "Authorization": identityToken,
+          "Content-Type": "application/json"
+        },
+        body: HttpPayload(requestBody, "application/json"));
+    final response = await restOperation.response;
     return response;
   }
 }
