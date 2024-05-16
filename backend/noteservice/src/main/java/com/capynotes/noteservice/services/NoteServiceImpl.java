@@ -20,12 +20,12 @@ import com.capynotes.noteservice.models.*;
 import com.capynotes.noteservice.repositories.*;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -229,6 +229,10 @@ public class NoteServiceImpl implements NoteService {
             PDPage page = new PDPage();
             document.addPage(page);
 
+            PDFont normal = PDType0Font.load(document, new File("src/main/resources/SourceSans3-Regular.ttf"));
+            PDFont bold = PDType0Font.load(document, new File("src/main/resources/SourceSans3-Bold.ttf"));
+            PDFont italic = PDType0Font.load(document, new File("src/main/resources/SourceSans3-Italic.ttf"));
+
             float margin = 50;
             float leading = -20;
             float currentY = page.getMediaBox().getHeight() - margin;
@@ -237,8 +241,8 @@ public class NoteServiceImpl implements NoteService {
                 float middleX = page.getMediaBox().getWidth() / 2;
 
                 contentStream.beginText();
-                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-                float strWidth = calculateStringWidth(title, PDType1Font.HELVETICA_BOLD, 12);
+                contentStream.setFont(bold, 12);
+                float strWidth = calculateStringWidth(title, bold, 12);
                 contentStream.newLineAtOffset(middleX - strWidth/2, currentY);
                 contentStream.showText(title);
                 contentStream.newLine();
@@ -250,27 +254,28 @@ public class NoteServiceImpl implements NoteService {
 
                 String[] paragraphs = summary.split("\\r?\\n");
                 for (String paragraph: paragraphs) {
-                    PDFont font = PDType1Font.HELVETICA;
+                    PDFont font = normal;
                     float fontSize = 12;
 
                     if(paragraph.contains("**")) {
-                        font = PDType1Font.HELVETICA_BOLD;
+                        font = bold;
                         fontSize = 12;
                         paragraph = paragraph.substring(2, paragraph.length() - 2);
                     } else if(paragraph.contains("*")) {
-                        font = PDType1Font.HELVETICA;
+                        font = normal;
                         fontSize = 12;
                         if(paragraph.lastIndexOf('*') == 0) {
                             paragraph = paragraph.substring(1);
                             paragraph = "• " + paragraph;
                         } else {
-                            paragraph = paragraph.substring(0, paragraph.lastIndexOf('*'));
-                            font = PDType1Font.TIMES_ITALIC;
+                            paragraph = paragraph.substring(2, paragraph.lastIndexOf('*'));
+                            font = italic;
                         }
                     } else if(paragraph.contains("#")) {
-                        font = PDType1Font.HELVETICA_BOLD;
-                        fontSize = 16 - paragraph.lastIndexOf("#", 0);
-                        paragraph = paragraph.substring(paragraph.lastIndexOf("#", 0));
+                        font = bold;
+                        fontSize = 16 - paragraph.lastIndexOf("#");
+                        System.out.println(paragraph.lastIndexOf("#"));
+                        paragraph = paragraph.substring(paragraph.lastIndexOf("#") + 2);
                     }
 
                     String[] words = paragraph.split("\\s+");
@@ -332,7 +337,7 @@ public class NoteServiceImpl implements NoteService {
                     float totalWidth = 0;
 
                     //keyword yaz
-                    float frontKeywordWidth = calculateStringWidth(front, PDType1Font.HELVETICA_BOLD, 12);
+                    float frontKeywordWidth = calculateStringWidth(front, bold, 12);
 
                     if (currentY <= 50) {
                         PDPage newPage = new PDPage();
@@ -344,12 +349,12 @@ public class NoteServiceImpl implements NoteService {
                     }
 
                     contentStream.beginText();
-                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.setFont(bold, 12);
                     contentStream.newLineAtOffset(rowX, currentY);
                     contentStream.showText(front + ": ");
                     //contentStream.endText();
                     //totalWidth += frontKeywordWidth;
-                    float colonWidth = calculateStringWidth(": ", PDType1Font.HELVETICA_BOLD, 12);
+                    float colonWidth = calculateStringWidth(": ", bold, 12);
                     totalWidth += frontKeywordWidth + colonWidth;
                     float keywordOffsetX = totalWidth;
 
@@ -357,18 +362,18 @@ public class NoteServiceImpl implements NoteService {
                     //back.append(": ");
                     boolean oneLine = true;
                     for (int j = 0; j < backWords.length; j++) {
-                        float wordWidth = calculateStringWidth(backWords[j], PDType1Font.HELVETICA_BOLD, 12);
+                        float wordWidth = calculateStringWidth(backWords[j], bold, 12);
                         totalWidth += wordWidth;
 
                         if (rowX + totalWidth > width) {
 
                             if(oneLine) {
-                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.setFont(normal, 12);
                                 contentStream.newLineAtOffset(keywordOffsetX, 0);
                                 contentStream.showText(back.toString());
                                 contentStream.endText();
                             } else {
-                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.setFont(normal, 12);
                                 contentStream.newLineAtOffset(rowX, currentY);
                                 contentStream.showText(back.toString());
                                 contentStream.endText();
@@ -387,12 +392,12 @@ public class NoteServiceImpl implements NoteService {
 
                         if (j == backWords.length - 1) {
                             if(oneLine) {
-                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.setFont(normal, 12);
                                 contentStream.newLineAtOffset(keywordOffsetX, 0);
                                 contentStream.showText(back.toString());
                                 contentStream.endText();
                             } else {
-                                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                                contentStream.setFont(normal, 12);
                                 contentStream.newLineAtOffset(rowX, currentY);
                                 contentStream.showText(back.toString());
                                 contentStream.endText();
@@ -413,29 +418,46 @@ public class NoteServiceImpl implements NoteService {
                 currentY += 2*leading;
 
                 // tree
-                if(currentY <= 200) {
+                /*if(currentY <= 200) {
                     PDPage newPage = new PDPage();
                     document.addPage(newPage);
                     contentStream.close();
                     contentStream = new PDPageContentStream(document, newPage);
                     currentY = newPage.getMediaBox().getHeight() - 50;
-                }
+                }*/
 
                 List<Object[]> diagramsOfNote = noteRepository.findDiagramsByNoteId(noteDto.getNote().getId());
                 int diagramCounter = 1;
                 for(Object[] diagram: diagramsOfNote) {
+                    byte[] diagramByte = downloadFromS3("public/" + (String) diagram[3]);
+                    PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, diagramByte, null);
+
+                    if(currentY <= pdImage.getHeight()) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
 
                     contentStream.beginText();
-                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.setFont(bold, 12);
                     contentStream.newLineAtOffset(rowX, currentY);
                     contentStream.showText("Diagram " + diagramCounter);
                     diagramCounter++;
                     contentStream.endText();
                     currentY += leading;
 
-                    byte[] diagramByte = downloadFromS3("public/" + (String) diagram[3]);
-                    PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, diagramByte, null);
-                    float startX = middleX - pdImage.getWidth() / 2;
+                    float divisor = 1f;
+                    while(pdImage.getWidth()*divisor >= document.getPage(0).getMediaBox().getWidth()
+                            || pdImage.getHeight()*divisor >= document.getPage(0).getMediaBox().getWidth()) {
+                        divisor = 0.9f * divisor;
+                    }
+                    float startX = middleX - pdImage.getWidth()*divisor / 2;
+                    contentStream.drawImage(pdImage, startX, currentY - pdImage.getHeight()*divisor, pdImage.getWidth()*divisor, pdImage.getHeight()*divisor);
+
+                    currentY = currentY - pdImage.getHeight()*divisor - 50;
+                    /*float startX = middleX - pdImage.getWidth() / 2;
                     contentStream.drawImage(pdImage, startX, currentY - pdImage.getHeight(), pdImage.getWidth(), pdImage.getHeight());
 
                     currentY = currentY - pdImage.getHeight() - 50;
@@ -446,7 +468,7 @@ public class NoteServiceImpl implements NoteService {
                         contentStream.close();
                         contentStream = new PDPageContentStream(document, newPage);
                         currentY = newPage.getMediaBox().getHeight() - 50;
-                    }
+                    }*/
                 }
 
 
