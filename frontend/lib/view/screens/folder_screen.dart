@@ -138,6 +138,17 @@ class _FolderScreenState extends State<FolderScreen> {
             },
             builder: (context, state) {
               if (state is FolderDisplay) {
+                // Separate folders and notes
+                final folders = state.tempFolderContents.items!
+                    .where((item) => item is FolderWithCountModel)
+                    .toList();
+                final notes = state.tempFolderContents.items!
+                    .where((item) => item is! FolderWithCountModel)
+                    .toList();
+
+                // Concatenate folders and notes
+                final sortedContents = [...folders, ...notes];
+
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SingleChildScrollView(
@@ -150,8 +161,8 @@ class _FolderScreenState extends State<FolderScreen> {
                           maxCrossAxisExtent: 200,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
-                          children: state.tempFolderContents.items!.isNotEmpty
-                              ? state.tempFolderContents.items!.map((item) {
+                          children: sortedContents.isNotEmpty
+                              ? sortedContents.map((item) {
                                   if (item is FolderWithCountModel) {
                                     return FolderWidget(
                                       folderWithCount: item,
@@ -177,15 +188,10 @@ class _FolderScreenState extends State<FolderScreen> {
             },
             params: StarMenuParameters(
               shape: MenuShape.linear,
-              // circleShapeParams: CircleShapeParams(
-              //     endAngle: 180, startAngle: 0, radiusX: 60, radiusY: 60)
               linearShapeParams: LinearShapeParams(
                   angle: 270, space: 10, alignment: LinearAlignment.center),
             ),
             items: [
-              // FloatingActionButton(onPressed: () {}),
-              // FloatingActionButton(onPressed: () {}),
-              // FloatingActionButton(onPressed: () {}),
               FloatingActionButton.extended(
                   onPressed: () {
                     context.router.replace(
