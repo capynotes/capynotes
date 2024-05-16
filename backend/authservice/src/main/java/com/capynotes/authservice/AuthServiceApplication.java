@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.*;
 
@@ -55,6 +58,15 @@ public class AuthServiceApplication {
 			} catch (SQLException e) {
 				logger.error(e.toString());
 			}
+		}
+	}
+
+	@RestController
+	public class HealthCheckController {
+
+		@GetMapping("/actuator/health")
+		public ResponseEntity<String> healthCheck(){
+			return ResponseEntity.ok().body("Healthy!");
 		}
 	}
 

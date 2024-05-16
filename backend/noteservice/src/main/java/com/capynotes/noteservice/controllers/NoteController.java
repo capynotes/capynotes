@@ -50,10 +50,10 @@ public class NoteController {
         sqsClient = AmazonSQSClientBuilder.standard()
                 .withCredentials(
                         new AWSStaticCredentialsProvider(new BasicAWSCredentials("your_access_key", "your_secret_key")))
-                .withRegion("your_region")
+                .withRegion("us-east-1")
                 .build();
-        queueUrl = sqsClient.getQueueUrl("transcription_queue").getQueueUrl();
-        youtubeQueueUrl = sqsClient.getQueueUrl("youtube_queue").getQueueUrl();
+        queueUrl = sqsClient.getQueueUrl("transcription").getQueueUrl();
+        youtubeQueueUrl = sqsClient.getQueueUrl("youtube").getQueueUrl();
     }
 
     @PostMapping("/upload-audio")
@@ -62,7 +62,7 @@ public class NoteController {
         Response response;
         try {
             Note note = noteService.uploadAudio(file, userId, fileName);
-            String jsonString = "{\"noteId\":" + note.getId().toString() + "\"}";
+            String jsonString = "{\"noteId\":" + note.getId().toString() + "}";
             sqsClient.sendMessage(queueUrl, jsonString);
             System.out.println(" [x] Sent '" + jsonString + "'");
             response = new Response("Note created.", 200, note);
@@ -211,7 +211,7 @@ public class NoteController {
     public Response addNoteToFolder(@RequestBody Note note, @PathVariable("id") long folderId) {
         try {
             if (noteService.addNoteToFolder(note, folderId)) {
-                String jsonString = "{\"noteId\":" + note.getId().toString() + "\"}";
+                String jsonString = "{\"noteId\":" + note.getId().toString() + "}";
                 sqsClient.sendMessage(queueUrl, jsonString);
                 System.out.println(" [x] Sent '" + note.getId().toString() + "'");
                 return new Response("Success", 200, note);
@@ -227,7 +227,7 @@ public class NoteController {
     public Response addNote(@RequestBody Note note) {
         try {
             noteService.addNote(note);
-            String jsonString = "{\"noteId\":" + note.getId().toString() + "\"}";
+            String jsonString = "{\"noteId\":" + note.getId().toString() + "}";
             sqsClient.sendMessage(queueUrl, jsonString);
             System.out.println(" [x] Sent '" + jsonString + "'");
             return new Response("Success", 200, note);
