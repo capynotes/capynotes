@@ -66,13 +66,13 @@ class FlashcardService {
 
   Future<FlashcardSetModel?> getFlashcardSet(int setID) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.getRequest(
         ApiConstants.baseUrl,
         "${ApiConstants.getFlashcardSet}$setID",
       );
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         FlashcardSetModel flashcardSetModel =
             FlashcardSetModel.fromJson(responseModel.data);

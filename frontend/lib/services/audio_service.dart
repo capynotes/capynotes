@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aws_common/aws_common.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:http/http.dart';
 
@@ -11,11 +12,11 @@ import 'api.dart';
 class AudioService {
   Future<List<AudioModel>?> getMyAudios() async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.getRequest(ApiConstants.baseUrl,
           "${ApiConstants.getMyAudios}${UserInfo.loggedUser!.id}");
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = response.decodeBody();
         ResponseModel responseModel = ResponseModel.fromJson(body);
         List<AudioModel> audioList = [];
         for (var audio in responseModel.data) {

@@ -36,11 +36,11 @@ class FolderService {
 
   Future<List<dynamic>?> getHomeContents() async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.getRequest(ApiConstants.baseUrl,
           "${ApiConstants.getUserFolders}${UserInfo.loggedUser!.id}");
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         List<dynamic> itemList = [];
         for (var item in responseModel.data) {
@@ -85,11 +85,11 @@ class FolderService {
 
   Future<FolderContentsModel?> getFolderContents(int folderID) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.getRequest(
           ApiConstants.baseUrl, "${ApiConstants.getFolder}$folderID");
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = jsonDecode(response.decodeBody());
         ResponseModel responseModel = ResponseModel.fromJson(body);
         FolderContentsModel folderContentsModel =
             FolderContentsModel.fromJson(responseModel.data);

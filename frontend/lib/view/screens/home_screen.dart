@@ -134,12 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     label: const Text("Add Folder"),
                   ),
-                  FloatingActionButton.extended(
-                    onPressed: () {
-                      final response = Api.instance.postAmplifyRequest("", "");
-                    },
-                    label: const Text("test gateway"),
-                  ),
                   const SizedBox(height: 70),
                 ],
                 child: FloatingActionButton(

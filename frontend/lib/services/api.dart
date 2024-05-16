@@ -15,9 +15,19 @@ class Api {
           "Authorization": "Bearer ${UserInfo.loggedUser?.token}"
         };
 
-  Future<http.Response> getRequest(String adress, String path) async {
-    final response =
-        await http.get(Uri.parse(adress + path), headers: tokenHeader);
+  Future<AWSHttpResponse> getRequest(String adress, String path) async {
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final result = await cognitoPlugin.fetchAuthSession();
+    final identityToken = result.userPoolTokensResult.value.idToken.raw;
+
+    final restOperation = Amplify.API.get(
+      path,
+      headers: {
+        "Authorization": identityToken,
+        "Content-Type": "application/json"
+      },
+    );
+    final response = await restOperation.response;
     return response;
   }
 
@@ -57,17 +67,5 @@ class Api {
     final response = await http.delete(Uri.parse(adress + path),
         headers: tokenHeader, body: requestBody);
     return response;
-  }
-
-  Future<int> postAmplifyRequest(String adress, String path,
-      [Object? requestBody]) async {
-    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
-    final result = await cognitoPlugin.fetchAuthSession();
-    final identityToken = result.userPoolTokensResult.value.idToken.raw;
-    final restOperation =
-        Amplify.API.get('note/1', headers: {"Authorization": identityToken});
-    final response = await restOperation.response;
-    print(response.decodeBody());
-    return response.statusCode;
   }
 }
