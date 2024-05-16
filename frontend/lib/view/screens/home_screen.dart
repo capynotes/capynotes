@@ -47,6 +47,17 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         builder: (context, state) {
           if (state is HomeDisplay) {
+            // Separate folders and notes
+            final folders = state.allHomeContents
+                .where((item) => item is FolderWithCountModel)
+                .toList();
+            final notes = state.allHomeContents
+                .where((item) => item is! FolderWithCountModel)
+                .toList();
+
+            // Concatenate folders and notes
+            final sortedContents = [...folders, ...notes];
+
             return Scaffold(
               appBar: AppBar(
                 title: Column(
@@ -89,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       maxCrossAxisExtent: 200,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
-                      children: state.allHomeContents.isNotEmpty
-                          ? state.allHomeContents.map((item) {
+                      children: sortedContents.isNotEmpty
+                          ? sortedContents.map((item) {
                               if (item is FolderWithCountModel) {
                                 return FolderWidget(
                                   folderWithCount: item,
