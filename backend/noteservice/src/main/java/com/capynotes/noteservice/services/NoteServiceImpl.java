@@ -413,17 +413,27 @@ public class NoteServiceImpl implements NoteService {
                 currentY += 2*leading;
 
                 // tree
-                if(currentY <= 200) {
+                /*if(currentY <= 200) {
                     PDPage newPage = new PDPage();
                     document.addPage(newPage);
                     contentStream.close();
                     contentStream = new PDPageContentStream(document, newPage);
                     currentY = newPage.getMediaBox().getHeight() - 50;
-                }
+                }*/
 
                 List<Object[]> diagramsOfNote = noteRepository.findDiagramsByNoteId(noteDto.getNote().getId());
                 int diagramCounter = 1;
                 for(Object[] diagram: diagramsOfNote) {
+                    byte[] diagramByte = downloadFromS3("public/" + (String) diagram[3]);
+                    PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, diagramByte, null);
+
+                    if(currentY <= pdImage.getHeight()) {
+                        PDPage newPage = new PDPage();
+                        document.addPage(newPage);
+                        contentStream.close();
+                        contentStream = new PDPageContentStream(document, newPage);
+                        currentY = newPage.getMediaBox().getHeight() - 50;
+                    }
 
                     contentStream.beginText();
                     contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
@@ -433,9 +443,16 @@ public class NoteServiceImpl implements NoteService {
                     contentStream.endText();
                     currentY += leading;
 
-                    byte[] diagramByte = downloadFromS3("public/" + (String) diagram[3]);
-                    PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, diagramByte, null);
-                    float startX = middleX - pdImage.getWidth() / 2;
+                    float divisor = 1f;
+                    while(pdImage.getWidth()*divisor >= document.getPage(0).getMediaBox().getWidth()
+                            || pdImage.getHeight()*divisor >= document.getPage(0).getMediaBox().getWidth()) {
+                        divisor = 0.9f * divisor;
+                    }
+                    float startX = middleX - pdImage.getWidth()*divisor / 2;
+                    contentStream.drawImage(pdImage, startX, currentY - pdImage.getHeight()*divisor, pdImage.getWidth()*divisor, pdImage.getHeight()*divisor);
+
+                    currentY = currentY - pdImage.getHeight()*divisor - 50;
+                    /*float startX = middleX - pdImage.getWidth() / 2;
                     contentStream.drawImage(pdImage, startX, currentY - pdImage.getHeight(), pdImage.getWidth(), pdImage.getHeight());
 
                     currentY = currentY - pdImage.getHeight() - 50;
@@ -446,7 +463,7 @@ public class NoteServiceImpl implements NoteService {
                         contentStream.close();
                         contentStream = new PDPageContentStream(document, newPage);
                         currentY = newPage.getMediaBox().getHeight() - 50;
-                    }
+                    }*/
                 }
 
 
