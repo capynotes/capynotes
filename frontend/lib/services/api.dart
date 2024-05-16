@@ -49,8 +49,10 @@ class Api {
 
   Future<http.Response> loginRequest(String adress, String path,
       [Object? requestBody]) async {
-    final response = await http.post(Uri.parse(adress + path),
-        headers: tokenHeader, body: requestBody);
+    final response = await http.post(
+        Uri.parse("http://44.203.210.197:8082/api/person/login"),
+        headers: {"Content-Type": "application/json"},
+        body: requestBody);
 
     return response;
   }
