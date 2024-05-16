@@ -1,3 +1,5 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:capynotes/model/user/user_info_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,10 +21,27 @@ class Api {
     return response;
   }
 
-  Future<http.Response> postRequest(String adress, String path,
+  Future<AWSHttpResponse> postRequest(String adress, String path,
+      [Object? requestBody]) async {
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final result = await cognitoPlugin.fetchAuthSession();
+    final identityToken = result.userPoolTokensResult.value.idToken.raw;
+
+    final restOperation = Amplify.API.post(path,
+        headers: {
+          "Authorization": identityToken,
+          "Content-Type": "application/json"
+        },
+        body: HttpPayload(requestBody, "application/json"));
+    final response = await restOperation.response;
+    return response;
+  }
+
+  Future<http.Response> loginRequest(String adress, String path,
       [Object? requestBody]) async {
     final response = await http.post(Uri.parse(adress + path),
         headers: tokenHeader, body: requestBody);
+
     return response;
   }
 
@@ -38,5 +57,17 @@ class Api {
     final response = await http.delete(Uri.parse(adress + path),
         headers: tokenHeader, body: requestBody);
     return response;
+  }
+
+  Future<int> postAmplifyRequest(String adress, String path,
+      [Object? requestBody]) async {
+    final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);
+    final result = await cognitoPlugin.fetchAuthSession();
+    final identityToken = result.userPoolTokensResult.value.idToken.raw;
+    final restOperation =
+        Amplify.API.get('note/1', headers: {"Authorization": identityToken});
+    final response = await restOperation.response;
+    print(response.decodeBody());
+    return response.statusCode;
   }
 }

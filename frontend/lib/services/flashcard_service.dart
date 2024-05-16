@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aws_common/aws_common.dart';
 import 'package:http/http.dart';
 
 import '../constants/api_constants.dart';
@@ -12,12 +13,12 @@ import 'api.dart';
 class FlashcardService {
   Future<FlashcardModel?> addFlashcard(AddFlashcardModel requestBody) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.addFlashcard, jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         FlashcardModel flashcardModel =
             FlashcardModel.fromJson(responseModel.data);
         return flashcardModel;

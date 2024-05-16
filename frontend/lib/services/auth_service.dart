@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aws_common/aws_common.dart';
 import 'package:capynotes/constants/api_constants.dart';
 import 'package:capynotes/model/auth/change_password_model.dart';
 import 'package:capynotes/model/auth/register_model.dart';
@@ -14,12 +15,12 @@ class AuthService {
   AuthService();
   Future<UserModel?> register(RegisterModel bodyModel) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.register, jsonEncode(bodyModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = json.decode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         return UserModel.fromJson(responseModel.data);
       } else {
         return null;
@@ -32,7 +33,7 @@ class AuthService {
   Future<UserModel?> login(LoginModel bodyModel) async {
     try {
       Response? response;
-      response = await Api.instance.postRequest(ApiConstants.baseUrl,
+      response = await Api.instance.loginRequest(ApiConstants.baseUrl,
           ApiConstants.login, jsonEncode(bodyModel.toJson()));
       if (response.statusCode == 200) {
         dynamic body = jsonDecode(response.body);
@@ -69,12 +70,12 @@ class AuthService {
 
   Future<String?> forgotPassword(String email) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance
           .postRequest(ApiConstants.baseUrl, "${ApiConstants.forgotPw}$email");
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         response = responseModel.data;
         return response.toString();
       } else {

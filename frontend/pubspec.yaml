@@ -62,6 +62,7 @@ dependencies:
   audio_waveforms: ^1.0.5
   photo_view_x: ^0.0.3
   photo_view: ^0.15.0
+  amplify_api: ^1.8.0
 
 dev_dependencies:
   flutter_test:

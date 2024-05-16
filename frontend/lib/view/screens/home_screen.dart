@@ -12,6 +12,7 @@ import '../../constants/colors.dart';
 import '../../model/folder/folder_with_count_model.dart';
 import '../../model/user/user_info_model.dart';
 import '../../navigation/app_router.dart';
+import '../../services/api.dart';
 import '../../translations/locale_keys.g.dart';
 import '../widgets/custom_widgets/custom_drawer.dart';
 import '../widgets/custom_widgets/custom_snackbars.dart';
@@ -132,6 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     label: const Text("Add Folder"),
+                  ),
+                  FloatingActionButton.extended(
+                    onPressed: () {
+                      final response = Api.instance.postAmplifyRequest("", "");
+                    },
+                    label: const Text("test gateway"),
                   ),
                   const SizedBox(height: 70),
                 ],

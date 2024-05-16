@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aws_common/aws_common.dart';
 import 'package:capynotes/model/flashcard/add_flashcard_set_model.dart';
 import 'package:capynotes/model/flashcard/flashcard_set_model.dart';
 import 'package:capynotes/model/folder/note_grid_model.dart';
@@ -57,11 +58,11 @@ class NoteService {
   Future<FlashcardSetModel?> createFlashcardSet(
       AddFlashcardSetModel requestBody) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.createFlashcardSet, jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = response.decodeBody();
         ResponseModel responseModel = ResponseModel.fromJson(body);
         FlashcardSetModel flashcardSetModel =
             FlashcardSetModel.fromJson(responseModel.data);
@@ -76,11 +77,11 @@ class NoteService {
 
   Future<TagResponseModel?> addTag(AddTagModel requestBody) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.addTag, jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = response.decodeBody();
         ResponseModel responseModel = ResponseModel.fromJson(body);
         TagResponseModel tagResponseModel =
             TagResponseModel.fromJson(responseModel.data);
@@ -96,11 +97,11 @@ class NoteService {
   Future<List<NoteGridModel>?> getCrossReferenced(
       CrossReferenceModel bodyModel) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.getCrossReferenced, jsonEncode(bodyModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
+        dynamic body = response.decodeBody();
         ResponseModel responseModel = ResponseModel.fromJson(body);
         List<NoteGridModel> noteList = [];
         for (var note in responseModel.data) {

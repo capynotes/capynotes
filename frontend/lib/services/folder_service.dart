@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:aws_common/aws_common.dart';
 import 'package:capynotes/model/folder/add_folder_main_model.dart';
 import 'package:capynotes/model/folder/folder_contents_model.dart';
 import 'package:capynotes/model/folder/folder_model.dart';
@@ -17,12 +18,12 @@ import 'api.dart';
 class FolderService {
   Future<FolderModel?> createFolder(AddFolderMainModel requestBody) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.createFolder, jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         FolderModel folderModel = FolderModel.fromJson(responseModel.data);
         return folderModel;
       } else {
@@ -64,14 +65,14 @@ class FolderService {
   Future<FolderModel?> addFolderToFolder(
       AddFolderMainModel requestBody, int folderID) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(
           ApiConstants.baseUrl,
           "${ApiConstants.addFolderToFolder}${folderID}",
           jsonEncode(requestBody.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         FolderModel folderModel = FolderModel.fromJson(responseModel.data);
         return folderModel;
       } else {

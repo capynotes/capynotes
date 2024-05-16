@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aws_common/aws_common.dart';
 import 'package:capynotes/constants/api_constants.dart';
 import 'package:capynotes/model/base_response_model.dart';
 import 'package:capynotes/model/note_model.dart';
@@ -15,12 +16,12 @@ class NoteGenerationService {
   Future<Note?> addNoteToHome(
       {required GenerateNoteFromFileModel noteModel}) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.addNoteToHome, jsonEncode(noteModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         Note? noteModel = Note.fromJson(responseModel.data);
         return noteModel;
       } else {
@@ -35,14 +36,14 @@ class NoteGenerationService {
       {required GenerateNoteFromFileModel noteModel,
       required int folderID}) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(
           ApiConstants.baseUrl,
           "${ApiConstants.addNoteToFolder}$folderID",
           jsonEncode(noteModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         Note? noteModel = Note.fromJson(responseModel.data);
         return noteModel;
       } else {
@@ -66,7 +67,7 @@ class NoteGenerationService {
       var response = await request.send();
       res = await http.Response.fromStream(response);
       dynamic body = json.decode(res.body);
-      ResponseModel responseModel = ResponseModel.fromJson(body);
+      ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
       Note? noteModel = Note.fromJson(responseModel.data);
       return noteModel;
     } catch (e) {
@@ -76,12 +77,12 @@ class NoteGenerationService {
 
   Future<Note?> generateNoteFromURL(VideoModel videoModel) async {
     try {
-      Response? response;
+      AWSHttpResponse? response;
       response = await Api.instance.postRequest(ApiConstants.baseUrl,
           ApiConstants.generateNoteFromVideo, jsonEncode(videoModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = jsonDecode(response.body);
-        ResponseModel responseModel = ResponseModel.fromJson(body);
+        dynamic body = response.decodeBody();
+        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
         Note? noteModel = Note.fromJson(responseModel.data);
         return noteModel;
       } else {

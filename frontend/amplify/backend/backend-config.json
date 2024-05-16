@@ -1,4 +1,5 @@
 {
+  "api": {},
   "auth": {
     "capynotes": {
       "customAuth": false,
@@ -27,6 +28,7 @@
       "service": "Cognito"
     }
   },
+  "function": {},
   "storage": {
     "capynotes": {
       "dependsOn": [],
