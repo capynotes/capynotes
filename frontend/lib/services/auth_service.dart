@@ -15,12 +15,12 @@ class AuthService {
   AuthService();
   Future<UserModel?> register(RegisterModel bodyModel) async {
     try {
-      AWSHttpResponse? response;
-      response = await Api.instance.postRequest(ApiConstants.baseUrl,
+      Response? response;
+      response = await Api.instance.registerRequest(ApiConstants.baseUrl,
           ApiConstants.register, jsonEncode(bodyModel.toJson()));
       if (response.statusCode == 200) {
-        dynamic body = response.decodeBody();
-        ResponseModel responseModel = ResponseModel.fromJson(jsonDecode(body));
+        dynamic body = jsonDecode(response.body);
+        ResponseModel responseModel = ResponseModel.fromJson(body);
         return UserModel.fromJson(responseModel.data);
       } else {
         return null;

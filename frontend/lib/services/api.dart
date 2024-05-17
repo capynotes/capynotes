@@ -57,6 +57,16 @@ class Api {
     return response;
   }
 
+  Future<http.Response> registerRequest(String adress, String path,
+      [Object? requestBody]) async {
+    final response = await http.post(
+        Uri.parse("http://44.200.210.42:8082/api/person/register"),
+        headers: {"Content-Type": "application/json"},
+        body: requestBody);
+
+    return response;
+  }
+
   Future<AWSHttpResponse> putRequest(String adress, String path,
       [Object? requestBody]) async {
     final cognitoPlugin = Amplify.Auth.getPlugin(AmplifyAuthCognito.pluginKey);

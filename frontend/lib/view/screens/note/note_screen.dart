@@ -76,73 +76,77 @@ class _NoteScreenState extends State<NoteScreen> {
                 children: context.read<NoteCubit>().crossList!.isNotEmpty
                     ? List.generate(
                         context.read<NoteCubit>().crossList?.length ?? 0,
-                        (index) => ListTile(
-                              contentPadding: const EdgeInsets.all(8.0),
-                              tileColor: ColorConstants.primaryColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0)),
-                              leading: Text(
-                                "${index + 1}",
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: ColorConstants.lightBlue,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Icon(
-                                Icons.my_library_books,
-                                color: ColorConstants.lightBlue,
-                              ),
-                              title: Text(context
-                                  .read<NoteCubit>()
-                                  .crossList![index]
-                                  .title!),
-                              subtitle: RichText(
-                                  text: TextSpan(
-                                      text: LocaleKeys.labels_status.tr(),
-                                      style: TextStyle(
-                                          color: ColorConstants.lightBlue,
-                                          fontWeight: FontWeight.bold),
-                                      children: [
-                                    TextSpan(
-                                        text: context
-                                            .read<NoteCubit>()
-                                            .crossList![index]
-                                            .status!
-                                            .name,
+                        (index) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(8.0),
+                                tileColor: ColorConstants.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0)),
+                                leading: Text(
+                                  "${index + 1}",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      color: ColorConstants.lightBlue,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Icon(
+                                  Icons.my_library_books,
+                                  color: ColorConstants.lightBlue,
+                                ),
+                                title: Text(context
+                                    .read<NoteCubit>()
+                                    .crossList![index]
+                                    .title!),
+                                subtitle: RichText(
+                                    text: TextSpan(
+                                        text: LocaleKeys.labels_status.tr(),
                                         style: TextStyle(
-                                            color: context
-                                                            .read<NoteCubit>()
-                                                            .crossList![index]
-                                                            .status ==
-                                                        NoteStatus
-                                                            .TRANSCRIBING ||
-                                                    context
-                                                            .read<NoteCubit>()
-                                                            .crossList![index]
-                                                            .status ==
-                                                        NoteStatus.SUMMARIZING
-                                                ? ColorConstants.lightBlue
-                                                : context
-                                                            .read<NoteCubit>()
-                                                            .crossList![index]
-                                                            .status ==
-                                                        NoteStatus.DONE
-                                                    ? const Color.fromARGB(
-                                                        255, 0, 255, 8)
-                                                    : Colors.red,
-                                            fontWeight: FontWeight.normal))
-                                  ])),
-                              onTap: () {
-                                if (context
-                                        .read<NoteCubit>()
-                                        .crossList![index]
-                                        .status ==
-                                    NoteStatus.DONE) {
-                                  context.router.navigateNamed(
-                                      "/note/${context.read<NoteCubit>().crossList![index].id}");
-                                }
-                                Navigator.pop(context);
-                              },
+                                            color: ColorConstants.lightBlue,
+                                            fontWeight: FontWeight.bold),
+                                        children: [
+                                      TextSpan(
+                                          text: context
+                                              .read<NoteCubit>()
+                                              .crossList![index]
+                                              .status!
+                                              .name,
+                                          style: TextStyle(
+                                              color: context
+                                                              .read<NoteCubit>()
+                                                              .crossList![index]
+                                                              .status ==
+                                                          NoteStatus
+                                                              .TRANSCRIBING ||
+                                                      context
+                                                              .read<NoteCubit>()
+                                                              .crossList![index]
+                                                              .status ==
+                                                          NoteStatus.SUMMARIZING
+                                                  ? ColorConstants.lightBlue
+                                                  : context
+                                                              .read<NoteCubit>()
+                                                              .crossList![index]
+                                                              .status ==
+                                                          NoteStatus.DONE
+                                                      ? const Color.fromARGB(
+                                                          255, 0, 255, 8)
+                                                      : Colors.red,
+                                              fontWeight: FontWeight.normal))
+                                    ])),
+                                onTap: () {
+                                  if (context
+                                          .read<NoteCubit>()
+                                          .crossList![index]
+                                          .status ==
+                                      NoteStatus.DONE) {
+                                    context.router.navigateNamed(
+                                        "/note/${context.read<NoteCubit>().crossList![index].id}");
+                                  }
+                                  Navigator.pop(context);
+                                },
+                              ),
                             ))
                     : [Text("No Cross References Found")],
               ),
