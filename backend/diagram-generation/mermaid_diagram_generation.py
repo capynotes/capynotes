@@ -1,5 +1,5 @@
 from openai import OpenAI
-from database import get_transcript_from_database, insert_diagrams_to_database, insert_diagram_key_to_database
+from database import get_transcript_from_database, insert_diagrams_to_database, insert_diagram_key_to_database, delete_diagram_row
 import base64
 import requests
 from aws_utils import create_s3_client, get_bucket_name
@@ -119,9 +119,13 @@ def generate_diagrams(note_id):
     # File path is created based on the name of the folder for the diagrams and the unique file name for the diagram
     file_path = path_prefix + file_name
 
+  try:
     mm(diagram, file_path)
-
     upload_diagrams_to_S3(inserted_id, file_path, "diagrams/" + str(note_id) + "/" + file_name)
+    print("TRY!")
+  except:
+    delete_diagram_row(inserted_id)
+    print("EXCEPT!")
 
     #Remove the newly created file from local
     os.remove(file_path)

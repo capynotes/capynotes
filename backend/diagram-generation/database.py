@@ -69,3 +69,21 @@ def insert_diagram_key_to_database(inserted_id, file_name):
     finally:
         cursor.close()
 
+def delete_diagram_row(inserted_id):
+    global connection
+
+    if connection is None:
+        initialize_connection()
+    cursor = connection.cursor()
+
+    delete_query = "DELETE FROM diagram WHERE id = %s;"
+
+    try:
+        value = inserted_id
+        cursor.execute(delete_query, value)
+        connection.commit()
+    except Exception as e:
+        connection.rollback()
+        print(f"Error: {e}")
+    finally:
+        cursor.close()

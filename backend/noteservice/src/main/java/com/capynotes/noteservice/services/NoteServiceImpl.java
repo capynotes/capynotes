@@ -229,9 +229,9 @@ public class NoteServiceImpl implements NoteService {
             PDPage page = new PDPage();
             document.addPage(page);
 
-            PDFont normal = PDType0Font.load(document, new File("src/main/resources/SourceSans3-Regular.ttf"));
-            PDFont bold = PDType0Font.load(document, new File("src/main/resources/SourceSans3-Bold.ttf"));
-            PDFont italic = PDType0Font.load(document, new File("src/main/resources/SourceSans3-Italic.ttf"));
+            PDFont normal = PDType0Font.load(document, new File("/noteservice/resources/SourceSans3-Regular.ttf"));
+            PDFont bold = PDType0Font.load(document, new File("/noteservice/resources/SourceSans3-Bold.ttf"));
+            PDFont italic = PDType0Font.load(document, new File("/noteservice/resources/SourceSans3-Italic.ttf"));
 
             float margin = 50;
             float leading = -20;
